@@ -1,0 +1,755 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next mist use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="Hadoop,客户端操作," />
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="客户端的理解hdfs的客户端有多种形式： 网页形式 命令行形式 客户端在哪里运行，没有约束，只要运行客户端的机器能够跟hdfs集群联网   文件的切块大小和存储的副本数量，都是由客户端决定！所谓的由客户端决定，是通过配置参数来定的hdfs的客户端会读以下两个参数，来决定切块大小、副本数量：切块大小的参数： dfs.blocksize副本数量的参数： dfs.replication  hdfs命令行">
+<meta name="keywords" content="Hadoop,客户端操作">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Hadoop学习笔记------客户端操作">
+<meta property="og:url" content="http://blogoflyt.cn/2019/03/03/Hadoop学习笔记-客户端操作/index.html">
+<meta property="og:site_name" content="积累技术之路">
+<meta property="og:description" content="客户端的理解hdfs的客户端有多种形式： 网页形式 命令行形式 客户端在哪里运行，没有约束，只要运行客户端的机器能够跟hdfs集群联网   文件的切块大小和存储的副本数量，都是由客户端决定！所谓的由客户端决定，是通过配置参数来定的hdfs的客户端会读以下两个参数，来决定切块大小、副本数量：切块大小的参数： dfs.blocksize副本数量的参数： dfs.replication  hdfs命令行">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:updated_time" content="2019-03-03T14:21:52.161Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Hadoop学习笔记------客户端操作">
+<meta name="twitter:description" content="客户端的理解hdfs的客户端有多种形式： 网页形式 命令行形式 客户端在哪里运行，没有约束，只要运行客户端的机器能够跟hdfs集群联网   文件的切块大小和存储的副本数量，都是由客户端决定！所谓的由客户端决定，是通过配置参数来定的hdfs的客户端会读以下两个参数，来决定切块大小、副本数量：切块大小的参数： dfs.blocksize副本数量的参数： dfs.replication  hdfs命令行">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Mist',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://blogoflyt.cn/2019/03/03/Hadoop学习笔记-客户端操作/"/>
+
+
+
+
+
+  <title>Hadoop学习笔记------客户端操作 | 积累技术之路</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">积累技术之路</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">找到学习的热爱</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://blogoflyt.cn/2019/03/03/Hadoop学习笔记-客户端操作/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Richard">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/gakki.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="积累技术之路">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">Hadoop学习笔记------客户端操作</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-03-03T22:17:00+08:00">
+                2019-03-03
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Hadoop/" itemprop="url" rel="index">
+                    <span itemprop="name">Hadoop</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h5 id="客户端的理解"><a href="#客户端的理解" class="headerlink" title="客户端的理解"></a>客户端的理解</h5><h6 id="hdfs的客户端有多种形式："><a href="#hdfs的客户端有多种形式：" class="headerlink" title="hdfs的客户端有多种形式："></a>hdfs的客户端有多种形式：</h6><ol>
+<li>网页形式</li>
+<li>命令行形式</li>
+<li>客户端在哪里运行，没有约束，只要运行客户端的机器能够跟hdfs集群联网</li>
+</ol>
+<blockquote>
+<p>文件的切块大小和存储的副本数量，都是由客户端决定！<br>所谓的由客户端决定，是通过配置参数来定的<br>hdfs的客户端会读以下两个参数，来决定切块大小、副本数量：<br>切块大小的参数： dfs.blocksize<br>副本数量的参数： dfs.replication</p>
+</blockquote>
+<h6 id="hdfs命令行客户端的常用操作命令"><a href="#hdfs命令行客户端的常用操作命令" class="headerlink" title="hdfs命令行客户端的常用操作命令"></a>hdfs命令行客户端的常用操作命令</h6><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line">0、查看hdfs中的目录信息</span><br><span class="line">hadoop fs -ls /hdfs路径</span><br><span class="line">1、上传文件到hdfs中</span><br><span class="line">hadoop fs -put /本地文件  /aaa</span><br><span class="line">hadoop fs -copyFromLocal /本地文件  /hdfs路径   ##  copyFromLocal等价于 put</span><br><span class="line">hadoop fs -moveFromLocal /本地文件  /hdfs路径  ## 跟copyFromLocal的区别是：从本地移动到hdfs中</span><br><span class="line">2、下载文件到客户端本地磁盘</span><br><span class="line">hadoop fs -get /hdfs中的路径   /本地磁盘目录</span><br><span class="line">hadoop fs -copyToLocal /hdfs中的路径 /本地磁盘路径   ## 跟get等价</span><br><span class="line">hadoop fs -moveToLocal /hdfs路径  /本地路径  ## 从hdfs中移动到本地</span><br><span class="line">3、在hdfs中创建文件夹</span><br><span class="line">hadoop fs -mkdir  -p /aaa/xxx</span><br><span class="line">4、移动hdfs中的文件（更名）</span><br><span class="line">hadoop fs -mv /hdfs的路径  /hdfs的另一个路径</span><br><span class="line">5、删除hdfs中的文件或文件夹</span><br><span class="line">hadoop fs -rm -r /aaa</span><br><span class="line">6、修改文件的权限</span><br><span class="line">hadoop fs -chown user:group /aaa</span><br><span class="line">hadoop fs -chmod 700 /aaa</span><br><span class="line">7、追加内容到已存在的文件</span><br><span class="line">hadoop fs -appendToFile /本地文件   /hdfs中的文件</span><br><span class="line">8、显示文本文件的内容</span><br><span class="line">hadoop fs -cat /hdfs中的文件</span><br><span class="line">hadoop fs -tail /hdfs中的文件</span><br></pre></td></tr></table></figure>
+<h5 id="使用Java操作Hadoop客户端"><a href="#使用Java操作Hadoop客户端" class="headerlink" title="使用Java操作Hadoop客户端"></a>使用Java操作Hadoop客户端</h5><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br></pre></td><td class="code"><pre><span class="line">package HdfsClientDemo_myself;</span><br><span class="line"></span><br><span class="line">import java.io.BufferedReader;</span><br><span class="line">import java.io.FileInputStream;</span><br><span class="line">import java.io.InputStreamReader;</span><br><span class="line">import java.net.URI;</span><br><span class="line"></span><br><span class="line">import org.apache.hadoop.conf.Configuration;</span><br><span class="line">import org.apache.hadoop.fs.BlockLocation;</span><br><span class="line">import org.apache.hadoop.fs.FSDataInputStream;</span><br><span class="line">import org.apache.hadoop.fs.FSDataOutputStream;</span><br><span class="line">import org.apache.hadoop.fs.FileSystem;</span><br><span class="line">import org.apache.hadoop.fs.LocatedFileStatus;</span><br><span class="line">import org.apache.hadoop.fs.Path;</span><br><span class="line">import org.apache.hadoop.fs.RemoteIterator;</span><br><span class="line">import org.junit.Before;</span><br><span class="line">import org.junit.Test;</span><br><span class="line"></span><br><span class="line">public class HdfsClient_Test &#123;</span><br><span class="line"></span><br><span class="line">	FileSystem fs=null;</span><br><span class="line">	</span><br><span class="line">	@Before</span><br><span class="line">	public void init() throws Exception&#123;</span><br><span class="line">		Configuration conf = new Configuration();</span><br><span class="line">		conf.set(&quot;dfs.replication&quot;, &quot;3&quot;);</span><br><span class="line">		conf.set(&quot;dfs.blocksize&quot;, &quot;64m&quot;);</span><br><span class="line">		</span><br><span class="line">		fs=FileSystem.get(new URI(&quot;hdfs://namenode:9000&quot;), conf, &quot;root&quot;);</span><br><span class="line">		</span><br><span class="line">	&#125;</span><br><span class="line">	</span><br><span class="line">	@Test</span><br><span class="line">	public void testGet() throws Exception&#123;</span><br><span class="line">		</span><br><span class="line">		fs.copyToLocalFile(new Path(&quot;/hdfspath&quot;),new Path( &quot;f://Linuxsource/mrdata/hdfsdata/&quot;));</span><br><span class="line">		</span><br><span class="line">		fs.close();</span><br><span class="line">		</span><br><span class="line">	&#125;</span><br><span class="line">	</span><br><span class="line">	@Test</span><br><span class="line">	public void testRename() throws Exception&#123;</span><br><span class="line">		</span><br><span class="line">		fs.rename(new Path(&quot;/hdfspath/data1&quot;), new Path(&quot;/hdfspath/data2&quot;));</span><br><span class="line">		</span><br><span class="line">		fs.close();</span><br><span class="line">	&#125;</span><br><span class="line">	</span><br><span class="line">	@Test</span><br><span class="line">	public void testMkdirs() throws Exception&#123;</span><br><span class="line">		</span><br><span class="line">		fs.mkdirs(new Path(&quot;/hdfspath2/&quot;));</span><br><span class="line">		</span><br><span class="line">		fs.close();</span><br><span class="line">	&#125;</span><br><span class="line">	</span><br><span class="line">	@Test</span><br><span class="line">	public void testRmdirs() throws Exception&#123;</span><br><span class="line">		fs.delete(new Path(&quot;/hdfspath2&quot;), true);</span><br><span class="line">		fs.close();</span><br><span class="line">		</span><br><span class="line">	&#125;</span><br><span class="line">	</span><br><span class="line">	@Test</span><br><span class="line">	public void testLS() throws Exception&#123;</span><br><span class="line">		</span><br><span class="line">		RemoteIterator&lt;LocatedFileStatus&gt; listFiles = fs.listFiles(new Path(&quot;/hdfspath&quot;),true);</span><br><span class="line">		</span><br><span class="line">		while(listFiles.hasNext()) &#123;</span><br><span class="line">			LocatedFileStatus file = listFiles.next();</span><br><span class="line"></span><br><span class="line">			System.out.println(&quot;BlockSize:&quot;+file.getBlockSize());</span><br><span class="line">			System.out.println(&quot;Replication:&quot;+file.getReplication());</span><br><span class="line">			System.out.println(&quot;Is directory?&quot;+(file.isDirectory()?&quot;directory&quot;:&quot;not directory&quot;));</span><br><span class="line">			System.out.println(&quot;BlockDetailInfo&quot;+file.getBlockLocations());</span><br><span class="line">			</span><br><span class="line">		&#125;</span><br><span class="line">		</span><br><span class="line">		fs.close();</span><br><span class="line">		</span><br><span class="line">	&#125;</span><br><span class="line">	</span><br><span class="line">	@Test</span><br><span class="line">	public void testReadData() throws Exception&#123;</span><br><span class="line">		</span><br><span class="line">		FSDataInputStream in = fs.open(new Path(&quot;/hdfspath/data1&quot;));</span><br><span class="line">		</span><br><span class="line">		InputStreamReader inputStreamReader = new InputStreamReader(in, &quot;utf-8&quot;);</span><br><span class="line">		BufferedReader bufferedReader = new BufferedReader(inputStreamReader);</span><br><span class="line">		</span><br><span class="line">		String line=null;</span><br><span class="line">		while((line=bufferedReader.readLine())!=null) &#123;</span><br><span class="line">			</span><br><span class="line">			System.out.println(line);</span><br><span class="line">			</span><br><span class="line">		&#125;</span><br><span class="line">		</span><br><span class="line">		bufferedReader.close();</span><br><span class="line">		inputStreamReader.close();</span><br><span class="line">		fs.close();</span><br><span class="line">		</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	@Test</span><br><span class="line">	public void testWriteData() throws Exception&#123;</span><br><span class="line">		</span><br><span class="line">		FSDataOutputStream out= fs.create(new Path(&quot;/hdfspath/1.png&quot;));</span><br><span class="line">		FileInputStream in=new FileInputStream(&quot;F://Linuxsource/mrdata/test.png&quot;);</span><br><span class="line">		</span><br><span class="line">		int read=0;</span><br><span class="line">		byte[] buf=new byte[1024];</span><br><span class="line">		while((read=in.read(buf))!=-1) &#123;</span><br><span class="line">			out.write(buf, 0, read);</span><br><span class="line">			</span><br><span class="line">		&#125;</span><br><span class="line">		</span><br><span class="line">		in.close();</span><br><span class="line">		out.close();</span><br><span class="line">		fs.close();</span><br><span class="line">		</span><br><span class="line">	&#125;</span><br><span class="line">	</span><br><span class="line">	</span><br><span class="line">	</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/Hadoop/" rel="tag"># Hadoop</a>
+          
+            <a href="/tags/客户端操作/" rel="tag"># 客户端操作</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2019/03/03/Hadoop学习笔记-集群搭建/" rel="next" title="Hadoop学习笔记------集群搭建">
+                <i class="fa fa-chevron-left"></i> Hadoop学习笔记------集群搭建
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2019/03/03/MapReduce编程案例1-WordCount示例开发/" rel="prev" title="MapReduce编程案例1-----WordCount示例开发">
+                MapReduce编程案例1-----WordCount示例开发 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image"
+                src="/images/gakki.jpg"
+                alt="Richard" />
+            
+              <p class="site-author-name" itemprop="name">Richard</p>
+              <p class="site-description motion-element" itemprop="description">悟已往之不谏,知来者之可追</p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">19</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">6</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">24</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+
+          
+          
+
+          
+          
+            <div class="links-of-blogroll motion-element links-of-blogroll-block">
+              <div class="links-of-blogroll-title">
+                <i class="fa  fa-fw fa-link"></i>
+                Links
+              </div>
+              <ul class="links-of-blogroll-list">
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://github.com/showiproute" title="Github" target="_blank">Github</a>
+                  </li>
+                
+              </ul>
+            </div>
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-5"><a class="nav-link" href="#客户端的理解"><span class="nav-number">1.</span> <span class="nav-text">客户端的理解</span></a><ol class="nav-child"><li class="nav-item nav-level-6"><a class="nav-link" href="#hdfs的客户端有多种形式："><span class="nav-number">1.1.</span> <span class="nav-text">hdfs的客户端有多种形式：</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#hdfs命令行客户端的常用操作命令"><span class="nav-number">1.2.</span> <span class="nav-text">hdfs命令行客户端的常用操作命令</span></a></li></ol></li><li class="nav-item nav-level-5"><a class="nav-link" href="#使用Java操作Hadoop客户端"><span class="nav-number">2.</span> <span class="nav-text">使用Java操作Hadoop客户端</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2019</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Richard</span>
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Mist</a> v5.1.4</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>
