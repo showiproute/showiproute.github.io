@@ -1,0 +1,758 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next mist use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="集群搭建,ZooKeeper," />
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="zookeeper的基本功能和应用场景 zookeeper的整体运行机制 zookeeper的数据存储机制数据存储形式123456789zookeeper中对用户的数据采用kv形式存储只是zk有点特别：key：是以路径的形式表示的，那就以为着，各key之间有父子关系，比如/ 是顶层key用户建的key只能在/ 下作为子节点，比如建一个key： /aa  这个key可以带value数据 也可以建一个">
+<meta name="keywords" content="集群搭建,ZooKeeper">
+<meta property="og:type" content="article">
+<meta property="og:title" content="ZooKeeper集群搭建">
+<meta property="og:url" content="http://blogoflyt.cn/2019/03/16/ZooKeeper集群搭建/index.html">
+<meta property="og:site_name" content="积累技术之路">
+<meta property="og:description" content="zookeeper的基本功能和应用场景 zookeeper的整体运行机制 zookeeper的数据存储机制数据存储形式123456789zookeeper中对用户的数据采用kv形式存储只是zk有点特别：key：是以路径的形式表示的，那就以为着，各key之间有父子关系，比如/ 是顶层key用户建的key只能在/ 下作为子节点，比如建一个key： /aa  这个key可以带value数据 也可以建一个">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="https://s2.ax1x.com/2019/03/04/kObMj0.png">
+<meta property="og:image" content="https://s2.ax1x.com/2019/03/04/kObNC9.png">
+<meta property="og:image" content="https://s2.ax1x.com/2019/03/04/kObdjx.png">
+<meta property="og:updated_time" content="2019-03-04T09:58:29.544Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="ZooKeeper集群搭建">
+<meta name="twitter:description" content="zookeeper的基本功能和应用场景 zookeeper的整体运行机制 zookeeper的数据存储机制数据存储形式123456789zookeeper中对用户的数据采用kv形式存储只是zk有点特别：key：是以路径的形式表示的，那就以为着，各key之间有父子关系，比如/ 是顶层key用户建的key只能在/ 下作为子节点，比如建一个key： /aa  这个key可以带value数据 也可以建一个">
+<meta name="twitter:image" content="https://s2.ax1x.com/2019/03/04/kObMj0.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Mist',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://blogoflyt.cn/2019/03/16/ZooKeeper集群搭建/"/>
+
+
+
+
+
+  <title>ZooKeeper集群搭建 | 积累技术之路</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">积累技术之路</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">找到学习的热爱</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://blogoflyt.cn/2019/03/16/ZooKeeper集群搭建/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Richard">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/gakki.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="积累技术之路">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">ZooKeeper集群搭建</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-03-16T17:46:00+08:00">
+                2019-03-16
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/ZooKeeper/" itemprop="url" rel="index">
+                    <span itemprop="name">ZooKeeper</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h5 id="zookeeper的基本功能和应用场景"><a href="#zookeeper的基本功能和应用场景" class="headerlink" title="zookeeper的基本功能和应用场景"></a>zookeeper的基本功能和应用场景</h5><p><a href="https://imgchr.com/i/kObMj0" target="_blank" rel="noopener"><img src="https://s2.ax1x.com/2019/03/04/kObMj0.png" alt="kObMj0.png"></a></p>
+<h5 id="zookeeper的整体运行机制"><a href="#zookeeper的整体运行机制" class="headerlink" title="zookeeper的整体运行机制"></a>zookeeper的整体运行机制</h5><p><a href="https://imgchr.com/i/kObNC9" target="_blank" rel="noopener"><img src="https://s2.ax1x.com/2019/03/04/kObNC9.png" alt="kObNC9.png"></a></p>
+<h5 id="zookeeper的数据存储机制"><a href="#zookeeper的数据存储机制" class="headerlink" title="zookeeper的数据存储机制"></a>zookeeper的数据存储机制</h5><h6 id="数据存储形式"><a href="#数据存储形式" class="headerlink" title="数据存储形式"></a>数据存储形式</h6><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">zookeeper中对用户的数据采用kv形式存储</span><br><span class="line">只是zk有点特别：</span><br><span class="line">key：是以路径的形式表示的，那就以为着，各key之间有父子关系，比如</span><br><span class="line">/ 是顶层key</span><br><span class="line">用户建的key只能在/ 下作为子节点，比如建一个key： /aa  这个key可以带value数据</span><br><span class="line"> 也可以建一个key：   /bb</span><br><span class="line">也可以建key： /aa/xx </span><br><span class="line">zookeeper中，对每一个数据key，称作一个znode</span><br><span class="line">综上所述，zk中的数据存储形式如下：</span><br></pre></td></tr></table></figure>
+<p><a href="https://imgchr.com/i/kObdjx" target="_blank" rel="noopener"><img src="https://s2.ax1x.com/2019/03/04/kObdjx.png" alt="kObdjx.png"></a></p>
+<h6 id="znode类型"><a href="#znode类型" class="headerlink" title="znode类型"></a>znode类型</h6><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">zookeeper中的znode有多种类型：</span><br><span class="line">1、PERSISTENT  持久的：创建者就算跟集群断开联系，该类节点也会持久存在与zk集群中</span><br><span class="line">2、EPHEMERAL  短暂的：创建者一旦跟集群断开联系，zk就会将这个节点删除</span><br><span class="line">3、SEQUENTIAL  带序号的：这类节点，zk会自动拼接上一个序号，而且序号是递增的</span><br><span class="line"></span><br><span class="line">组合类型：</span><br><span class="line">PERSISTENT  ：持久不带序号</span><br><span class="line">EPHEMERAL  ：短暂不带序号 </span><br><span class="line">PERSISTENT  且 SEQUENTIAL   ：持久且带序号</span><br><span class="line">EPHEMERAL  且 SEQUENTIAL  ：短暂且带序号</span><br></pre></td></tr></table></figure>
+<h5 id="zookeeper的集群部署"><a href="#zookeeper的集群部署" class="headerlink" title="zookeeper的集群部署"></a>zookeeper的集群部署</h5><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br></pre></td><td class="code"><pre><span class="line">1、上传安装包到集群服务器</span><br><span class="line">2、解压</span><br><span class="line">3、修改配置文件</span><br><span class="line">进入zookeeper的安装目录的conf目录</span><br><span class="line">cp zoo_sample.cfg zoo.cfg</span><br><span class="line">vi zoo.cfg</span><br><span class="line"># The number of milliseconds of each tick</span><br><span class="line">tickTime=2000</span><br><span class="line">initLimit=10</span><br><span class="line">syncLimit=5</span><br><span class="line">dataDir=/root/zkdata</span><br><span class="line">clientPort=2181</span><br><span class="line"></span><br><span class="line">#autopurge.purgeInterval=1</span><br><span class="line">server.1=hdp20-01:2888:3888</span><br><span class="line">server.2=hdp20-02:2888:3888</span><br><span class="line">server.3=hdp20-03:2888:3888</span><br><span class="line"></span><br><span class="line">对3台节点，都创建目录 mkdir /root/zkdata</span><br><span class="line">对3台节点，在工作目录中生成myid文件，但内容要分别为各自的id： 1,2,3</span><br><span class="line">hdp20-01上：  echo 1 &gt; /root/zkdata/myid</span><br><span class="line">hdp20-02上：  echo 2 &gt; /root/zkdata/myid</span><br><span class="line">hdp20-03上：  echo 3 &gt; /root/zkdata/myid</span><br><span class="line"></span><br><span class="line">4、从hdp20-01上scp安装目录到其他两个节点</span><br><span class="line">scp -r zookeeper-3.4.6/ hdp20-02$PWD</span><br><span class="line">scp -r zookeeper-3.4.6/ hdp20-03:$PWD</span><br><span class="line"></span><br><span class="line">5、启动zookeeper集群</span><br><span class="line">zookeeper没有提供自动批量启动脚本，需要手动一台一台地起zookeeper进程</span><br><span class="line">在每一台节点上，运行命令：</span><br><span class="line">bin/zkServer.sh start</span><br><span class="line">启动后，用jps应该能看到一个进程：QuorumPeerMain</span><br><span class="line"></span><br><span class="line">但是，光有进程不代表zk已经正常服务，需要用命令检查状态：</span><br><span class="line">bin/zkServer.sh status</span><br><span class="line">能看到角色模式：为leader或follower，即正常了。</span><br></pre></td></tr></table></figure>
+<h5 id="zookeeper的命令行客户端操作"><a href="#zookeeper的命令行客户端操作" class="headerlink" title="zookeeper的命令行客户端操作"></a>zookeeper的命令行客户端操作</h5><h6 id="zookeeper的数据存储形式："><a href="#zookeeper的数据存储形式：" class="headerlink" title="zookeeper的数据存储形式："></a>zookeeper的数据存储形式：</h6><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line">一、zookeeper中存储数据的基本形式为： key ， value</span><br><span class="line">二、zookeeper中的key是用路径表示的： </span><br><span class="line">/aa : 88888    </span><br><span class="line">/aa/bb : &quot;xxoo&quot;   </span><br><span class="line">/aa/cc : &quot;edu360&quot;</span><br><span class="line">/tt: 9898</span><br><span class="line">每一个key-value称为一个znode（zookeeper数据节点）</span><br><span class="line"></span><br><span class="line">三、zookeeper中的数据节点有4种类型：</span><br><span class="line">1、持久节点：客户端一旦建立，zk会持久保存，除非有客户端手动删除</span><br><span class="line">2、短暂节点：创建这个节点的客户端一旦断开与zookeeper集群的联系，zookeeper集群就会自动将该节点删除</span><br><span class="line"></span><br><span class="line">3、带序号的节点：在同一个父节点下，建带序号的子节点，zk会自动给客户端指定的子节点名后拼接一个自增的序号</span><br><span class="line">4、不带序号的节点：</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">上述4中类型，可以有以下组合类型：</span><br><span class="line">持久-带序号</span><br><span class="line">持久-不带序号</span><br><span class="line">短暂-带序号</span><br><span class="line">短暂-不带序号</span><br></pre></td></tr></table></figure>
+<h6 id="数据管理功能："><a href="#数据管理功能：" class="headerlink" title="数据管理功能："></a>数据管理功能：</h6><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">创建节点： create /aaa &apos;ppppp&apos;</span><br><span class="line">查看节点下的子节点：   ls /aaa</span><br><span class="line">获取节点的value： get /aaa</span><br><span class="line">修改节点的value： set /aaa &apos;mmmmm&apos;</span><br><span class="line">删除节点：rmr /aaa</span><br></pre></td></tr></table></figure>
+<h6 id="数据监听功能："><a href="#数据监听功能：" class="headerlink" title="数据监听功能："></a>数据监听功能：</h6><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">ls /aaa watch   </span><br><span class="line">## 查看/aaa的子节点的同时，注册了一个监听“节点的子节点变化事件”的监听器</span><br><span class="line"></span><br><span class="line">get /aaa watch</span><br><span class="line">## 获取/aaa的value的同时，注册了一个监听“节点value变化事件”的监听器</span><br><span class="line"></span><br><span class="line">注意：注册的监听器在正常收到一次所监听的事件后，就失效</span><br></pre></td></tr></table></figure>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/集群搭建/" rel="tag"># 集群搭建</a>
+          
+            <a href="/tags/ZooKeeper/" rel="tag"># ZooKeeper</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2019/03/15/MapReduce编程案例13-求共同好友案例/" rel="next" title="MapReduce编程案例13-----求共同好友案例">
+                <i class="fa fa-chevron-left"></i> MapReduce编程案例13-----求共同好友案例
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2019/03/17/ZooKeeper客户端编程/" rel="prev" title="ZooKeeper客户端编程">
+                ZooKeeper客户端编程 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image"
+                src="/images/gakki.jpg"
+                alt="Richard" />
+            
+              <p class="site-author-name" itemprop="name">Richard</p>
+              <p class="site-description motion-element" itemprop="description">悟已往之不谏,知来者之可追</p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">22</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">7</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">28</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+
+          
+          
+
+          
+          
+            <div class="links-of-blogroll motion-element links-of-blogroll-block">
+              <div class="links-of-blogroll-title">
+                <i class="fa  fa-fw fa-link"></i>
+                Links
+              </div>
+              <ul class="links-of-blogroll-list">
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://github.com/showiproute" title="Github" target="_blank">Github</a>
+                  </li>
+                
+              </ul>
+            </div>
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-5"><a class="nav-link" href="#zookeeper的基本功能和应用场景"><span class="nav-number">1.</span> <span class="nav-text">zookeeper的基本功能和应用场景</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#zookeeper的整体运行机制"><span class="nav-number">2.</span> <span class="nav-text">zookeeper的整体运行机制</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#zookeeper的数据存储机制"><span class="nav-number">3.</span> <span class="nav-text">zookeeper的数据存储机制</span></a><ol class="nav-child"><li class="nav-item nav-level-6"><a class="nav-link" href="#数据存储形式"><span class="nav-number">3.1.</span> <span class="nav-text">数据存储形式</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#znode类型"><span class="nav-number">3.2.</span> <span class="nav-text">znode类型</span></a></li></ol></li><li class="nav-item nav-level-5"><a class="nav-link" href="#zookeeper的集群部署"><span class="nav-number">4.</span> <span class="nav-text">zookeeper的集群部署</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#zookeeper的命令行客户端操作"><span class="nav-number">5.</span> <span class="nav-text">zookeeper的命令行客户端操作</span></a><ol class="nav-child"><li class="nav-item nav-level-6"><a class="nav-link" href="#zookeeper的数据存储形式："><span class="nav-number">5.1.</span> <span class="nav-text">zookeeper的数据存储形式：</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#数据管理功能："><span class="nav-number">5.2.</span> <span class="nav-text">数据管理功能：</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#数据监听功能："><span class="nav-number">5.3.</span> <span class="nav-text">数据监听功能：</span></a></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2019</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Richard</span>
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Mist</a> v5.1.4</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>
