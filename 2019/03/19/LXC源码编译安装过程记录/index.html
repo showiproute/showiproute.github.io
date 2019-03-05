@@ -79,18 +79,23 @@
 
 
 
-<meta name="description" content="悟已往之不谏,知来者之可追">
+<meta name="description" content="1、从Github上下载LXC源码12345建议下载较早版本，我这里下载的是lxc-1.0.11root@iZuf61kmdstxjsv5lgmy69Z ~]# git clone -b lxc-1.0.11 https://github.com/lxc/lxc.git源码文件40M左右大小  2、源码编译安装LXC12345678910111213141516171819202122232425">
 <meta name="keywords" content="LXC,虚拟化">
 <meta property="og:type" content="article">
 <meta property="og:title" content="LXC源码编译安装过程记录">
 <meta property="og:url" content="http://blogoflyt.cn/2019/03/19/LXC源码编译安装过程记录/index.html">
 <meta property="og:site_name" content="积累技术之路">
-<meta property="og:description" content="悟已往之不谏,知来者之可追">
+<meta property="og:description" content="1、从Github上下载LXC源码12345建议下载较早版本，我这里下载的是lxc-1.0.11root@iZuf61kmdstxjsv5lgmy69Z ~]# git clone -b lxc-1.0.11 https://github.com/lxc/lxc.git源码文件40M左右大小  2、源码编译安装LXC12345678910111213141516171819202122232425">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2019-03-05T15:24:15.356Z">
+<meta property="og:image" content="https://s2.ax1x.com/2019/03/06/kjrfBt.png">
+<meta property="og:image" content="https://s2.ax1x.com/2019/03/06/kjrbcj.png">
+<meta property="og:image" content="https://s2.ax1x.com/2019/03/06/kjst58.png">
+<meta property="og:image" content="https://s2.ax1x.com/2019/03/06/kjsa8g.png">
+<meta property="og:updated_time" content="2019-03-05T16:57:59.873Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="LXC源码编译安装过程记录">
-<meta name="twitter:description" content="悟已往之不谏,知来者之可追">
+<meta name="twitter:description" content="1、从Github上下载LXC源码12345建议下载较早版本，我这里下载的是lxc-1.0.11root@iZuf61kmdstxjsv5lgmy69Z ~]# git clone -b lxc-1.0.11 https://github.com/lxc/lxc.git源码文件40M左右大小  2、源码编译安装LXC12345678910111213141516171819202122232425">
+<meta name="twitter:image" content="https://s2.ax1x.com/2019/03/06/kjrfBt.png">
 
 
 
@@ -342,7 +347,13 @@
       
 
       
-        
+        <h5 id="1、从Github上下载LXC源码"><a href="#1、从Github上下载LXC源码" class="headerlink" title="1、从Github上下载LXC源码"></a>1、从Github上下载LXC源码</h5><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">建议下载较早版本，我这里下载的是lxc-1.0.11</span><br><span class="line"></span><br><span class="line">root@iZuf61kmdstxjsv5lgmy69Z ~]# git clone -b lxc-1.0.11 https://github.com/lxc/lxc.git</span><br><span class="line"></span><br><span class="line">源码文件40M左右大小</span><br></pre></td></tr></table></figure>
+<p><a href="https://imgchr.com/i/kjrfBt" target="_blank" rel="noopener"><img src="https://s2.ax1x.com/2019/03/06/kjrfBt.png" alt="kjrfBt.png"></a></p>
+<h5 id="2、源码编译安装LXC"><a href="#2、源码编译安装LXC" class="headerlink" title="2、源码编译安装LXC"></a>2、源码编译安装LXC</h5><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br></pre></td><td class="code"><pre><span class="line">缺少libtool依赖</span><br><span class="line"> [root@iZuf61kmdstxjsv5lgmy69Z lxc]# ./autogen.sh </span><br><span class="line">+ test -d autom4te.cache</span><br><span class="line">+ libtoolize</span><br><span class="line">./autogen.sh: line 27: libtoolize: command not found</span><br><span class="line">+ exit 1</span><br><span class="line"></span><br><span class="line">安装libtool依赖</span><br><span class="line">[root@iZuf61kmdstxjsv5lgmy69Z lxc]# yum -y install libtool</span><br><span class="line"></span><br><span class="line">编译安装LXC到指定目录</span><br><span class="line">[root@iZuf61kmdstxjsv5lgmy69Z lxc]# ./configure --prefix=/usr/local/lxc</span><br><span class="line">[root@iZuf61kmdstxjsv5lgmy69Z lxc]# make &amp;&amp; make install</span><br><span class="line"></span><br><span class="line">查看当前系统相关信息（内核版本号、硬件架构、主机名称和操作系统类型等）</span><br><span class="line">[root@iZuf61kmdstxjsv5lgmy69Z lxc]# uname -a</span><br><span class="line">Linux iZuf61kmdstxjsv5lgmy69Z 3.10.0-514.26.2.el7.x86_64 #1 SMP Tue Jul 4 15:04:05 UTC 2017 x86_64 x86_64 x86_64 GNU/Linux</span><br><span class="line"></span><br><span class="line">编译安装完成之后发现在templates模板目录下，缺少相应的模板依赖</span><br><span class="line"></span><br><span class="line">安装lxc-templates 模板依赖(安装完成后，templates目录下有相应模板）</span><br><span class="line">[root@iZuf61kmdstxjsv5lgmy69Z templates]# yum -y install lxc-templates</span><br><span class="line"></span><br><span class="line">创建lxc容器 （使用centos模板，容器命名为myhost1）</span><br><span class="line">[root@iZuf61kmdstxjsv5lgmy69Z templates]# lxc-create -n myhost1 -t centos </span><br><span class="line"></span><br><span class="line">第一次创建容器可能会报一大堆错误（在Ubuntu上CentOS7上都报错）</span><br><span class="line">是因为缺少bridge-utils  lxc-libs  libcgroup  libvirt 这些库(yum install下载这些库）</span><br><span class="line"></span><br><span class="line">！！注意yum -y install libvirt之后 要手动启动libvirtd进程</span><br><span class="line">[root@iZuf61kmdstxjsv5lgmy69Z templates]# systemctl start libvirtd</span><br><span class="line"></span><br><span class="line">现在启动myhost容器 </span><br><span class="line">[root@iZuf61kmdstxjsv5lgmy69Z templates]# lxc-start -n myhost2</span><br></pre></td></tr></table></figure>
+<h6 id="Lxc-启动centos容器运行界面"><a href="#Lxc-启动centos容器运行界面" class="headerlink" title="Lxc 启动centos容器运行界面"></a>Lxc 启动centos容器运行界面</h6><p><a href="https://imgchr.com/i/kjrbcj" target="_blank" rel="noopener"><img src="https://s2.ax1x.com/2019/03/06/kjrbcj.png" alt="kjrbcj.png"></a></p>
+<h5 id="3、分析LXC容器运行依赖"><a href="#3、分析LXC容器运行依赖" class="headerlink" title="3、分析LXC容器运行依赖"></a>3、分析LXC容器运行依赖</h5><p>在$INSTALL_PATH/lxc/src/lxc 下保存运行lxc命令所需要的依赖库文件<br><a href="https://imgchr.com/i/kjst58" target="_blank" rel="noopener"><img src="https://s2.ax1x.com/2019/03/06/kjst58.png" alt="kjst58.png"></a></p>
+<p>以lxc-create为例 分析所依赖的库文件<br><a href="https://imgchr.com/i/kjsa8g" target="_blank" rel="noopener"><img src="https://s2.ax1x.com/2019/03/06/kjsa8g.png" alt="kjsa8g.png"></a></p>
+
       
     </div>
     
@@ -434,8 +445,17 @@
       
 
       
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
 
-      <section class="site-overview-wrap sidebar-panel sidebar-panel-active">
+      <section class="site-overview-wrap sidebar-panel">
         <div class="site-overview">
           <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
             
@@ -513,6 +533,22 @@
         </div>
       </section>
 
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-5"><a class="nav-link" href="#1、从Github上下载LXC源码"><span class="nav-number">1.</span> <span class="nav-text">1、从Github上下载LXC源码</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#2、源码编译安装LXC"><span class="nav-number">2.</span> <span class="nav-text">2、源码编译安装LXC</span></a><ol class="nav-child"><li class="nav-item nav-level-6"><a class="nav-link" href="#Lxc-启动centos容器运行界面"><span class="nav-number">2.1.</span> <span class="nav-text">Lxc 启动centos容器运行界面</span></a></li></ol></li><li class="nav-item nav-level-5"><a class="nav-link" href="#3、分析LXC容器运行依赖"><span class="nav-number">3.</span> <span class="nav-text">3、分析LXC容器运行依赖</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
       
 
       
