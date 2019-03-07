@@ -252,6 +252,334 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://blogoflyt.cn/2019/02/04/Hive学习笔记-函数使用/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Richard">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/gakki.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="积累技术之路">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2019/02/04/Hive学习笔记-函数使用/" itemprop="url">Hive学习笔记-----函数使用</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-02-04T14:00:00+08:00">
+                2019-02-04
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Hive/" itemprop="url" rel="index">
+                    <span itemprop="name">Hive</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h5 id="常用内置函数"><a href="#常用内置函数" class="headerlink" title="常用内置函数"></a>常用内置函数</h5><h6 id="类型转换函数"><a href="#类型转换函数" class="headerlink" title="类型转换函数"></a>类型转换函数</h6><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">select cast(&quot;5&quot; as int) from dual;</span><br><span class="line">select cast(&quot;2017-08-03&quot; as date) ;</span><br><span class="line">select cast(current_timestamp as date);</span><br><span class="line"></span><br><span class="line">示例：</span><br><span class="line">1	1995-05-05 13:30:59	1200.3</span><br><span class="line">2	1994-04-05 13:30:59	2200</span><br><span class="line">3	1996-06-01 12:20:30	80000.5</span><br><span class="line">create table t_fun(id string,birthday string,salary string)</span><br><span class="line">row format delimited fields terminated by &apos;,&apos;;</span><br><span class="line"></span><br><span class="line">select id,cast(birthday as date) as bir,cast(salary as float) from t_fun;</span><br></pre></td></tr></table></figure>
+<h6 id="数学运算函数"><a href="#数学运算函数" class="headerlink" title="数学运算函数"></a>数学运算函数</h6><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">select round(5.4) from dual;   ## 5</span><br><span class="line">select round(5.1345,3) from dual;  ##5.135</span><br><span class="line">select ceil(5.4) from dual; // select ceiling(5.4) from dual;   ## 6</span><br><span class="line">select floor(5.4) from dual;  ## 5</span><br><span class="line">select abs(-5.4) from dual;  ## 5.4</span><br><span class="line">select greatest(3,5,6) from dual;  ## 6 </span><br><span class="line">select least(3,5,6) from dual;</span><br><span class="line"></span><br><span class="line">示例：</span><br><span class="line">有表如下：</span><br></pre></td></tr></table></figure>
+<p><a href="https://imgchr.com/i/kxFKXV" target="_blank" rel="noopener"><img src="https://s2.ax1x.com/2019/03/07/kxFKXV.png" alt="kxFKXV.png"></a></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">select greatest(cast(s1 as double),cast(s2 as double),cast(s3 as double)) from t_fun2;</span><br><span class="line">结果：</span><br><span class="line">+---------+--+</span><br><span class="line">|   _c0   |</span><br><span class="line">+---------+--+</span><br><span class="line">| 2000.0  |</span><br><span class="line">| 9800.0  |</span><br><span class="line">+---------+--+</span><br><span class="line"></span><br><span class="line">select max(age) from t_person;    聚合函数</span><br><span class="line">select min(age) from t_person;    聚合函数</span><br></pre></td></tr></table></figure>
+<h6 id="字符串函数"><a href="#字符串函数" class="headerlink" title="字符串函数"></a>字符串函数</h6><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line">substr(string, int start)   ## 截取子串</span><br><span class="line">substring(string, int start)</span><br><span class="line">示例：select substr(&quot;abcdefg&quot;,2) from dual;</span><br><span class="line"></span><br><span class="line">substr(string, int start, int len) </span><br><span class="line">substring(string, int start, int len)</span><br><span class="line">示例：select substr(&quot;abcdefg&quot;,2,3) from dual;</span><br><span class="line"></span><br><span class="line">concat(string A, string B...)  ## 拼接字符串</span><br><span class="line">concat_ws(string SEP, string A, string B...)</span><br><span class="line">示例：select concat(&quot;ab&quot;,&quot;xy&quot;) from dual;</span><br><span class="line">select concat_ws(&quot;.&quot;,&quot;192&quot;,&quot;168&quot;,&quot;33&quot;,&quot;44&quot;) from dual;</span><br><span class="line"></span><br><span class="line">length(string A)</span><br><span class="line">示例：select length(&quot;192.168.33.44&quot;) from dual;</span><br><span class="line"></span><br><span class="line">split(string str, string pat)</span><br><span class="line">示例：select split(&quot;192.168.33.44&quot;,&quot;.&quot;) from dual; 错误的，因为.号是正则语法中的特定字符</span><br><span class="line">select split(&quot;192.168.33.44&quot;,&quot;\\.&quot;) from dual;</span><br><span class="line"></span><br><span class="line">upper(string str) ##转大写</span><br></pre></td></tr></table></figure>
+<h6 id="时间函数"><a href="#时间函数" class="headerlink" title="时间函数"></a>时间函数</h6><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">select current_timestamp; </span><br><span class="line">select current_date;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">## 取当前时间的毫秒数时间戳 </span><br><span class="line">select unix_timestamp();</span><br><span class="line"></span><br><span class="line">## unix时间戳转字符串</span><br><span class="line">from_unixtime(bigint unixtime[, string format])</span><br><span class="line">示例：select from_unixtime(unix_timestamp());</span><br><span class="line">select from_unixtime(unix_timestamp(),&quot;yyyy/MM/dd HH:mm:ss&quot;);</span><br><span class="line"></span><br><span class="line">## 字符串转unix时间戳</span><br><span class="line">unix_timestamp(string date, string pattern)</span><br><span class="line">示例： select unix_timestamp(&quot;2017-08-10 17:50:30&quot;);</span><br><span class="line">select unix_timestamp(&quot;2017/08/10 17:50:30&quot;,&quot;yyyy/MM/dd HH:mm:ss&quot;);</span><br><span class="line">## 将字符串转成日期date</span><br><span class="line">select to_date(&quot;2017-09-17 16:58:32&quot;);</span><br></pre></td></tr></table></figure>
+<h6 id="表生成函数"><a href="#表生成函数" class="headerlink" title="表生成函数"></a>表生成函数</h6><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">行转列函数：explode()</span><br><span class="line">假如有以下数据：</span><br><span class="line">1,zhangsan,化学:物理:数学:语文</span><br><span class="line">2,lisi,化学:数学:生物:生理:卫生</span><br><span class="line">3,wangwu,化学:语文:英语:体育:生物</span><br><span class="line">映射成一张表：</span><br><span class="line">create table t_stu_subject(id int,name string,subjects array&lt;string&gt;)</span><br><span class="line">row format delimited fields terminated by &apos;,&apos;</span><br><span class="line">collection items terminated by &apos;:&apos;;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">使用explode()对数组字段“炸裂”</span><br></pre></td></tr></table></figure>
+<p><a href="https://imgchr.com/i/kxFc9A" target="_blank" rel="noopener"><img src="https://s2.ax1x.com/2019/03/07/kxFc9A.png" alt="kxFc9A.png"></a><br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">然后，我们利用这个explode的结果，来求去重的课程：</span><br><span class="line">select distinct tmp.sub</span><br><span class="line">from </span><br><span class="line">(select explode(subjects) as sub from t_stu_subject) tmp;</span><br></pre></td></tr></table></figure></p>
+<h6 id="表生成函数lateral-view"><a href="#表生成函数lateral-view" class="headerlink" title="表生成函数lateral view"></a>表生成函数lateral view</h6><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">select id,name,tmp.sub </span><br><span class="line">from t_stu_subject lateral view explode(subjects) tmp as sub;</span><br></pre></td></tr></table></figure>
+<p><a href="https://imgchr.com/i/kxFRjP" target="_blank" rel="noopener"><img src="https://s2.ax1x.com/2019/03/07/kxFRjP.png" alt="kxFRjP.png"></a><br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">理解： lateral view 相当于两个表在join</span><br><span class="line">左表：是原表</span><br><span class="line">右表：是explode(某个集合字段)之后产生的表</span><br><span class="line">而且：这个join只在同一行的数据间进行</span><br><span class="line"></span><br><span class="line">那样，可以方便做更多的查询：</span><br><span class="line">比如，查询选修了生物课的同学</span><br><span class="line">select a.id,a.name,a.sub from </span><br><span class="line">(select id,name,tmp.sub as sub from t_stu_subject lateral view explode(subjects) tmp as sub) a</span><br><span class="line">where sub=&apos;生物&apos;;</span><br></pre></td></tr></table></figure></p>
+<h6 id="集合函数"><a href="#集合函数" class="headerlink" title="集合函数"></a>集合函数</h6><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line">array_contains(Array&lt;T&gt;, value)  返回boolean值</span><br><span class="line"></span><br><span class="line">示例：</span><br><span class="line">select moive_name,array_contains(actors,&apos;吴刚&apos;) from t_movie;</span><br><span class="line">select array_contains(array(&apos;a&apos;,&apos;b&apos;,&apos;c&apos;),&apos;c&apos;) from dual;</span><br><span class="line"></span><br><span class="line">sort_array(Array&lt;T&gt;) 返回排序后的数组</span><br><span class="line"></span><br><span class="line">示例：</span><br><span class="line">select sort_array(array(&apos;c&apos;,&apos;b&apos;,&apos;a&apos;)) from dual;</span><br><span class="line">select &apos;haha&apos;,sort_array(array(&apos;c&apos;,&apos;b&apos;,&apos;a&apos;)) as xx from (select 0) tmp;</span><br><span class="line"></span><br><span class="line">size(Array&lt;T&gt;)  返回一个int值</span><br><span class="line"></span><br><span class="line">示例：</span><br><span class="line">select moive_name,size(actors) as actor_number from t_movie;</span><br><span class="line"></span><br><span class="line">size(Map&lt;K.V&gt;)  返回一个int值</span><br><span class="line">map_keys(Map&lt;K.V&gt;)  返回一个数组</span><br><span class="line">map_values(Map&lt;K.V&gt;) 返回一个数组</span><br></pre></td></tr></table></figure>
+<h6 id="条件控制函数"><a href="#条件控制函数" class="headerlink" title="条件控制函数"></a>条件控制函数</h6><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line">case when </span><br><span class="line">语法：</span><br><span class="line">CASE   [ expression ]</span><br><span class="line">       WHEN condition1 THEN result1</span><br><span class="line">       WHEN condition2 THEN result2</span><br><span class="line">       ...</span><br><span class="line">       WHEN conditionn THEN resultn</span><br><span class="line">       ELSE result</span><br><span class="line">END</span><br><span class="line"></span><br><span class="line">示例：</span><br><span class="line">select id,name,</span><br><span class="line">case</span><br><span class="line">when age&lt;28 then &apos;youngth&apos;</span><br><span class="line">when age&gt;27 and age&lt;40 then &apos;zhongnian&apos;</span><br><span class="line">else &apos;old&apos;</span><br><span class="line">end</span><br><span class="line">from t_user;</span><br><span class="line"></span><br><span class="line">IF</span><br><span class="line">select id,if(age&gt;25,&apos;working&apos;,&apos;worked&apos;) from t_user;</span><br><span class="line"></span><br><span class="line"> select movie_name,if(array_contains(actors,&apos;wugang&apos;),&apos;goodmovie&apos;,&apos;badmovie&apos;) from t_movie;</span><br></pre></td></tr></table></figure>
+<h6 id="json解析函数：表生成函数"><a href="#json解析函数：表生成函数" class="headerlink" title="json解析函数：表生成函数"></a>json解析函数：表生成函数</h6><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">json_tuple函数</span><br><span class="line">示例：</span><br><span class="line">select json_tuple(json,&apos;movie&apos;,&apos;rate&apos;,&apos;timeStamp&apos;,&apos;uid&apos;) as(movie,rate,ts,uid) from t_rating_json;</span><br><span class="line">产生结果：</span><br></pre></td></tr></table></figure>
+<p><a href="https://imgchr.com/i/kxFb3n" target="_blank" rel="noopener"><img src="https://s2.ax1x.com/2019/03/07/kxFb3n.png" alt="kxFb3n.png"></a><br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">利用json_tuple从原始json数据表中，etl出一个详细信息表：</span><br><span class="line">create table t_rate </span><br><span class="line">as </span><br><span class="line">select </span><br><span class="line">uid,</span><br><span class="line">movie,</span><br><span class="line">rate,</span><br><span class="line">year(from_unixtime(cast(ts as bigint))) as year,</span><br><span class="line">month(from_unixtime(cast(ts as bigint))) as month,</span><br><span class="line">day(from_unixtime(cast(ts as bigint))) as day,</span><br><span class="line">hour(from_unixtime(cast(ts as bigint))) as hour,</span><br><span class="line">minute(from_unixtime(cast(ts as bigint))) as minute,</span><br><span class="line">from_unixtime(cast(ts as bigint)) as ts</span><br><span class="line">from </span><br><span class="line">(select </span><br><span class="line">json_tuple(rateinfo,&apos;movie&apos;,&apos;rate&apos;,&apos;timeStamp&apos;,&apos;uid&apos;) as(movie,rate,ts,uid)</span><br><span class="line">from t_json) tmp</span><br><span class="line">;</span><br></pre></td></tr></table></figure></p>
+<h6 id="分析函数：row-number-over-——分组TOPN"><a href="#分析函数：row-number-over-——分组TOPN" class="headerlink" title="分析函数：row_number() over()——分组TOPN"></a>分析函数：row_number() over()——分组TOPN</h6><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line">需求</span><br><span class="line">有如下数据：</span><br><span class="line">1,18,a,male</span><br><span class="line">2,19,b,male</span><br><span class="line">3,22,c,female</span><br><span class="line">4,16,d,female</span><br><span class="line">5,30,e,male</span><br><span class="line">6,26,f,female</span><br><span class="line"></span><br><span class="line">需要查询出每种性别中年龄最大的2条数据</span><br><span class="line"></span><br><span class="line">实现：</span><br><span class="line">使用row_number函数，对表中的数据按照性别分组，按照年龄倒序排序并进行标记</span><br><span class="line"></span><br><span class="line">hql代码：</span><br><span class="line">select id,age,name,sex,</span><br><span class="line">row_number() over(partition by sex order by age desc) as rank</span><br><span class="line">from t_rownumber</span><br><span class="line"></span><br><span class="line">产生结果：</span><br></pre></td></tr></table></figure>
+<p><a href="https://imgchr.com/i/kxFqcq" target="_blank" rel="noopener"><img src="https://s2.ax1x.com/2019/03/07/kxFqcq.png" alt="kxFqcq.png"></a><br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">然后，利用上面的结果，查询出rank&lt;=2的即为最终需求</span><br><span class="line">select id,age,name,sex</span><br><span class="line">from </span><br><span class="line">(select id,age,name,sex,</span><br><span class="line">row_number() over(partition by sex order by age desc) as rank</span><br><span class="line">from t_rownumber) tmp</span><br><span class="line">where rank&lt;=2;</span><br></pre></td></tr></table></figure></p>
+<h6 id="自定义函数"><a href="#自定义函数" class="headerlink" title="自定义函数"></a>自定义函数</h6><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">需求：</span><br><span class="line">需要对json数据表中的json数据写一个自定义函数，用于传入一个json，返回一个数据值的数组</span><br><span class="line"></span><br><span class="line">json原始数据表：</span><br></pre></td></tr></table></figure>
+<p><a href="https://imgchr.com/i/kxFjBT" target="_blank" rel="noopener"><img src="https://s2.ax1x.com/2019/03/07/kxFjBT.png" alt="kxFjBT.png"></a></p>
+<blockquote>
+<p>需要做ETL操作，将json数据变成普通表数据，插入另一个表中：<br><a href="https://imgchr.com/i/kxFzEF" target="_blank" rel="noopener"><img src="https://s2.ax1x.com/2019/03/07/kxFzEF.png" alt="kxFzEF.png"></a></p>
+</blockquote>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">实现步骤：</span><br><span class="line">1、开发JAVA的UDF类</span><br><span class="line">public class ParseJson extends UDF&#123;</span><br><span class="line">	</span><br><span class="line">	// 重载 ：返回值类型 和参数类型及个数，完全由用户自己决定</span><br><span class="line">	// 本处需求是：给一个字符串，返回一个数组</span><br><span class="line">	public String[] evaluate(String json) &#123;</span><br><span class="line">		</span><br><span class="line">		String[] split = json.split(&quot;\&quot;&quot;);</span><br><span class="line">		String[] res = new String[]&#123;split[3],split[7],split[11],split[15]&#125;;</span><br><span class="line">		return res;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br></pre></td><td class="code"><pre><span class="line">2、打jar包</span><br><span class="line"></span><br><span class="line">在eclipse中使用export即可</span><br><span class="line"></span><br><span class="line">3、上传jar包到运行hive所在的linux机器</span><br><span class="line"></span><br><span class="line">4、在hive中创建临时函数：</span><br><span class="line">在hive的提示符中：</span><br><span class="line">hive&gt; add jar /root/jsonparse.jar;</span><br><span class="line">然后，在hive的提示符中，创建一个临时函数：</span><br><span class="line">hive&gt;CREATE  TEMPORARY  FUNCTION  jsonp  AS  &apos;cn.edu360.hdp.hive.ParseJson&apos;;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">5、开发hql语句，利用自定义函数，从原始表中抽取数据插入新表</span><br><span class="line">insert into table t_rate</span><br><span class="line">select </span><br><span class="line">split(jsonp(json),&apos;,&apos;)[0],</span><br><span class="line">cast(split(jsonp(json),&apos;,&apos;)[1] as int),</span><br><span class="line">cast(split(jsonp(json),&apos;,&apos;)[2] as bigint),</span><br><span class="line">cast(split(jsonp(json),&apos;,&apos;)[3] as int)</span><br><span class="line">from </span><br><span class="line">t_rating_json;</span><br><span class="line"></span><br><span class="line">注：临时函数只在一次hive会话中有效，重启会话后就无效</span><br><span class="line"></span><br><span class="line">如果需要经常使用该自定义函数，可以考虑创建永久函数：</span><br><span class="line">拷贝jar包到hive的类路径中：</span><br><span class="line">cp wc.jar apps/hive-1.2.1/lib/</span><br><span class="line">创建了：</span><br><span class="line">create function pfuncx as &apos;com.doit.hive.udf.UserInfoParser&apos;;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">删除函数：</span><br><span class="line">DROP  TEMPORARY  FUNCTION  [IF  EXISTS] function_name  </span><br><span class="line">DROP FUNCTION[IF EXISTS] function_name</span><br></pre></td></tr></table></figure>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://blogoflyt.cn/2019/02/03/Hive学习笔记-DQL/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Richard">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/gakki.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="积累技术之路">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2019/02/03/Hive学习笔记-DQL/" itemprop="url">Hive学习笔记-----DQL</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-02-03T21:22:00+08:00">
+                2019-02-03
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Hive/" itemprop="url" rel="index">
+                    <span itemprop="name">Hive</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h5 id="hive查询语法"><a href="#hive查询语法" class="headerlink" title="hive查询语法"></a>hive查询语法</h5><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">提示：在做小数据量查询测试时，可以让hive将mrjob提交给本地运行器运行，可以在hive会话中设置如下参数：</span><br><span class="line">hive&gt; set hive.exec.mode.local.auto=true;</span><br></pre></td></tr></table></figure>
+<h6 id="基本查询示例"><a href="#基本查询示例" class="headerlink" title="基本查询示例"></a>基本查询示例</h6><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">select * from t_access;</span><br><span class="line">select count(*) from t_access;</span><br><span class="line">select max(ip) from t_access;</span><br></pre></td></tr></table></figure>
+<h6 id="条件查询"><a href="#条件查询" class="headerlink" title="条件查询"></a>条件查询</h6><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">select * from t_access where access_time&lt;&apos;2017-08-06 15:30:20&apos;</span><br><span class="line">select * from t_access where access_time&lt;&apos;2017-08-06 16:30:20&apos; and ip&gt;&apos;192.168.33.3&apos;;</span><br></pre></td></tr></table></figure>
+<h6 id="join关联查询示例"><a href="#join关联查询示例" class="headerlink" title="join关联查询示例"></a>join关联查询示例</h6><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><span class="line">假如有a.txt文件</span><br><span class="line">a,1</span><br><span class="line">b,2</span><br><span class="line">c,3</span><br><span class="line">d,4</span><br><span class="line"></span><br><span class="line">假如有b.txt文件</span><br><span class="line">a,xx</span><br><span class="line">b,yy</span><br><span class="line">d,zz</span><br><span class="line">e,pp</span><br><span class="line"></span><br><span class="line">进行各种join查询：</span><br><span class="line">1、inner join（join）</span><br><span class="line">select </span><br><span class="line">a.name as aname,</span><br><span class="line">a.numb as anumb,</span><br><span class="line">b.name as bname,</span><br><span class="line">b.nick as bnick</span><br><span class="line">from t_a a</span><br><span class="line">join t_b b</span><br><span class="line">on a.name=b.name</span><br><span class="line"></span><br><span class="line">结果：</span><br><span class="line">+--------+--------+--------+--------+--+</span><br><span class="line">| aname  | anumb  | bname  | bnick  |</span><br><span class="line">+--------+--------+--------+--------+--+</span><br><span class="line">| a      | 1      | a      | xx     |</span><br><span class="line">| b      | 2      | b      | yy     |</span><br><span class="line">| d      | 4      | d      | zz     |</span><br><span class="line">+--------+--------+--------+--------+--+</span><br></pre></td></tr></table></figure>
+<h6 id="left-outer-join（left-join）"><a href="#left-outer-join（left-join）" class="headerlink" title="left outer join（left join）"></a>left outer join（left join）</h6><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">select </span><br><span class="line">a.name as aname,</span><br><span class="line">a.numb as anumb,</span><br><span class="line">b.name as bname,</span><br><span class="line">b.nick as bnick</span><br><span class="line">from t_a a</span><br><span class="line">left outer join t_b b</span><br><span class="line">on a.name=b.name</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>结果<br><a href="https://imgchr.com/i/kv6YzF" target="_blank" rel="noopener"><img src="https://s2.ax1x.com/2019/03/06/kv6YzF.png" alt="kv6YzF.png"></a></p>
+</blockquote>
+<h6 id="right-outer-join（right-join）"><a href="#right-outer-join（right-join）" class="headerlink" title="right outer join（right join）"></a>right outer join（right join）</h6><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">select </span><br><span class="line">a.name as aname,</span><br><span class="line">a.numb as anumb,</span><br><span class="line">b.name as bname,</span><br><span class="line">b.nick as bnick</span><br><span class="line">from t_a a</span><br><span class="line">right outer join t_b b</span><br><span class="line">on a.name=b.name</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>结果<br><a href="https://imgchr.com/i/kv6ri6" target="_blank" rel="noopener"><img src="https://s2.ax1x.com/2019/03/06/kv6ri6.png" alt="kv6ri6.png"></a></p>
+</blockquote>
+<h6 id="full-outer-join（full-join）"><a href="#full-outer-join（full-join）" class="headerlink" title="full outer join（full join）"></a>full outer join（full join）</h6><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">select </span><br><span class="line">a.name as aname,</span><br><span class="line">a.numb as anumb,</span><br><span class="line">b.name as bname,</span><br><span class="line">b.nick as bnick</span><br><span class="line">from t_a a</span><br><span class="line">full join t_b b</span><br><span class="line">on a.name=b.name;</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>结果：<br><a href="https://imgchr.com/i/kv6yRO" target="_blank" rel="noopener"><img src="https://s2.ax1x.com/2019/03/06/kv6yRO.png" alt="kv6yRO.png"></a></p>
+</blockquote>
+<h6 id="left-semi-join"><a href="#left-semi-join" class="headerlink" title="left semi join"></a>left semi join</h6><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">hive中不支持exist/IN子查询，可以用left semi join来实现同样的效果：</span><br><span class="line">select </span><br><span class="line">a.name as aname,</span><br><span class="line">a.numb as anumb</span><br><span class="line">from t_a a</span><br><span class="line">left semi join t_b b</span><br><span class="line">on a.name=b.name;</span><br></pre></td></tr></table></figure>
+<p><a href="https://imgchr.com/i/kv6gQe" target="_blank" rel="noopener"><img src="https://s2.ax1x.com/2019/03/06/kv6gQe.png" alt="kv6gQe.png"></a></p>
+<blockquote>
+<p>注意： left semi join的 select子句中，不能有右表的字段</p>
+</blockquote>
+<h6 id="group-by分组聚合"><a href="#group-by分组聚合" class="headerlink" title="group by分组聚合"></a>group by分组聚合</h6><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line">select dt,count(*),max(ip) as cnt from t_access group by dt;</span><br><span class="line"></span><br><span class="line">select dt,count(*),max(ip) as cnt from t_access group by dt having dt&gt;&apos;20170804&apos;;</span><br><span class="line"></span><br><span class="line">select </span><br><span class="line">dt,count(*),max(ip) as cnt </span><br><span class="line">from t_access </span><br><span class="line">where url=&apos;http://www.edu360.cn/job&apos;</span><br><span class="line">group by dt having dt&gt;&apos;20170804&apos;;</span><br><span class="line"></span><br><span class="line">注意： 一旦有group by子句，那么，在select子句中就不能有 （分组字段，聚合函数） 以外的字段</span><br><span class="line"></span><br><span class="line">## 为什么where必须写在group by的前面，为什么group by后面的条件只能用having</span><br><span class="line">因为，where是用于在真正执行查询逻辑之前过滤数据用的</span><br><span class="line">having是对group by聚合之后的结果进行再过滤；</span><br><span class="line"></span><br><span class="line">上述语句的执行逻辑：</span><br><span class="line">1、where过滤不满足条件的数据</span><br><span class="line">2、用聚合函数和group by进行数据运算聚合，得到聚合结果</span><br><span class="line">3、用having条件过滤掉聚合结果中不满足条件的数据</span><br></pre></td></tr></table></figure>
+<h6 id="子查询"><a href="#子查询" class="headerlink" title="子查询"></a>子查询</h6><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">select id,name,father </span><br><span class="line">from </span><br><span class="line">(select id,name,family_members[&apos;brother&apos;] as father from t_person) tmp</span><br><span class="line">where father is not null;</span><br></pre></td></tr></table></figure>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="http://blogoflyt.cn/2019/02/02/Hive学习笔记-DDL-DML/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -1170,7 +1498,7 @@
               
                 <a href="/archives/">
               
-                  <span class="site-state-item-count">26</span>
+                  <span class="site-state-item-count">28</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
@@ -1181,7 +1509,7 @@
               
               <div class="site-state-item site-state-categories">
                 <a href="/categories/index.html">
-                  <span class="site-state-item-count">9</span>
+                  <span class="site-state-item-count">10</span>
                   <span class="site-state-item-name">分类</span>
                 </a>
               </div>
@@ -1192,7 +1520,7 @@
               
               <div class="site-state-item site-state-tags">
                 <a href="/tags/index.html">
-                  <span class="site-state-item-count">36</span>
+                  <span class="site-state-item-count">38</span>
                   <span class="site-state-item-name">标签</span>
                 </a>
               </div>
