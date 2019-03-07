@@ -1,0 +1,771 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next mist use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="HBASE," />
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="组件结构图 MASTER职责 管理HRegionServer，实现其负载均衡。管理和分配HRegion，比如在HRegion split时分配新的HRegion；在HRegionServer退出时迁移其负责的HRegion到其他HRegionServer上。 Admin职能创建、删除、修改Table的定义。实现DDL操作（namespace和table的增删改，column familiy的增删改">
+<meta name="keywords" content="HBASE">
+<meta property="og:type" content="article">
+<meta property="og:title" content="HBASE运行原理">
+<meta property="og:url" content="http://blogoflyt.cn/2019/02/10/HBASE运行原理/index.html">
+<meta property="og:site_name" content="积累技术之路">
+<meta property="og:description" content="组件结构图 MASTER职责 管理HRegionServer，实现其负载均衡。管理和分配HRegion，比如在HRegion split时分配新的HRegion；在HRegionServer退出时迁移其负责的HRegion到其他HRegionServer上。 Admin职能创建、删除、修改Table的定义。实现DDL操作（namespace和table的增删改，column familiy的增删改">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="https://s2.ax1x.com/2019/03/07/kxR4LF.png">
+<meta property="og:image" content="https://s2.ax1x.com/2019/03/07/kxRTo9.jpg">
+<meta property="og:image" content="https://s2.ax1x.com/2019/03/07/kxRLz6.png">
+<meta property="og:image" content="https://s2.ax1x.com/2019/03/07/kxRvLD.png">
+<meta property="og:updated_time" content="2019-03-07T13:10:11.140Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="HBASE运行原理">
+<meta name="twitter:description" content="组件结构图 MASTER职责 管理HRegionServer，实现其负载均衡。管理和分配HRegion，比如在HRegion split时分配新的HRegion；在HRegionServer退出时迁移其负责的HRegion到其他HRegionServer上。 Admin职能创建、删除、修改Table的定义。实现DDL操作（namespace和table的增删改，column familiy的增删改">
+<meta name="twitter:image" content="https://s2.ax1x.com/2019/03/07/kxR4LF.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Mist',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://blogoflyt.cn/2019/02/10/HBASE运行原理/"/>
+
+
+
+
+
+  <title>HBASE运行原理 | 积累技术之路</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">积累技术之路</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">找到学习的热爱</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://blogoflyt.cn/2019/02/10/HBASE运行原理/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Richard">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/gakki.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="积累技术之路">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">HBASE运行原理</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-02-10T21:04:00+08:00">
+                2019-02-10
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/HBASE/" itemprop="url" rel="index">
+                    <span itemprop="name">HBASE</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h5 id="组件结构图"><a href="#组件结构图" class="headerlink" title="组件结构图"></a>组件结构图</h5><p><a href="https://imgchr.com/i/kxR4LF" target="_blank" rel="noopener"><img src="https://s2.ax1x.com/2019/03/07/kxR4LF.png" alt="kxR4LF.png"></a></p>
+<h6 id="MASTER职责"><a href="#MASTER职责" class="headerlink" title="MASTER职责"></a>MASTER职责</h6><ol>
+<li>管理HRegionServer，实现其负载均衡。<br>管理和分配HRegion，比如在HRegion split时分配新的HRegion；在HRegionServer退出时迁移其负责的HRegion到其他HRegionServer上。</li>
+<li>Admin职能<br>创建、删除、修改Table的定义。实现DDL操作（namespace和table的增删改，column familiy的增删改等）。<br>管理namespace和table的元数据（实际存储在HDFS上）。<br>权限控制（ACL）。<br>监控集群中所有HRegionServer的状态(通过Heartbeat和监听ZooKeeper中的状态)。</li>
+</ol>
+<h6 id="REGION-SERVER职责"><a href="#REGION-SERVER职责" class="headerlink" title="REGION SERVER职责"></a>REGION SERVER职责</h6><ol>
+<li>管理自己所负责的region数据的读写。</li>
+<li>读写HDFS，管理Table中的数据。</li>
+<li>Client直接通过HRegionServer读写数据（从HMaster中获取元数据，找到RowKey所在的HRegion/HRegionServer后）。</li>
+</ol>
+<h6 id="Zookeeper集群所起作用"><a href="#Zookeeper集群所起作用" class="headerlink" title="Zookeeper集群所起作用"></a>Zookeeper集群所起作用</h6><ol>
+<li>存放整个HBase集群的元数据以及集群的状态信息。</li>
+<li>实现HMaster主从节点的failover。<blockquote>
+<p>注： HMaster通过监听ZooKeeper中的Ephemeral节点(默认：/hbase/rs/*)来监控HRegionServer的加入和宕机。<br>在第一个HMaster连接到ZooKeeper时会创建Ephemeral节点(默认：/hbasae/master)来表示Active的HMaster，其后加进来的HMaster则监听该Ephemeral节点<br>如果当前Active的HMaster宕机，则该节点消失，因而其他HMaster得到通知，而将自身转换成Active的HMaster，在变为Active的HMaster之前，它会在/hbase/masters/下创建自己的Ephemeral节点。</p>
+</blockquote>
+</li>
+</ol>
+<h5 id="HBASE读写数据流程"><a href="#HBASE读写数据流程" class="headerlink" title="HBASE读写数据流程"></a>HBASE读写数据流程</h5><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">1. 在HBase 0.96以前，HBase有两个特殊的Table：-ROOT-和.META. 用来记录用户表的rowkey范围所在的的regionserver服务器；因而客户端读写数据时需要通过3次寻址请求来对数据所在的regionserver进行定位，效率低下；</span><br></pre></td></tr></table></figure>
+<p><a href="https://imgchr.com/i/kxRTo9" target="_blank" rel="noopener"><img src="https://s2.ax1x.com/2019/03/07/kxRTo9.jpg" alt="kxRTo9.jpg"></a><br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">2. 而在HBase 0.96以后去掉了-ROOT- Table，只剩下这个特殊的目录表叫做Meta Table(hbase:meta)，它存储了集群中所有用户HRegion的位置信息，而ZooKeeper的节点中(/hbase/meta-region-server)存储的则直接是这个Meta Table的位置，并且这个Meta Table如以前的-ROOT- Table一样是不可split的。这样，客户端在第一次访问用户Table的流程就变成了：</span><br><span class="line">①　从ZooKeeper(/hbase/meta-region-server)中获取hbase:meta的位置（HRegionServer的位置），缓存该位置信息。</span><br><span class="line">②　从HRegionServer中查询用户Table对应请求的RowKey所在的HRegionServer，缓存该位置信息。</span><br><span class="line">③　从查询到HRegionServer中读取Row。</span><br><span class="line">注：客户会缓存这些位置信息，然而第二步它只是缓存当前RowKey对应的HRegion的位置，因而如果下一个要查的RowKey不在同一个HRegion中，则需要继续查询hbase:meta所在的HRegion，然而随着时间的推移，客户端缓存的位置信息越来越多，以至于不需要再次查找hbase:meta Table的信息，除非某个HRegion因为宕机或Split被移动，此时需要重新查询并且更新缓存。</span><br></pre></td></tr></table></figure></p>
+<h6 id="hbase-meta表"><a href="#hbase-meta表" class="headerlink" title="hbase:meta表"></a>hbase:meta表</h6><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">hbase:meta表存储了所有用户HRegion的位置信息：</span><br><span class="line">Rowkey：tableName,regionStartKey,regionId,replicaId等；</span><br><span class="line">info列族：这个列族包含三个列，他们分别是：</span><br><span class="line">info:regioninfo列：</span><br><span class="line">regionId,tableName,startKey,endKey,offline,split,replicaId；</span><br><span class="line">info:server列：HRegionServer对应的server:port；</span><br><span class="line">info:serverstartcode列：HRegionServer的启动时间戳。</span><br></pre></td></tr></table></figure>
+<p><a href="https://imgchr.com/i/kxRLz6" target="_blank" rel="noopener"><img src="https://s2.ax1x.com/2019/03/07/kxRLz6.png" alt="kxRLz6.png"></a></p>
+<h6 id="REGION-SERVER内部机制"><a href="#REGION-SERVER内部机制" class="headerlink" title="REGION SERVER内部机制"></a>REGION SERVER内部机制</h6><p><a href="https://imgchr.com/i/kxRvLD" target="_blank" rel="noopener"><img src="https://s2.ax1x.com/2019/03/07/kxRvLD.png" alt="kxRvLD.png"></a></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line">WAL即Write Ahead Log，在早期版本中称为HLog，它是HDFS上的一个文件，如其名字所表示的，所有写操作都会先保证将数据写入这个Log文件后，才会真正更新MemStore，最后写入HFile中。WAL文件存储在/hbase/WALs/$&#123;HRegionServer_Name&#125;的目录中</span><br><span class="line"></span><br><span class="line">BlockCache是一个读缓存，即“引用局部性”原理（也应用于CPU，分空间局部性和时间局部性，空间局部性是指CPU在某一时刻需要某个数据，那么有很大的概率在一下时刻它需要的数据在其附近；时间局部性是指某个数据在被访问过一次后，它有很大的概率在不久的将来会被再次的访问），将数据预读取到内存中，以提升读的性能。</span><br><span class="line"></span><br><span class="line">HRegion是一个Table中的一个Region在一个HRegionServer中的表达。一个Table可以有一个或多个Region，他们可以在一个相同的HRegionServer上，也可以分布在不同的HRegionServer上，一个HRegionServer可以有多个HRegion，他们分别属于不同的Table。HRegion由多个Store(HStore)构成，每个HStore对应了一个Table在这个HRegion中的一个Column Family，即每个Column Family就是一个集中的存储单元，因而最好将具有相近IO特性的Column存储在一个Column Family，以实现高效读取(数据局部性原理，可以提高缓存的命中率)。HStore是HBase中存储的核心，它实现了读写HDFS功能，一个HStore由一个MemStore 和0个或多个StoreFile组成。</span><br><span class="line"></span><br><span class="line">MemStore是一个写缓存(In Memory Sorted Buffer)，所有数据的写在完成WAL日志写后，会 写入MemStore中，由MemStore根据一定的算法将数据Flush到地层HDFS文件中(HFile)，通常每个HRegion中的每个 Column Family有一个自己的MemStore。</span><br><span class="line"></span><br><span class="line">HFile(StoreFile) 用于存储HBase的数据(Cell/KeyValue)。在HFile中的数据是按RowKey、Column Family、Column排序，对相同的Cell(即这三个值都一样)，则按timestamp倒序排列。</span><br><span class="line"></span><br><span class="line">FLUSH详述</span><br><span class="line"></span><br><span class="line">①　每一次Put/Delete请求都是先写入到MemStore中，当MemStore满后会Flush成一个新的StoreFile(底层实现是HFile)，即一个HStore(Column Family)可以有0个或多个StoreFile(HFile)。</span><br><span class="line"></span><br><span class="line">②　当一个HRegion中的所有MemStore的大小总和超过了hbase.hregion.memstore.flush.size的大小，默认128MB。此时当前的HRegion中所有的MemStore会Flush到HDFS中。</span><br><span class="line"></span><br><span class="line">③　当全局MemStore的大小超过了hbase.regionserver.global.memstore.upperLimit的大小，默认40％的内存使用量。此时当前HRegionServer中所有HRegion中的MemStore都会Flush到HDFS中，Flush顺序是MemStore大小的倒序（一个HRegion中所有MemStore总和作为该HRegion的MemStore的大小还是选取最大的MemStore作为参考？有待考证），直到总体的MemStore使用量低于hbase.regionserver.global.memstore.lowerLimit，默认38%的内存使用量。</span><br><span class="line"></span><br><span class="line">④　当前HRegionServer中WAL的大小超过了</span><br><span class="line">hbase.regionserver.hlog.blocksize * hbase.regionserver.max.logs</span><br><span class="line">的数量，当前HRegionServer中所有HRegion中的MemStore都会Flush到HDFS中，</span><br><span class="line">Flush使用时间顺序，最早的MemStore先Flush直到WAL的数量少于</span><br><span class="line">hbase.regionserver.hlog.blocksize * hbase.regionserver.max.logs</span><br><span class="line">这里说这两个相乘的默认大小是2GB，查代码，hbase.regionserver.max.logs默认值是32，而hbase.regionserver.hlog.blocksize默认是32MB。但不管怎么样，因为这个大小超过限制引起的Flush不是一件好事，可能引起长时间的延迟</span><br></pre></td></tr></table></figure>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/HBASE/" rel="tag"># HBASE</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2019/02/08/HBASE客户端操作/" rel="next" title="HBASE客户端操作">
+                <i class="fa fa-chevron-left"></i> HBASE客户端操作
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2019/03/03/Hadoop学习笔记-集群搭建/" rel="prev" title="Hadoop学习笔记------集群搭建">
+                Hadoop学习笔记------集群搭建 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image"
+                src="/images/gakki.jpg"
+                alt="Richard" />
+            
+              <p class="site-author-name" itemprop="name">Richard</p>
+              <p class="site-description motion-element" itemprop="description">悟已往之不谏,知来者之可追</p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">31</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">10</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">40</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+
+          
+          
+
+          
+          
+            <div class="links-of-blogroll motion-element links-of-blogroll-block">
+              <div class="links-of-blogroll-title">
+                <i class="fa  fa-fw fa-link"></i>
+                Links
+              </div>
+              <ul class="links-of-blogroll-list">
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://github.com/showiproute" title="Github" target="_blank">Github</a>
+                  </li>
+                
+              </ul>
+            </div>
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-5"><a class="nav-link" href="#组件结构图"><span class="nav-number">1.</span> <span class="nav-text">组件结构图</span></a><ol class="nav-child"><li class="nav-item nav-level-6"><a class="nav-link" href="#MASTER职责"><span class="nav-number">1.1.</span> <span class="nav-text">MASTER职责</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#REGION-SERVER职责"><span class="nav-number">1.2.</span> <span class="nav-text">REGION SERVER职责</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#Zookeeper集群所起作用"><span class="nav-number">1.3.</span> <span class="nav-text">Zookeeper集群所起作用</span></a></li></ol></li><li class="nav-item nav-level-5"><a class="nav-link" href="#HBASE读写数据流程"><span class="nav-number">2.</span> <span class="nav-text">HBASE读写数据流程</span></a><ol class="nav-child"><li class="nav-item nav-level-6"><a class="nav-link" href="#hbase-meta表"><span class="nav-number">2.1.</span> <span class="nav-text">hbase:meta表</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#REGION-SERVER内部机制"><span class="nav-number">2.2.</span> <span class="nav-text">REGION SERVER内部机制</span></a></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2019</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Richard</span>
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Mist</a> v5.1.4</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>
