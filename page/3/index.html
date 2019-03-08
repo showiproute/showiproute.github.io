@@ -252,6 +252,331 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://blogoflyt.cn/2019/02/16/sqoop数据迁移工具-安装配置/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Richard">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/gakki.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="积累技术之路">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2019/02/16/sqoop数据迁移工具-安装配置/" itemprop="url">sqoop数据迁移工具-----安装配置</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-02-16T20:20:00+08:00">
+                2019-02-16
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/sqoop/" itemprop="url" rel="index">
+                    <span itemprop="name">sqoop</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>–安装配置<br>author: Richard<br>tags:</p>
+<ul>
+<li>sqoop</li>
+<li>数据迁移<br>categories:</li>
+<li>sqoop<br>date: 2019-02-16 20:20:00</li>
+</ul>
+<hr>
+<h5 id="sqoop数据迁移工具"><a href="#sqoop数据迁移工具" class="headerlink" title="sqoop数据迁移工具"></a>sqoop数据迁移工具</h5><h6 id="概述"><a href="#概述" class="headerlink" title="概述"></a>概述</h6><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">sqoop是apache旗下一款“Hadoop和关系数据库服务器之间传送数据”的工具。</span><br><span class="line">导入数据：MySQL，Oracle导入数据到Hadoop的HDFS、HIVE、HBASE等数据存储系统；</span><br><span class="line">导出数据：从Hadoop的文件系统中导出数据到关系数据库mysql等</span><br></pre></td></tr></table></figure>
+<p><a href="https://imgchr.com/i/kzviTA" target="_blank" rel="noopener"><img src="https://s2.ax1x.com/2019/03/08/kzviTA.jpg" alt="kzviTA.jpg"></a></p>
+<h6 id="工作机制"><a href="#工作机制" class="headerlink" title="工作机制"></a>工作机制</h6><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">将导入或导出命令翻译成mapreduce程序来实现</span><br><span class="line">在翻译出的mapreduce中主要是对inputformat和outputformat进行定制</span><br></pre></td></tr></table></figure>
+<h5 id="sqoop安装"><a href="#sqoop安装" class="headerlink" title="sqoop安装"></a>sqoop安装</h5><blockquote>
+<p>安装sqoop的前提是已经具备java和hadoop的环境</p>
+<ol>
+<li>下载并解压<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">最新版下载地址http://ftp.wayne.edu/apache/sqoop/1.4.6/</span><br></pre></td></tr></table></figure>
+</li>
+</ol>
+</blockquote>
+<ol start="2">
+<li><p>修改配置文件</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">$ cd $SQOOP_HOME/conf</span><br><span class="line">$ mv sqoop-env-template.sh sqoop-env.sh</span><br><span class="line">打开sqoop-env.sh并编辑下面几行：</span><br><span class="line">export HADOOP_COMMON_HOME=/home/hadoop/apps/hadoop-2.6.1/ </span><br><span class="line">export HADOOP_MAPRED_HOME=/home/hadoop/apps/hadoop-2.6.1/</span><br><span class="line">export HIVE_HOME=/home/hadoop/apps/hive-1.2.1</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>加入mysql的jdbc驱动包</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">cp  ~/app/hive/lib/mysql-connector-java-5.1.28.jar   $SQOOP_HOME/lib/</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>验证启动</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">$ cd $SQOOP_HOME/bin</span><br><span class="line">$ sqoop-version</span><br><span class="line">预期的输出：</span><br><span class="line">15/12/17 14:52:32 INFO sqoop.Sqoop: Running Sqoop version: 1.4.6</span><br><span class="line">Sqoop 1.4.6 git commit id 5b34accaca7de251fc91161733f906af2eddbe83</span><br><span class="line">Compiled by abe on Fri Aug 1 11:19:26 PDT 2015</span><br><span class="line">到这里，整个Sqoop安装工作完成。</span><br><span class="line"></span><br><span class="line">验证sqoop到mysql业务库之间的连通性：</span><br><span class="line">bin/sqoop-list-databases --connect jdbc:mysql://localhost:3306 --username root --password root</span><br><span class="line">bin/sqoop-list-tables --connect jdbc:mysql://localhost:3306/userdb --username root --password root</span><br></pre></td></tr></table></figure></li>
+</ol>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://blogoflyt.cn/2019/02/14/Flume日志采集框架-高可用/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Richard">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/gakki.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="积累技术之路">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2019/02/14/Flume日志采集框架-高可用/" itemprop="url">Flume日志采集框架-----高可用</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-02-14T19:40:00+08:00">
+                2019-02-14
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Flume/" itemprop="url" rel="index">
+                    <span itemprop="name">Flume</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h5 id="FLUME高级应用"><a href="#FLUME高级应用" class="headerlink" title="FLUME高级应用"></a>FLUME高级应用</h5><h6 id="案例：高可用Flum-NG配置案例"><a href="#案例：高可用Flum-NG配置案例" class="headerlink" title="案例：高可用Flum-NG配置案例"></a>案例：高可用Flum-NG配置案例</h6><blockquote>
+<p>在完成单点的Flume NG搭建后，下面我们搭建一个高可用的Flume NG集群，架构图如下所示：<br><a href="https://imgchr.com/i/kzOPwn" target="_blank" rel="noopener"><img src="https://s2.ax1x.com/2019/03/08/kzOPwn.png" alt="kzOPwn.png"></a></p>
+</blockquote>
+<blockquote>
+<p>图中，我们可以看出，Flume的存储可以支持多种，这里只列举了HDFS和Kafka（如：存储最新的一周日志，并给Storm系统提供实时日志流）。</p>
+</blockquote>
+<h6 id="角色分配"><a href="#角色分配" class="headerlink" title="角色分配"></a>角色分配</h6><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">Flume的Agent和Collector分布如下表所示：</span><br><span class="line">名称　	HOST	角色</span><br><span class="line">Agent1	mini1	Web Server</span><br><span class="line">Agent2	mini2	Web Server</span><br><span class="line">Agent3	mini3	Web Server</span><br><span class="line">Collector1	mini4	AgentMstr1</span><br><span class="line">Collector2	mini5	AgentMstr2</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>图中所示，Agent1，Agent2，Agent3数据分别流入到Collector1和Collector2，Flume NG本身提供了Failover机制，可以自动切换和恢复。在上图中，有3个产生日志服务器分布在不同的机房，要把所有的日志都收集到一个集群中存储。下 面我们开发配置Flume NG集群</p>
+</blockquote>
+<h6 id="配置"><a href="#配置" class="headerlink" title="配置"></a>配置</h6><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br></pre></td><td class="code"><pre><span class="line">在下面单点Flume中，基本配置都完成了，我们只需要新添加两个配置文件，它们是agent.properties和collector.properties，其配置内容如下所示：</span><br><span class="line">1、agent配置</span><br><span class="line">[root@mini1 apache-flume-1.6.0-bin]# vi conf/agent.properties</span><br><span class="line">#agent1 name</span><br><span class="line">agent1.channels = c1</span><br><span class="line">agent1.sources = r1</span><br><span class="line">agent1.sinks = k1 k2</span><br><span class="line"></span><br><span class="line">#set gruop</span><br><span class="line">agent1.sinkgroups = g1</span><br><span class="line"></span><br><span class="line">#set channel</span><br><span class="line">agent1.channels.c1.type = memory</span><br><span class="line">agent1.channels.c1.capacity = 1000</span><br><span class="line">agent1.channels.c1.transactionCapacity = 100</span><br><span class="line"></span><br><span class="line">agent1.sources.r1.channels = c1</span><br><span class="line">agent1.sources.r1.type = exec</span><br><span class="line">agent1.sources.r1.command = tail -F /root/log/test.log</span><br><span class="line"></span><br><span class="line">agent1.sources.r1.interceptors = i1 i2</span><br><span class="line">agent1.sources.r1.interceptors.i1.type = static</span><br><span class="line">agent1.sources.r1.interceptors.i1.key = Type</span><br><span class="line">agent1.sources.r1.interceptors.i1.value = LOGIN</span><br><span class="line">agent1.sources.r1.interceptors.i2.type = timestamp</span><br><span class="line"></span><br><span class="line"># set sink1</span><br><span class="line">agent1.sinks.k1.channel = c1</span><br><span class="line">agent1.sinks.k1.type = avro</span><br><span class="line">agent1.sinks.k1.hostname = mini2</span><br><span class="line">agent1.sinks.k1.port = 52020</span><br><span class="line"></span><br><span class="line"># set sink2</span><br><span class="line">agent1.sinks.k2.channel = c1</span><br><span class="line">agent1.sinks.k2.type = avro</span><br><span class="line">agent1.sinks.k2.hostname = mini3</span><br><span class="line">agent1.sinks.k2.port = 52020</span><br><span class="line"></span><br><span class="line">#set sink group</span><br><span class="line">agent1.sinkgroups.g1.sinks = k1 k2</span><br><span class="line"></span><br><span class="line">#set failover</span><br><span class="line">agent1.sinkgroups.g1.processor.type = failover</span><br><span class="line">agent1.sinkgroups.g1.processor.priority.k1 = 10</span><br><span class="line">agent1.sinkgroups.g1.processor.priority.k2 = 1</span><br><span class="line">agent1.sinkgroups.g1.processor.maxpenalty = 10000</span><br><span class="line">启动命令：</span><br><span class="line">bin/flume-ng agent -n agent1 -c conf -f conf/agent.properties -Dflume.root.logger=DEBUG,console</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">2、collector配置</span><br><span class="line">[root@mini2 conf]# vi collector.properties </span><br><span class="line">#set Agent name</span><br><span class="line">a1.sources = r1</span><br><span class="line">a1.channels = c1</span><br><span class="line">a1.sinks = k1</span><br><span class="line"></span><br><span class="line">#set channel</span><br><span class="line">a1.channels.c1.type = memory</span><br><span class="line">a1.channels.c1.capacity = 1000</span><br><span class="line">a1.channels.c1.transactionCapacity = 100</span><br><span class="line"></span><br><span class="line"># other node,nna to nns</span><br><span class="line">a1.sources.r1.type = avro</span><br><span class="line">a1.sources.r1.bind = mini2</span><br><span class="line">a1.sources.r1.port = 52020</span><br><span class="line">a1.sources.r1.interceptors = i1</span><br><span class="line">a1.sources.r1.interceptors.i1.type = static</span><br><span class="line">a1.sources.r1.interceptors.i1.key = Collector</span><br><span class="line">a1.sources.r1.interceptors.i1.value = mini2</span><br><span class="line">a1.sources.r1.channels = c1</span><br><span class="line"></span><br><span class="line">#set sink to hdfs</span><br><span class="line">a1.sinks.k1.type=hdfs</span><br><span class="line">a1.sinks.k1.hdfs.path=/home/hdfs/flume/logdfs</span><br><span class="line">a1.sinks.k1.hdfs.fileType=DataStream</span><br><span class="line">a1.sinks.k1.hdfs.writeFormat=TEXT</span><br><span class="line">a1.sinks.k1.hdfs.rollInterval=10</span><br><span class="line">a1.sinks.k1.channel=c1</span><br><span class="line">a1.sinks.k1.hdfs.filePrefix=%Y-%m-%d</span><br><span class="line">在mini3上，需要修改上述配置中的红色字体主机名为mini3</span><br></pre></td></tr></table></figure>
+<h6 id="启动命令："><a href="#启动命令：" class="headerlink" title="启动命令："></a>启动命令：</h6><p>bin/flume-ng agent -n a1 -c conf -f conf/collector.properties -Dflume.root.logger=DEBUG,console</p>
+<h6 id="FAILOVER测试"><a href="#FAILOVER测试" class="headerlink" title="FAILOVER测试"></a>FAILOVER测试</h6><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">下面我们来测试下Flume NG集群的高可用（故障转移）。场景如下：我们在Agent1节点上传文件，由于我们配置Collector1的权重比Collector2大，所以 Collector1优先采集并上传到存储系统。然后我们kill掉Collector1，此时有Collector2负责日志的采集上传工作，之后，我 们手动恢复Collector1节点的Flume服务，再次在Agent1上次文件，发现Collector1恢复优先级别的采集工作。具体截图如下所 示：</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>Collector1优先上传<br><a href="https://imgchr.com/i/kzOelF" target="_blank" rel="noopener"><img src="https://s2.ax1x.com/2019/03/08/kzOelF.png" alt="kzOelF.png"></a><br>HDFS集群中上传的log内容预览<br><a href="https://imgchr.com/i/kzOmy4" target="_blank" rel="noopener"><img src="https://s2.ax1x.com/2019/03/08/kzOmy4.png" alt="kzOmy4.png"></a><br>Collector1宕机，Collector2获取优先上传权限<br><a href="https://imgchr.com/i/kzOnOJ" target="_blank" rel="noopener"><img src="https://s2.ax1x.com/2019/03/08/kzOnOJ.png" alt="kzOnOJ.png"></a><br>重启Collector1服务，Collector1重新获得优先上传的权限</p>
+</blockquote>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="http://blogoflyt.cn/2019/02/13/Flume日志采集框架-采集案例/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -1486,310 +1811,6 @@
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://blogoflyt.cn/2019/02/02/Hive学习笔记-DDL-DML/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Richard">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/gakki.jpg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="积累技术之路">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2019/02/02/Hive学习笔记-DDL-DML/" itemprop="url">Hive学习笔记-----DDL,DML</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-02-02T21:13:00+08:00">
-                2019-02-02
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Hive/" itemprop="url" rel="index">
-                    <span itemprop="name">Hive</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h5 id="hive建库建表与数据导入"><a href="#hive建库建表与数据导入" class="headerlink" title="hive建库建表与数据导入"></a>hive建库建表与数据导入</h5><h6 id="建库"><a href="#建库" class="headerlink" title="建库"></a>建库</h6><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">hive中有一个默认的库：</span><br><span class="line">库名： default</span><br><span class="line">库目录：hdfs://hdp20-01:9000/user/hive/warehouse</span><br><span class="line"></span><br><span class="line">新建库：</span><br><span class="line">create database db_order;</span><br><span class="line">库建好后，在hdfs中会生成一个库目录：</span><br><span class="line">hdfs://hdp20-01:9000/user/hive/warehouse/db_order.db</span><br></pre></td></tr></table></figure>
-<h6 id="建表"><a href="#建表" class="headerlink" title="建表"></a>建表</h6><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br></pre></td><td class="code"><pre><span class="line">基本建表语句</span><br><span class="line">use db_order;</span><br><span class="line">create table t_order(id string,create_time string,amount float,uid string);</span><br><span class="line">表建好后，会在所属的库目录中生成一个表目录</span><br><span class="line">/user/hive/warehouse/db_order.db/t_order</span><br><span class="line">只是，这样建表的话，hive会认为表数据文件中的字段分隔符为 ^A</span><br><span class="line"></span><br><span class="line">正确的建表语句为：</span><br><span class="line">create table t_order(id string,create_time string,amount float,uid string)</span><br><span class="line">row format delimited</span><br><span class="line">fields terminated by &apos;,&apos;;</span><br><span class="line"></span><br><span class="line">这样就指定了，我们的表数据文件中的字段分隔符为 &quot;,&quot;</span><br><span class="line">删除表</span><br><span class="line">drop table t_order;</span><br><span class="line">删除表的效果是：</span><br><span class="line">hive会从元数据库中清除关于这个表的信息；</span><br><span class="line">hive还会从hdfs中删除这个表的表目录；</span><br><span class="line"></span><br><span class="line">内部表与外部表</span><br><span class="line">内部表(MANAGED_TABLE)：表目录按照hive的规范来部署，位于hive的仓库目录/user/hive/warehouse中</span><br><span class="line"></span><br><span class="line">外部表(EXTERNAL_TABLE)：表目录由建表用户自己指定</span><br><span class="line">create external table t_access(ip string,url string,access_time string)</span><br><span class="line">row format delimited</span><br><span class="line">fields terminated by &apos;,&apos;</span><br><span class="line">location &apos;/access/log&apos;;</span><br><span class="line">外部表和内部表的特性差别：</span><br><span class="line">1、内部表的目录在hive的仓库目录中 VS 外部表的目录由用户指定</span><br><span class="line">2、drop一个内部表时：hive会清除相关元数据，并删除表数据目录</span><br><span class="line">3、drop一个外部表时：hive只会清除相关元数据；</span><br><span class="line"></span><br><span class="line">一个hive的数据仓库，最底层的表，一定是来自于外部系统，为了不影响外部系统的工作逻辑，在hive中可建external表来映射这些外部系统产生的数据目录；</span><br><span class="line">然后，后续的etl操作，产生的各种表建议用managed_table</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">分区表</span><br><span class="line">分区表的实质是：在表目录中为数据文件创建分区子目录，以便于在查询时，MR程序可以针对分区子目录中的数据进行处理，缩减读取数据的范围。</span><br><span class="line"></span><br><span class="line">比如，网站每天产生的浏览记录，浏览记录应该建一个表来存放，但是，有时候，我们可能只需要对某一天的浏览记录进行分析</span><br><span class="line">这时，就可以将这个表建为分区表，每天的数据导入其中的一个分区；</span><br><span class="line">当然，每日的分区目录，应该有一个目录名（分区字段）</span><br><span class="line"></span><br><span class="line">一个分区字段的实例：</span><br><span class="line">示例如下：</span><br><span class="line">1、创建带分区的表</span><br><span class="line">create table t_access(ip string,url string,access_time string)</span><br><span class="line">partitioned by(dt string)</span><br><span class="line">row format delimited</span><br><span class="line">fields terminated by &apos;,&apos;;</span><br><span class="line">注意：分区字段不能是表定义中的已存在字段</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">2、向分区中导入数据</span><br><span class="line">load data local inpath &apos;/root/access.log.2017-08-04.log&apos; into table t_access partition(dt=&apos;20170804&apos;);</span><br><span class="line">load data local inpath &apos;/root/access.log.2017-08-05.log&apos; into table t_access partition(dt=&apos;20170805&apos;);</span><br><span class="line"></span><br><span class="line">3、针对分区数据进行查询</span><br><span class="line">a、统计8月4号的总PV：</span><br><span class="line">select count(*) from t_access where dt=&apos;20170804&apos;;</span><br><span class="line">实质：就是将分区字段当成表字段来用，就可以使用where子句指定分区了</span><br><span class="line"></span><br><span class="line">b、统计表中所有数据总的PV：</span><br><span class="line">select count(*) from t_access;</span><br><span class="line">实质：不指定分区条件即可</span><br><span class="line"></span><br><span class="line">多个分区字段示例</span><br><span class="line">建表：</span><br><span class="line">create table t_partition(id int,name string,age int)</span><br><span class="line">partitioned by(department string,sex string,howold int)</span><br><span class="line">row format delimited fields terminated by &apos;,&apos;;</span><br><span class="line"></span><br><span class="line">导数据：</span><br><span class="line">load data local inpath &apos;/root/p1.dat&apos; into table t_partition partition(department=&apos;xiangsheng&apos;,sex=&apos;male&apos;,howold=20);</span><br><span class="line"></span><br><span class="line">CTAS建表语法</span><br><span class="line">可以通过已存在表来建表：</span><br><span class="line">1、create table t_user_2 like t_user;</span><br><span class="line">新建的t_user_2表结构定义与源表t_user一致，但是没有数据</span><br><span class="line"></span><br><span class="line">2、在建表的同时插入数据</span><br><span class="line">create table t_access_user </span><br><span class="line">as</span><br><span class="line">select ip,url from t_access;</span><br><span class="line">t_access_user会根据select查询的字段来建表，同时将查询的结果插入新表中</span><br></pre></td></tr></table></figure>
-<hr>
-<h5 id="数据导入导出"><a href="#数据导入导出" class="headerlink" title="数据导入导出"></a>数据导入导出</h5><h6 id="将数据文件导入hive的表"><a href="#将数据文件导入hive的表" class="headerlink" title="将数据文件导入hive的表"></a>将数据文件导入hive的表</h6><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">方式1：导入数据的一种方式：</span><br><span class="line">手动用hdfs命令，将文件放入表目录；</span><br><span class="line"></span><br><span class="line">方式2：在hive的交互式shell中用hive命令来导入本地数据到表目录</span><br><span class="line">hive&gt;load data local inpath &apos;/root/order.data.2&apos; into table t_order;</span><br><span class="line"></span><br><span class="line">方式3：用hive命令导入hdfs中的数据文件到表目录</span><br><span class="line">hive&gt;load data inpath &apos;/access.log.2017-08-06.log&apos; into table t_access partition(dt=&apos;20170806&apos;);</span><br><span class="line"></span><br><span class="line">注意：导本地文件和导HDFS文件的区别：</span><br><span class="line">本地文件导入表：复制</span><br><span class="line">hdfs文件导入表：移动</span><br></pre></td></tr></table></figure>
-<h6 id="将hive表中的数据导出到指定路径的文件"><a href="#将hive表中的数据导出到指定路径的文件" class="headerlink" title="将hive表中的数据导出到指定路径的文件"></a>将hive表中的数据导出到指定路径的文件</h6><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">1、将hive表中的数据导入HDFS的文件</span><br><span class="line">insert overwrite directory &apos;/root/access-data&apos;</span><br><span class="line">row format delimited fields terminated by &apos;,&apos;</span><br><span class="line">select * from t_access;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">2、将hive表中的数据导入本地磁盘文件</span><br><span class="line">insert overwrite local directory &apos;/root/access-data&apos;</span><br><span class="line">row format delimited fields terminated by &apos;,&apos;</span><br><span class="line">select * from t_access limit 100000;</span><br></pre></td></tr></table></figure>
-<h6 id="hive文件格式"><a href="#hive文件格式" class="headerlink" title="hive文件格式"></a>hive文件格式</h6><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line">HIVE支持很多种文件格式： SEQUENCE FILE | TEXT FILE | PARQUET FILE | RC FILE</span><br><span class="line">create table t_pq(movie string,rate int)  stored as textfile;</span><br><span class="line">create table t_pq(movie string,rate int)  stored as sequencefile;</span><br><span class="line">create table t_pq(movie string,rate int)  stored as parquetfile;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">演示：</span><br><span class="line">1、先建一个存储文本文件的表</span><br><span class="line">create table t_access_text(ip string,url string,access_time string)</span><br><span class="line">row format delimited fields terminated by &apos;,&apos;</span><br><span class="line">stored as textfile;</span><br><span class="line"></span><br><span class="line">导入文本数据到表中：</span><br><span class="line">load data local inpath &apos;/root/access-data/000000_0&apos; into table t_access_text;</span><br><span class="line"></span><br><span class="line">2、建一个存储sequence file文件的表：</span><br><span class="line">create table t_access_seq(ip string,url string,access_time string)</span><br><span class="line">stored as sequencefile;</span><br><span class="line"></span><br><span class="line">从文本表中查询数据插入sequencefile表中，生成数据文件就是sequencefile格式的了：</span><br><span class="line">insert into t_access_seq</span><br><span class="line">select * from t_access_text;</span><br><span class="line"></span><br><span class="line">3、建一个存储parquet file文件的表：</span><br><span class="line">create table t_access_parq(ip string,url string,access_time string)</span><br><span class="line">stored as parquetfile;</span><br></pre></td></tr></table></figure>
-<h5 id="数据类型"><a href="#数据类型" class="headerlink" title="数据类型"></a>数据类型</h5><h6 id="数字类型"><a href="#数字类型" class="headerlink" title="数字类型"></a>数字类型</h6><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">TINYINT (1-byte signed integer, from -128 to 127)</span><br><span class="line">SMALLINT (2-byte signed integer, from -32,768 to 32,767)</span><br><span class="line"></span><br><span class="line">INT/INTEGER (4-byte signed integer, from -2,147,483,648 to 2,147,483,647)</span><br><span class="line"></span><br><span class="line">BIGINT (8-byte signed integer, from -9,223,372,036,854,775,808 to 9,223,372,036,854,775,807)</span><br><span class="line">FLOAT (4-byte single precision floating point number)</span><br><span class="line">DOUBLE (8-byte double precision floating point number)</span><br><span class="line"></span><br><span class="line">示例：</span><br><span class="line">create table t_test(a string ,b int,c bigint,d float,e double,f tinyint,g smallint)</span><br></pre></td></tr></table></figure>
-<h6 id="日期时间类型"><a href="#日期时间类型" class="headerlink" title="日期时间类型"></a>日期时间类型</h6><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">TIMESTAMP (Note: Only available starting with Hive 0.8.0)</span><br><span class="line">DATE (Note: Only available starting with Hive 0.12.0)</span><br><span class="line"></span><br><span class="line">示例，假如有以下数据文件：</span><br><span class="line">1,zhangsan,1985-06-30</span><br><span class="line">2,lisi,1986-07-10</span><br><span class="line">3,wangwu,1985-08-09</span><br><span class="line">那么，就可以建一个表来对数据进行映射</span><br><span class="line">create table t_customer(id int,name string,birthday date)</span><br><span class="line">row format delimited fields terminated by &apos;,&apos;;</span><br><span class="line">然后导入数据</span><br><span class="line">load data local inpath &apos;/root/customer.dat&apos; into table t_customer;</span><br><span class="line">然后，就可以正确查询</span><br></pre></td></tr></table></figure>
-<h6 id="字符串类型"><a href="#字符串类型" class="headerlink" title="字符串类型"></a>字符串类型</h6><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">STRING</span><br><span class="line">VARCHAR (Note: Only available starting with Hive 0.12.0)</span><br><span class="line">CHAR (Note: Only available starting with Hive 0.13.0)</span><br></pre></td></tr></table></figure>
-<h6 id="混杂类型"><a href="#混杂类型" class="headerlink" title="混杂类型"></a>混杂类型</h6><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">BOOLEAN</span><br><span class="line">BINARY (Note: Only available starting with Hive 0.8.0)</span><br></pre></td></tr></table></figure>
-<h6 id="复合类型"><a href="#复合类型" class="headerlink" title="复合类型"></a>复合类型</h6><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line">array数组类型</span><br><span class="line">arrays: ARRAY&lt;data_type&gt; (Note: negative values and non-constant expressions are allowed as of Hive 0.14.)</span><br><span class="line"></span><br><span class="line">示例：array类型的应用</span><br><span class="line">假如有如下数据需要用hive的表去映射：</span><br><span class="line">战狼2,吴京:吴刚:龙母,2017-08-16</span><br><span class="line">三生三世十里桃花,刘亦菲:痒痒,2017-08-20</span><br><span class="line">设想：如果主演信息用一个数组来映射比较方便</span><br><span class="line"></span><br><span class="line">建表：</span><br><span class="line">create table t_movie(moive_name string,actors array&lt;string&gt;,first_show date)</span><br><span class="line">row format delimited fields terminated by &apos;,&apos;</span><br><span class="line">collection items terminated by &apos;:&apos;;</span><br><span class="line"></span><br><span class="line">导入数据：</span><br><span class="line">load data local inpath &apos;/root/movie.dat&apos; into table t_movie;</span><br><span class="line"></span><br><span class="line">查询：</span><br><span class="line">select * from t_movie;</span><br><span class="line">select moive_name,actors[0] from t_movie;</span><br><span class="line">select moive_name,actors from t_movie where array_contains(actors,&apos;吴刚&apos;);</span><br><span class="line">select moive_name,size(actors) from t_movie;</span><br></pre></td></tr></table></figure>
-<h6 id="map类型"><a href="#map类型" class="headerlink" title="map类型"></a>map类型</h6><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br></pre></td><td class="code"><pre><span class="line">maps: MAP&lt;primitive_type, data_type&gt; (Note: negative values and non-constant expressions are allowed as of Hive 0.14.)</span><br><span class="line"></span><br><span class="line">1)假如有以下数据：</span><br><span class="line">1,zhangsan,father:xiaoming#mother:xiaohuang#brother:xiaoxu,28</span><br><span class="line">2,lisi,father:mayun#mother:huangyi#brother:guanyu,22</span><br><span class="line">3,wangwu,father:wangjianlin#mother:ruhua#sister:jingtian,29</span><br><span class="line">4,mayun,father:mayongzhen#mother:angelababy,26</span><br><span class="line"></span><br><span class="line">可以用一个map类型来对上述数据中的家庭成员进行描述</span><br><span class="line"></span><br><span class="line">2)建表语句：</span><br><span class="line">create table t_person(id int,name string,family_members map&lt;string,string&gt;,age int)</span><br><span class="line">row format delimited fields terminated by &apos;,&apos;</span><br><span class="line">collection items terminated by &apos;#&apos;</span><br><span class="line">map keys terminated by &apos;:&apos;;</span><br><span class="line"></span><br><span class="line">3)查询</span><br><span class="line">select * from t_person;</span><br><span class="line"></span><br><span class="line">## 取map字段的指定key的值</span><br><span class="line">select id,name,family_members[&apos;father&apos;] as father from t_person;</span><br><span class="line"></span><br><span class="line">## 取map字段的所有key</span><br><span class="line">select id,name,map_keys(family_members) as relation from t_person;</span><br><span class="line"></span><br><span class="line">## 取map字段的所有value</span><br><span class="line">select id,name,map_values(family_members) from t_person;</span><br><span class="line">select id,name,map_values(family_members)[0] from t_person;</span><br><span class="line"></span><br><span class="line">## 综合：查询有brother的用户信息</span><br><span class="line">select id,name,father </span><br><span class="line">from </span><br><span class="line">(select id,name,family_members[&apos;brother&apos;] as father from t_person) tmp</span><br><span class="line">where father is not null;</span><br></pre></td></tr></table></figure>
-<h6 id="struct类型"><a href="#struct类型" class="headerlink" title="struct类型"></a>struct类型</h6><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">structs: STRUCT&lt;col_name : data_type, ...&gt;</span><br><span class="line"></span><br><span class="line">1)假如有如下数据：</span><br><span class="line">1,zhangsan,18:male:beijing</span><br><span class="line">2,lisi,28:female:shanghai</span><br><span class="line"></span><br><span class="line">其中的用户信息包含：年龄：整数，性别：字符串，地址：字符串</span><br><span class="line">设想用一个字段来描述整个用户信息，可以采用struct</span><br><span class="line"></span><br><span class="line">2)建表：</span><br><span class="line">create table t_person_struct(id int,name string,info struct&lt;age:int,sex:string,addr:string&gt;)</span><br><span class="line">row format delimited fields terminated by &apos;,&apos;</span><br><span class="line">collection items terminated by &apos;:&apos;;</span><br><span class="line"></span><br><span class="line">3)查询</span><br><span class="line">select * from t_person_struct;</span><br><span class="line">select id,name,info.age from t_person_struct;</span><br></pre></td></tr></table></figure>
-<h5 id="修改表定义"><a href="#修改表定义" class="headerlink" title="修改表定义"></a>修改表定义</h5><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line">仅修改Hive元数据，不会触动表中的数据，用户需要确定实际的数据布局符合元数据的定义。</span><br><span class="line">修改表名：</span><br><span class="line">ALTER TABLE table_name RENAME TO new_table_name</span><br><span class="line"></span><br><span class="line">示例：alter table t_1 rename to t_x;</span><br><span class="line"></span><br><span class="line">修改分区名：</span><br><span class="line">alter table t_partition partition(department=&apos;xiangsheng&apos;,sex=&apos;male&apos;,howold=20) rename to partition(department=&apos;1&apos;,sex=&apos;1&apos;,howold=20);</span><br><span class="line"></span><br><span class="line">添加分区：</span><br><span class="line">alter table t_partition add partition (department=&apos;2&apos;,sex=&apos;0&apos;,howold=40); </span><br><span class="line"></span><br><span class="line">删除分区：</span><br><span class="line">alter table t_partition drop partition (department=&apos;2&apos;,sex=&apos;2&apos;,howold=24); </span><br><span class="line"></span><br><span class="line">修改表的文件格式定义：</span><br><span class="line">ALTER TABLE table_name [PARTITION partitionSpec] SET FILEFORMAT file_format</span><br><span class="line">alter table t_partition partition(department=&apos;2&apos;,sex=&apos;0&apos;,howold=40 ) set fileformat sequencefile;</span><br><span class="line"></span><br><span class="line">修改列名定义：</span><br><span class="line">ALTER TABLE table_name CHANGE [COLUMN] col_old_name col_new_name column_type [COMMENTcol_comment] [FIRST|(AFTER column_name)]  </span><br><span class="line"></span><br><span class="line">alter table t_user change price jiage float first;</span><br><span class="line"></span><br><span class="line">增加/替换列：</span><br><span class="line">ALTER TABLE table_name ADD|REPLACE COLUMNS (col_name data_type[COMMENT col_comment], ...)  </span><br><span class="line"></span><br><span class="line">alter table t_user add columns (sex string,addr string);</span><br><span class="line">alter table t_user replace columns (id string,age int,price float);</span><br></pre></td></tr></table></figure>
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://blogoflyt.cn/2019/02/01/Hive学习笔记/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Richard">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/gakki.jpg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="积累技术之路">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2019/02/01/Hive学习笔记/" itemprop="url">Hive学习笔记-----安装使用</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-02-01T20:13:00+08:00">
-                2019-02-01
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Hive/" itemprop="url" rel="index">
-                    <span itemprop="name">Hive</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h5 id="hive基本思想"><a href="#hive基本思想" class="headerlink" title="hive基本思想"></a>hive基本思想</h5><p>Hive是基于Hadoop的一个数据仓库工具(离线)，可以将结构化的数据文件映射为一张数据库表，并提供类SQL查询功能。<br><a href="https://imgchr.com/i/kvBO1J" target="_blank" rel="noopener"><img src="https://s2.ax1x.com/2019/03/06/kvBO1J.png" alt="kvBO1J.png"></a></p>
-<h6 id="为什么使用Hive"><a href="#为什么使用Hive" class="headerlink" title="为什么使用Hive"></a>为什么使用Hive</h6><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">直接使用hadoop所面临的问题 </span><br><span class="line">人员学习成本太高 </span><br><span class="line">项目周期要求太短 </span><br><span class="line">MapReduce实现复杂查询逻辑开发难度太大 </span><br><span class="line"></span><br><span class="line">为什么要使用Hive </span><br><span class="line">操作接口采用类SQL语法，提供快速开发的能力。 </span><br><span class="line">避免了去写MapReduce，减少开发人员的学习成本。 </span><br><span class="line">功能扩展很方便。</span><br></pre></td></tr></table></figure>
-<h6 id="Hive的特点"><a href="#Hive的特点" class="headerlink" title="Hive的特点"></a>Hive的特点</h6><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">可扩展 </span><br><span class="line">Hive可以自由的扩展集群的规模，一般情况下不需要重启服务。</span><br><span class="line">延展性 </span><br><span class="line">Hive支持用户自定义函数，用户可以根据自己的需求来实现自己的函数。</span><br><span class="line">容错 </span><br><span class="line">良好的容错性，节点出现问题SQL仍可完成执行。</span><br></pre></td></tr></table></figure>
-<hr>
-<h5 id="hive的基本架构"><a href="#hive的基本架构" class="headerlink" title="hive的基本架构"></a>hive的基本架构</h5><p><a href="https://imgchr.com/i/kvDS76" target="_blank" rel="noopener"><img src="https://s2.ax1x.com/2019/03/06/kvDS76.jpg" alt="kvDS76.jpg"></a><br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">Jobtracker是hadoop1.x中的组件，它的功能相当于：</span><br><span class="line">Resourcemanager+MRAppMaster</span><br><span class="line"></span><br><span class="line">TaskTracker 相当于：  </span><br><span class="line">Nodemanager  +  yarnchild</span><br></pre></td></tr></table></figure></p>
-<hr>
-<h5 id="hive安装"><a href="#hive安装" class="headerlink" title="hive安装"></a>hive安装</h5><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br></pre></td><td class="code"><pre><span class="line">1. 最简安装：用内嵌derby作为元数据库</span><br><span class="line">准备工作：安装hive的机器上应该有HADOOP环境（安装目录，HADOOP_HOME环境变量）</span><br><span class="line">安装：直接解压一个hive安装包即可</span><br><span class="line">此时，安装的这个hive实例使用其内嵌的derby数据库作为记录元数据的数据库</span><br><span class="line">此模式不便于让团队成员之间共享协作</span><br><span class="line">2.标准安装：将mysql作为元数据库</span><br><span class="line">2.1.mysql安装</span><br><span class="line">①　上传mysql安装包</span><br><span class="line">②　解压：</span><br><span class="line">[root@mylove ~]# tar -xvf MySQL-5.6.26-1.linux_glibc2.5.x86_64.rpm-bundle.tar </span><br><span class="line"></span><br><span class="line">③　安装mysql的server包</span><br><span class="line">[root@mylove ~]# rpm -ivh MySQL-server-5.6.26-1.linux_glibc2.5.x86_64.rpm </span><br><span class="line">依赖报错：</span><br><span class="line">缺perl</span><br><span class="line">yum install perl</span><br><span class="line">安装完perl后 ，继续重新安装mysql-server</span><br><span class="line">（可以配置一个本地yum源进行安装：</span><br><span class="line">1、先在vmware中给这台虚拟机连接一个光盘镜像</span><br><span class="line">2、挂在光驱到一个指定目录：mount -t iso9660 -o loop /dev/cdrom /mnt/cdrom</span><br><span class="line">3、将yum的配置文件中baseURL指向/mnt/cdrom</span><br><span class="line">）</span><br><span class="line"></span><br><span class="line">[root@mylove ~]# rpm -ivh MySQL-server-5.6.26-1.linux_glibc2.5.x86_64.rpm </span><br><span class="line">又出错：包冲突conflict with</span><br><span class="line">移除老版本的冲突包：mysql-libs-5.1.73-3.el6_5.x86_64</span><br><span class="line">[root@mylove ~]# rpm -e mysql-libs-5.1.73-3.el6_5.x86_64 --nodeps</span><br><span class="line"></span><br><span class="line">继续重新安装mysql-server</span><br><span class="line">[root@mylove ~]# rpm -ivh MySQL-server-5.6.26-1.linux_glibc2.5.x86_64.rpm </span><br><span class="line"></span><br><span class="line">成功后，注意提示：里面有初始密码及如何改密码的信息</span><br><span class="line">初始密码：/root/.mysql_secret  </span><br><span class="line">改密码脚本：/usr/bin/mysql_secure_installation</span><br><span class="line"></span><br><span class="line">④　安装mysql的客户端包：</span><br><span class="line">[root@mylove ~]# rpm -ivh MySQL-client-5.6.26-1.linux_glibc2.5.x86_64.rpm</span><br><span class="line"></span><br><span class="line">⑤　启动mysql的服务端：</span><br><span class="line">[root@mylove ~]# service mysql start</span><br><span class="line">Starting MySQL. SUCCESS!</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">⑥　修改root的初始密码：</span><br><span class="line">[root@mylove ~]# /usr/bin/mysql_secure_installation  按提示</span><br><span class="line"></span><br><span class="line">⑦　测试：</span><br><span class="line">用mysql命令行客户端登陆mysql服务器看能否成功</span><br><span class="line">[root@mylove ~]# mysql -uroot -proot</span><br><span class="line">mysql&gt; show databases;</span><br><span class="line"></span><br><span class="line">⑧　给root用户授予从任何机器上登陆mysql服务器的权限：</span><br><span class="line">mysql&gt; grant all privileges on *.* to &apos;root&apos;@&apos;%&apos; identified by &apos;你的密码&apos; with grant option;</span><br><span class="line">Query OK, 0 rows affected (0.00 sec)</span><br><span class="line"></span><br><span class="line">mysql&gt; flush privileges;</span><br><span class="line">Query OK, 0 rows affected (0.00 sec)</span><br><span class="line">注意点：要让mysql可以远程登录访问</span><br><span class="line">最直接测试方法：从windows上用Navicat去连接，能连，则可以，不能连，则要去mysql的机器上用命令行客户端进行授权：</span><br><span class="line">在mysql的机器上,启动命令行客户端： </span><br><span class="line">mysql -uroot -proot</span><br><span class="line">mysql&gt;grant all privileges on *.* to &apos;root&apos;@&apos;%&apos; identified by &apos;root的密码&apos; with grant option;</span><br><span class="line">mysql&gt;flush privileges;</span><br></pre></td></tr></table></figure>
-<h6 id="hive的元数据库配置"><a href="#hive的元数据库配置" class="headerlink" title="hive的元数据库配置"></a>hive的元数据库配置</h6><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br></pre></td><td class="code"><pre><span class="line">vi conf/hive-site.xml</span><br><span class="line">&lt;configuration&gt;</span><br><span class="line">&lt;property&gt;</span><br><span class="line">&lt;name&gt;javax.jdo.option.ConnectionURL&lt;/name&gt;</span><br><span class="line">&lt;value&gt;jdbc:mysql://localhost:3306/hive?createDatabaseIfNotExist=true&lt;/value&gt;</span><br><span class="line">&lt;description&gt;JDBC connect string for a JDBC metastore&lt;/description&gt;</span><br><span class="line">&lt;/property&gt;</span><br><span class="line"></span><br><span class="line">&lt;property&gt;</span><br><span class="line">&lt;name&gt;javax.jdo.option.ConnectionDriverName&lt;/name&gt;</span><br><span class="line">&lt;value&gt;com.mysql.jdbc.Driver&lt;/value&gt;</span><br><span class="line">&lt;description&gt;Driver class name for a JDBC metastore&lt;/description&gt;</span><br><span class="line">&lt;/property&gt;</span><br><span class="line"></span><br><span class="line">&lt;property&gt;</span><br><span class="line">&lt;name&gt;javax.jdo.option.ConnectionUserName&lt;/name&gt;</span><br><span class="line">&lt;value&gt;root&lt;/value&gt;</span><br><span class="line">&lt;description&gt;username to use against metastore database&lt;/description&gt;</span><br><span class="line">&lt;/property&gt;</span><br><span class="line"></span><br><span class="line">&lt;property&gt;</span><br><span class="line">&lt;name&gt;javax.jdo.option.ConnectionPassword&lt;/name&gt;</span><br><span class="line">&lt;value&gt;root&lt;/value&gt;</span><br><span class="line">&lt;description&gt;password to use against metastore database&lt;/description&gt;</span><br><span class="line">&lt;/property&gt;</span><br><span class="line">&lt;/configuration&gt;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">2、上传一个mysql的驱动jar包到hive的安装目录的lib中</span><br><span class="line"></span><br><span class="line">3、配置HADOOP_HOME 和HIVE_HOME到系统环境变量中：/etc/profile</span><br><span class="line">4、source /etc/profile</span><br><span class="line">5、hive启动测试</span><br><span class="line">然后用命令启动hive交互界面：   </span><br><span class="line">[root@hdp20-04 ~]# hive</span><br></pre></td></tr></table></figure>
-<h5 id="hive使用方式"><a href="#hive使用方式" class="headerlink" title="hive使用方式"></a>hive使用方式</h5><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br></pre></td><td class="code"><pre><span class="line">最基本使用方式</span><br><span class="line">启动一个hive交互shell</span><br><span class="line">bin/hive</span><br><span class="line">hive&gt;</span><br><span class="line"></span><br><span class="line">设置一些基本参数，让hive使用起来更便捷，比如：</span><br><span class="line">1、让提示符显示当前库：</span><br><span class="line">hive&gt;set hive.cli.print.current.db=true;</span><br><span class="line">2、显示查询结果时显示字段名称：</span><br><span class="line">hive&gt;set hive.cli.print.header=true; </span><br><span class="line"></span><br><span class="line">但是这样设置只对当前会话有效，重启hive会话后就失效，解决办法：</span><br><span class="line">在linux的当前用户目录中，编辑一个.hiverc文件，将参数写入其中：</span><br><span class="line">vi .hiverc</span><br><span class="line">set hive.cli.print.header=true;</span><br><span class="line">set hive.cli.print.current.db=true;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">启动hive服务使用</span><br><span class="line">启动hive的服务：</span><br><span class="line">[root@hdp20-04 hive-1.2.1]# bin/hiveserver2 -hiveconf hive.root.logger=DEBUG,console</span><br><span class="line"></span><br><span class="line">上述启动，会将这个服务启动在前台，如果要启动在后台，则命令如下：</span><br><span class="line">nohup bin/hiveserver2 1&gt;/dev/null 2&gt;&amp;1 &amp;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">启动成功后，可以在别的节点上用beeline去连接</span><br><span class="line">方式（1）</span><br><span class="line">[root@hdp20-04 hive-1.2.1]# bin/beeline  回车，进入beeline的命令界面</span><br><span class="line">输入命令连接hiveserver2</span><br><span class="line">beeline&gt; !connect jdbc:hive2//mini1:10000</span><br><span class="line">（hadoop01是hiveserver2所启动的那台主机名，端口默认是10000）</span><br><span class="line">方式（2）</span><br><span class="line">启动时直接连接：</span><br><span class="line">bin/beeline -u jdbc:hive2://mini1:10000 -n root</span><br><span class="line"></span><br><span class="line">接下来就可以做正常sql查询了</span><br></pre></td></tr></table></figure>
-<h6 id="脚本化运行"><a href="#脚本化运行" class="headerlink" title="脚本化运行"></a>脚本化运行</h6><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">大量的hive查询任务，如果用交互式shell来进行输入的话，显然效率及其低下，因此，生产中更多的是使用脚本化运行机制：</span><br><span class="line">该机制的核心点是：hive可以用一次性命令的方式来执行给定的hql语句</span><br><span class="line"></span><br><span class="line">[root@hdp20-04 ~]#  hive -e &quot;insert into table t_dest select * from t_src;&quot;</span><br><span class="line"></span><br><span class="line">然后，进一步，可以将上述命令写入shell脚本中，以便于脚本化运行hive任务，并控制、调度众多hive任务，示例如下：</span><br><span class="line">vi t_order_etl.sh</span><br><span class="line">#!/bin/bash</span><br><span class="line">hive -e &quot;select * from db_order.t_order&quot;</span><br><span class="line">hive -e &quot;select * from default.t_user&quot;</span><br><span class="line">hql=&quot;create table  default.t_bash as select * from db_order.t_order&quot;</span><br><span class="line">hive -e &quot;$hql&quot;</span><br><span class="line"></span><br><span class="line">如果要执行的hql语句特别复杂，那么，可以把hql语句写入一个文件：</span><br><span class="line">vi x.hql</span><br><span class="line">select * from db_order.t_order;</span><br><span class="line">select count(1) from db_order.t_user;</span><br><span class="line"></span><br><span class="line">然后，用hive -f /root/x.hql 来执行</span><br></pre></td></tr></table></figure>
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
   </section>
 
   
@@ -1844,7 +1865,7 @@
               
                 <a href="/archives/">
               
-                  <span class="site-state-item-count">34</span>
+                  <span class="site-state-item-count">36</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
@@ -1855,7 +1876,7 @@
               
               <div class="site-state-item site-state-categories">
                 <a href="/categories/index.html">
-                  <span class="site-state-item-count">11</span>
+                  <span class="site-state-item-count">12</span>
                   <span class="site-state-item-name">分类</span>
                 </a>
               </div>
@@ -1866,7 +1887,7 @@
               
               <div class="site-state-item site-state-tags">
                 <a href="/tags/index.html">
-                  <span class="site-state-item-count">42</span>
+                  <span class="site-state-item-count">44</span>
                   <span class="site-state-item-name">标签</span>
                 </a>
               </div>
