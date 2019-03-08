@@ -1655,7 +1655,7 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://blogoflyt.cn/2019/02/10/HBASE运行原理/">
+    <link itemprop="mainEntityOfPage" href="http://blogoflyt.cn/2019/02/14/Flume日志采集框架-高可用/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="Richard">
@@ -1674,7 +1674,7 @@
         
           <h1 class="post-title" itemprop="name headline">
                 
-                <a class="post-title-link" href="/2019/02/10/HBASE运行原理/" itemprop="url">HBASE运行原理</a></h1>
+                <a class="post-title-link" href="/2019/02/14/Flume日志采集框架-高可用/" itemprop="url">Flume日志采集框架-----高可用</a></h1>
         
 
         <div class="post-meta">
@@ -1686,8 +1686,8 @@
               
                 <span class="post-meta-item-text">发表于</span>
               
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-02-10T21:04:00+08:00">
-                2019-02-10
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-02-14T19:40:00+08:00">
+                2019-02-14
               </time>
             
 
@@ -1709,8 +1709,8 @@
               
               
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/HBASE/" itemprop="url" rel="index">
-                    <span itemprop="name">HBASE</span>
+                  <a href="/categories/Flume/" itemprop="url" rel="index">
+                    <span itemprop="name">Flume</span>
                   </a>
                 </span>
 
@@ -1748,29 +1748,22 @@
       
         
           
-            <h5 id="组件结构图"><a href="#组件结构图" class="headerlink" title="组件结构图"></a>组件结构图</h5><p><a href="https://imgchr.com/i/kxR4LF" target="_blank" rel="noopener"><img src="https://s2.ax1x.com/2019/03/07/kxR4LF.png" alt="kxR4LF.png"></a></p>
-<h6 id="MASTER职责"><a href="#MASTER职责" class="headerlink" title="MASTER职责"></a>MASTER职责</h6><ol>
-<li>管理HRegionServer，实现其负载均衡。<br>管理和分配HRegion，比如在HRegion split时分配新的HRegion；在HRegionServer退出时迁移其负责的HRegion到其他HRegionServer上。</li>
-<li>Admin职能<br>创建、删除、修改Table的定义。实现DDL操作（namespace和table的增删改，column familiy的增删改等）。<br>管理namespace和table的元数据（实际存储在HDFS上）。<br>权限控制（ACL）。<br>监控集群中所有HRegionServer的状态(通过Heartbeat和监听ZooKeeper中的状态)。</li>
-</ol>
-<h6 id="REGION-SERVER职责"><a href="#REGION-SERVER职责" class="headerlink" title="REGION SERVER职责"></a>REGION SERVER职责</h6><ol>
-<li>管理自己所负责的region数据的读写。</li>
-<li>读写HDFS，管理Table中的数据。</li>
-<li>Client直接通过HRegionServer读写数据（从HMaster中获取元数据，找到RowKey所在的HRegion/HRegionServer后）。</li>
-</ol>
-<h6 id="Zookeeper集群所起作用"><a href="#Zookeeper集群所起作用" class="headerlink" title="Zookeeper集群所起作用"></a>Zookeeper集群所起作用</h6><ol>
-<li>存放整个HBase集群的元数据以及集群的状态信息。</li>
-<li>实现HMaster主从节点的failover。<blockquote>
-<p>注： HMaster通过监听ZooKeeper中的Ephemeral节点(默认：/hbase/rs/*)来监控HRegionServer的加入和宕机。<br>在第一个HMaster连接到ZooKeeper时会创建Ephemeral节点(默认：/hbasae/master)来表示Active的HMaster，其后加进来的HMaster则监听该Ephemeral节点<br>如果当前Active的HMaster宕机，则该节点消失，因而其他HMaster得到通知，而将自身转换成Active的HMaster，在变为Active的HMaster之前，它会在/hbase/masters/下创建自己的Ephemeral节点。</p>
+            <h5 id="FLUME高级应用"><a href="#FLUME高级应用" class="headerlink" title="FLUME高级应用"></a>FLUME高级应用</h5><h6 id="案例：高可用Flum-NG配置案例"><a href="#案例：高可用Flum-NG配置案例" class="headerlink" title="案例：高可用Flum-NG配置案例"></a>案例：高可用Flum-NG配置案例</h6><blockquote>
+<p>在完成单点的Flume NG搭建后，下面我们搭建一个高可用的Flume NG集群，架构图如下所示：<br><a href="https://imgchr.com/i/kzOPwn" target="_blank" rel="noopener"><img src="https://s2.ax1x.com/2019/03/08/kzOPwn.png" alt="kzOPwn.png"></a></p>
 </blockquote>
-</li>
-</ol>
-<h5 id="HBASE读写数据流程"><a href="#HBASE读写数据流程" class="headerlink" title="HBASE读写数据流程"></a>HBASE读写数据流程</h5><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">1. 在HBase 0.96以前，HBase有两个特殊的Table：-ROOT-和.META. 用来记录用户表的rowkey范围所在的的regionserver服务器；因而客户端读写数据时需要通过3次寻址请求来对数据所在的regionserver进行定位，效率低下；</span><br></pre></td></tr></table></figure>
-<p><a href="https://imgchr.com/i/kxRTo9" target="_blank" rel="noopener"><img src="https://s2.ax1x.com/2019/03/07/kxRTo9.jpg" alt="kxRTo9.jpg"></a><br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">2. 而在HBase 0.96以后去掉了-ROOT- Table，只剩下这个特殊的目录表叫做Meta Table(hbase:meta)，它存储了集群中所有用户HRegion的位置信息，而ZooKeeper的节点中(/hbase/meta-region-server)存储的则直接是这个Meta Table的位置，并且这个Meta Table如以前的-ROOT- Table一样是不可split的。这样，客户端在第一次访问用户Table的流程就变成了：</span><br><span class="line">①　从ZooKeeper(/hbase/meta-region-server)中获取hbase:meta的位置（HRegionServer的位置），缓存该位置信息。</span><br><span class="line">②　从HRegionServer中查询用户Table对应请求的RowKey所在的HRegionServer，缓存该位置信息。</span><br><span class="line">③　从查询到HRegionServer中读取Row。</span><br><span class="line">注：客户会缓存这些位置信息，然而第二步它只是缓存当前RowKey对应的HRegion的位置，因而如果下一个要查的RowKey不在同一个HRegion中，则需要继续查询hbase:meta所在的HRegion，然而随着时间的推移，客户端缓存的位置信息越来越多，以至于不需要再次查找hbase:meta Table的信息，除非某个HRegion因为宕机或Split被移动，此时需要重新查询并且更新缓存。</span><br></pre></td></tr></table></figure></p>
-<h6 id="hbase-meta表"><a href="#hbase-meta表" class="headerlink" title="hbase:meta表"></a>hbase:meta表</h6><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">hbase:meta表存储了所有用户HRegion的位置信息：</span><br><span class="line">Rowkey：tableName,regionStartKey,regionId,replicaId等；</span><br><span class="line">info列族：这个列族包含三个列，他们分别是：</span><br><span class="line">info:regioninfo列：</span><br><span class="line">regionId,tableName,startKey,endKey,offline,split,replicaId；</span><br><span class="line">info:server列：HRegionServer对应的server:port；</span><br><span class="line">info:serverstartcode列：HRegionServer的启动时间戳。</span><br></pre></td></tr></table></figure>
-<p><a href="https://imgchr.com/i/kxRLz6" target="_blank" rel="noopener"><img src="https://s2.ax1x.com/2019/03/07/kxRLz6.png" alt="kxRLz6.png"></a></p>
-<h6 id="REGION-SERVER内部机制"><a href="#REGION-SERVER内部机制" class="headerlink" title="REGION SERVER内部机制"></a>REGION SERVER内部机制</h6><p><a href="https://imgchr.com/i/kxRvLD" target="_blank" rel="noopener"><img src="https://s2.ax1x.com/2019/03/07/kxRvLD.png" alt="kxRvLD.png"></a></p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line">WAL即Write Ahead Log，在早期版本中称为HLog，它是HDFS上的一个文件，如其名字所表示的，所有写操作都会先保证将数据写入这个Log文件后，才会真正更新MemStore，最后写入HFile中。WAL文件存储在/hbase/WALs/$&#123;HRegionServer_Name&#125;的目录中</span><br><span class="line"></span><br><span class="line">BlockCache是一个读缓存，即“引用局部性”原理（也应用于CPU，分空间局部性和时间局部性，空间局部性是指CPU在某一时刻需要某个数据，那么有很大的概率在一下时刻它需要的数据在其附近；时间局部性是指某个数据在被访问过一次后，它有很大的概率在不久的将来会被再次的访问），将数据预读取到内存中，以提升读的性能。</span><br><span class="line"></span><br><span class="line">HRegion是一个Table中的一个Region在一个HRegionServer中的表达。一个Table可以有一个或多个Region，他们可以在一个相同的HRegionServer上，也可以分布在不同的HRegionServer上，一个HRegionServer可以有多个HRegion，他们分别属于不同的Table。HRegion由多个Store(HStore)构成，每个HStore对应了一个Table在这个HRegion中的一个Column Family，即每个Column Family就是一个集中的存储单元，因而最好将具有相近IO特性的Column存储在一个Column Family，以实现高效读取(数据局部性原理，可以提高缓存的命中率)。HStore是HBase中存储的核心，它实现了读写HDFS功能，一个HStore由一个MemStore 和0个或多个StoreFile组成。</span><br><span class="line"></span><br><span class="line">MemStore是一个写缓存(In Memory Sorted Buffer)，所有数据的写在完成WAL日志写后，会 写入MemStore中，由MemStore根据一定的算法将数据Flush到地层HDFS文件中(HFile)，通常每个HRegion中的每个 Column Family有一个自己的MemStore。</span><br><span class="line"></span><br><span class="line">HFile(StoreFile) 用于存储HBase的数据(Cell/KeyValue)。在HFile中的数据是按RowKey、Column Family、Column排序，对相同的Cell(即这三个值都一样)，则按timestamp倒序排列。</span><br><span class="line"></span><br><span class="line">FLUSH详述</span><br><span class="line"></span><br><span class="line">①　每一次Put/Delete请求都是先写入到MemStore中，当MemStore满后会Flush成一个新的StoreFile(底层实现是HFile)，即一个HStore(Column Family)可以有0个或多个StoreFile(HFile)。</span><br><span class="line"></span><br><span class="line">②　当一个HRegion中的所有MemStore的大小总和超过了hbase.hregion.memstore.flush.size的大小，默认128MB。此时当前的HRegion中所有的MemStore会Flush到HDFS中。</span><br><span class="line"></span><br><span class="line">③　当全局MemStore的大小超过了hbase.regionserver.global.memstore.upperLimit的大小，默认40％的内存使用量。此时当前HRegionServer中所有HRegion中的MemStore都会Flush到HDFS中，Flush顺序是MemStore大小的倒序（一个HRegion中所有MemStore总和作为该HRegion的MemStore的大小还是选取最大的MemStore作为参考？有待考证），直到总体的MemStore使用量低于hbase.regionserver.global.memstore.lowerLimit，默认38%的内存使用量。</span><br><span class="line"></span><br><span class="line">④　当前HRegionServer中WAL的大小超过了</span><br><span class="line">hbase.regionserver.hlog.blocksize * hbase.regionserver.max.logs</span><br><span class="line">的数量，当前HRegionServer中所有HRegion中的MemStore都会Flush到HDFS中，</span><br><span class="line">Flush使用时间顺序，最早的MemStore先Flush直到WAL的数量少于</span><br><span class="line">hbase.regionserver.hlog.blocksize * hbase.regionserver.max.logs</span><br><span class="line">这里说这两个相乘的默认大小是2GB，查代码，hbase.regionserver.max.logs默认值是32，而hbase.regionserver.hlog.blocksize默认是32MB。但不管怎么样，因为这个大小超过限制引起的Flush不是一件好事，可能引起长时间的延迟</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>图中，我们可以看出，Flume的存储可以支持多种，这里只列举了HDFS和Kafka（如：存储最新的一周日志，并给Storm系统提供实时日志流）。</p>
+</blockquote>
+<h6 id="角色分配"><a href="#角色分配" class="headerlink" title="角色分配"></a>角色分配</h6><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">Flume的Agent和Collector分布如下表所示：</span><br><span class="line">名称　	HOST	角色</span><br><span class="line">Agent1	mini1	Web Server</span><br><span class="line">Agent2	mini2	Web Server</span><br><span class="line">Agent3	mini3	Web Server</span><br><span class="line">Collector1	mini4	AgentMstr1</span><br><span class="line">Collector2	mini5	AgentMstr2</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>图中所示，Agent1，Agent2，Agent3数据分别流入到Collector1和Collector2，Flume NG本身提供了Failover机制，可以自动切换和恢复。在上图中，有3个产生日志服务器分布在不同的机房，要把所有的日志都收集到一个集群中存储。下 面我们开发配置Flume NG集群</p>
+</blockquote>
+<h6 id="配置"><a href="#配置" class="headerlink" title="配置"></a>配置</h6><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br></pre></td><td class="code"><pre><span class="line">在下面单点Flume中，基本配置都完成了，我们只需要新添加两个配置文件，它们是agent.properties和collector.properties，其配置内容如下所示：</span><br><span class="line">1、agent配置</span><br><span class="line">[root@mini1 apache-flume-1.6.0-bin]# vi conf/agent.properties</span><br><span class="line">#agent1 name</span><br><span class="line">agent1.channels = c1</span><br><span class="line">agent1.sources = r1</span><br><span class="line">agent1.sinks = k1 k2</span><br><span class="line"></span><br><span class="line">#set gruop</span><br><span class="line">agent1.sinkgroups = g1</span><br><span class="line"></span><br><span class="line">#set channel</span><br><span class="line">agent1.channels.c1.type = memory</span><br><span class="line">agent1.channels.c1.capacity = 1000</span><br><span class="line">agent1.channels.c1.transactionCapacity = 100</span><br><span class="line"></span><br><span class="line">agent1.sources.r1.channels = c1</span><br><span class="line">agent1.sources.r1.type = exec</span><br><span class="line">agent1.sources.r1.command = tail -F /root/log/test.log</span><br><span class="line"></span><br><span class="line">agent1.sources.r1.interceptors = i1 i2</span><br><span class="line">agent1.sources.r1.interceptors.i1.type = static</span><br><span class="line">agent1.sources.r1.interceptors.i1.key = Type</span><br><span class="line">agent1.sources.r1.interceptors.i1.value = LOGIN</span><br><span class="line">agent1.sources.r1.interceptors.i2.type = timestamp</span><br><span class="line"></span><br><span class="line"># set sink1</span><br><span class="line">agent1.sinks.k1.channel = c1</span><br><span class="line">agent1.sinks.k1.type = avro</span><br><span class="line">agent1.sinks.k1.hostname = mini2</span><br><span class="line">agent1.sinks.k1.port = 52020</span><br><span class="line"></span><br><span class="line"># set sink2</span><br><span class="line">agent1.sinks.k2.channel = c1</span><br><span class="line">agent1.sinks.k2.type = avro</span><br><span class="line">agent1.sinks.k2.hostname = mini3</span><br><span class="line">agent1.sinks.k2.port = 52020</span><br><span class="line"></span><br><span class="line">#set sink group</span><br><span class="line">agent1.sinkgroups.g1.sinks = k1 k2</span><br><span class="line"></span><br><span class="line">#set failover</span><br><span class="line">agent1.sinkgroups.g1.processor.type = failover</span><br><span class="line">agent1.sinkgroups.g1.processor.priority.k1 = 10</span><br><span class="line">agent1.sinkgroups.g1.processor.priority.k2 = 1</span><br><span class="line">agent1.sinkgroups.g1.processor.maxpenalty = 10000</span><br><span class="line">启动命令：</span><br><span class="line">bin/flume-ng agent -n agent1 -c conf -f conf/agent.properties -Dflume.root.logger=DEBUG,console</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">2、collector配置</span><br><span class="line">[root@mini2 conf]# vi collector.properties </span><br><span class="line">#set Agent name</span><br><span class="line">a1.sources = r1</span><br><span class="line">a1.channels = c1</span><br><span class="line">a1.sinks = k1</span><br><span class="line"></span><br><span class="line">#set channel</span><br><span class="line">a1.channels.c1.type = memory</span><br><span class="line">a1.channels.c1.capacity = 1000</span><br><span class="line">a1.channels.c1.transactionCapacity = 100</span><br><span class="line"></span><br><span class="line"># other node,nna to nns</span><br><span class="line">a1.sources.r1.type = avro</span><br><span class="line">a1.sources.r1.bind = mini2</span><br><span class="line">a1.sources.r1.port = 52020</span><br><span class="line">a1.sources.r1.interceptors = i1</span><br><span class="line">a1.sources.r1.interceptors.i1.type = static</span><br><span class="line">a1.sources.r1.interceptors.i1.key = Collector</span><br><span class="line">a1.sources.r1.interceptors.i1.value = mini2</span><br><span class="line">a1.sources.r1.channels = c1</span><br><span class="line"></span><br><span class="line">#set sink to hdfs</span><br><span class="line">a1.sinks.k1.type=hdfs</span><br><span class="line">a1.sinks.k1.hdfs.path=/home/hdfs/flume/logdfs</span><br><span class="line">a1.sinks.k1.hdfs.fileType=DataStream</span><br><span class="line">a1.sinks.k1.hdfs.writeFormat=TEXT</span><br><span class="line">a1.sinks.k1.hdfs.rollInterval=10</span><br><span class="line">a1.sinks.k1.channel=c1</span><br><span class="line">a1.sinks.k1.hdfs.filePrefix=%Y-%m-%d</span><br><span class="line">在mini3上，需要修改上述配置中的红色字体主机名为mini3</span><br></pre></td></tr></table></figure>
+<h6 id="启动命令："><a href="#启动命令：" class="headerlink" title="启动命令："></a>启动命令：</h6><p>bin/flume-ng agent -n a1 -c conf -f conf/collector.properties -Dflume.root.logger=DEBUG,console</p>
+<h6 id="FAILOVER测试"><a href="#FAILOVER测试" class="headerlink" title="FAILOVER测试"></a>FAILOVER测试</h6><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">下面我们来测试下Flume NG集群的高可用（故障转移）。场景如下：我们在Agent1节点上传文件，由于我们配置Collector1的权重比Collector2大，所以 Collector1优先采集并上传到存储系统。然后我们kill掉Collector1，此时有Collector2负责日志的采集上传工作，之后，我 们手动恢复Collector1节点的Flume服务，再次在Agent1上次文件，发现Collector1恢复优先级别的采集工作。具体截图如下所 示：</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>Collector1优先上传<br><a href="https://imgchr.com/i/kzOelF" target="_blank" rel="noopener"><img src="https://s2.ax1x.com/2019/03/08/kzOelF.png" alt="kzOelF.png"></a><br>HDFS集群中上传的log内容预览<br><a href="https://imgchr.com/i/kzOmy4" target="_blank" rel="noopener"><img src="https://s2.ax1x.com/2019/03/08/kzOmy4.png" alt="kzOmy4.png"></a><br>Collector1宕机，Collector2获取优先上传权限<br><a href="https://imgchr.com/i/kzOnOJ" target="_blank" rel="noopener"><img src="https://s2.ax1x.com/2019/03/08/kzOnOJ.png" alt="kzOnOJ.png"></a><br>重启Collector1服务，Collector1重新获得优先上传的权限</p>
+</blockquote>
 
           
         
@@ -1860,7 +1853,7 @@
               
                 <a href="/archives/">
               
-                  <span class="site-state-item-count">31</span>
+                  <span class="site-state-item-count">34</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
@@ -1871,7 +1864,7 @@
               
               <div class="site-state-item site-state-categories">
                 <a href="/categories/index.html">
-                  <span class="site-state-item-count">10</span>
+                  <span class="site-state-item-count">11</span>
                   <span class="site-state-item-name">分类</span>
                 </a>
               </div>
@@ -1882,7 +1875,7 @@
               
               <div class="site-state-item site-state-tags">
                 <a href="/tags/index.html">
-                  <span class="site-state-item-count">40</span>
+                  <span class="site-state-item-count">42</span>
                   <span class="site-state-item-name">标签</span>
                 </a>
               </div>

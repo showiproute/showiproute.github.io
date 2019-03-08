@@ -1,0 +1,766 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next mist use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="Flume,日志采集," />
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="Flume介绍概述12345Flume是一个分布式、可靠、和高可用的海量日志采集、聚合和传输的系统。Flume可以采集文件，socket数据包、文件、文件夹、kafka等各种形式源数据，又可以将采集到的数据(下沉sink)输出到HDFS、hbase、hive、kafka等众多外部存储系统中一般的采集需求，通过对flume的简单配置即可实现Flume针对特殊场景也具备良好的自定义扩展能力，因此，fl">
+<meta name="keywords" content="Flume,日志采集">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Flume日志采集框架-----安装配置">
+<meta property="og:url" content="http://blogoflyt.cn/2019/02/13/Flume日志采集框架-安装配置/index.html">
+<meta property="og:site_name" content="积累技术之路">
+<meta property="og:description" content="Flume介绍概述12345Flume是一个分布式、可靠、和高可用的海量日志采集、聚合和传输的系统。Flume可以采集文件，socket数据包、文件、文件夹、kafka等各种形式源数据，又可以将采集到的数据(下沉sink)输出到HDFS、hbase、hive、kafka等众多外部存储系统中一般的采集需求，通过对flume的简单配置即可实现Flume针对特殊场景也具备良好的自定义扩展能力，因此，fl">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="https://s2.ax1x.com/2019/03/08/kzLVrd.png">
+<meta property="og:image" content="https://s2.ax1x.com/2019/03/08/kzLnat.png">
+<meta property="og:image" content="https://s2.ax1x.com/2019/03/08/kzLMPf.png">
+<meta property="og:image" content="https://s2.ax1x.com/2019/03/08/kzLlRS.png">
+<meta property="og:image" content="https://s2.ax1x.com/2019/03/08/kzLNaq.png">
+<meta property="og:updated_time" content="2019-03-08T11:33:17.928Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Flume日志采集框架-----安装配置">
+<meta name="twitter:description" content="Flume介绍概述12345Flume是一个分布式、可靠、和高可用的海量日志采集、聚合和传输的系统。Flume可以采集文件，socket数据包、文件、文件夹、kafka等各种形式源数据，又可以将采集到的数据(下沉sink)输出到HDFS、hbase、hive、kafka等众多外部存储系统中一般的采集需求，通过对flume的简单配置即可实现Flume针对特殊场景也具备良好的自定义扩展能力，因此，fl">
+<meta name="twitter:image" content="https://s2.ax1x.com/2019/03/08/kzLVrd.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Mist',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://blogoflyt.cn/2019/02/13/Flume日志采集框架-安装配置/"/>
+
+
+
+
+
+  <title>Flume日志采集框架-----安装配置 | 积累技术之路</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">积累技术之路</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">找到学习的热爱</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://blogoflyt.cn/2019/02/13/Flume日志采集框架-安装配置/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Richard">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/gakki.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="积累技术之路">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">Flume日志采集框架-----安装配置</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-02-13T19:23:00+08:00">
+                2019-02-13
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Flume/" itemprop="url" rel="index">
+                    <span itemprop="name">Flume</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h5 id="Flume介绍"><a href="#Flume介绍" class="headerlink" title="Flume介绍"></a>Flume介绍</h5><h6 id="概述"><a href="#概述" class="headerlink" title="概述"></a>概述</h6><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">Flume是一个分布式、可靠、和高可用的海量日志采集、聚合和传输的系统。</span><br><span class="line">Flume可以采集文件，socket数据包、文件、文件夹、kafka等各种形式源数据，又可以将采集到的数据(下沉sink)输出到HDFS、hbase、hive、kafka等众多外部存储系统中</span><br><span class="line">一般的采集需求，通过对flume的简单配置即可实现</span><br><span class="line">Flume针对特殊场景也具备良好的自定义扩展能力，</span><br><span class="line">因此，flume可以适用于大部分的日常数据采集场景</span><br></pre></td></tr></table></figure>
+<h6 id="运行机制"><a href="#运行机制" class="headerlink" title="运行机制"></a>运行机制</h6><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">1、Flume分布式系统中最核心的角色是agent，flume采集系统就是由一个个agent所连接起来形成</span><br><span class="line">2、每一个agent相当于一个数据传递员[Source 到 Channel 到 Sink之间传递数据的形式是Event事件；Event事件是一个数据流单元。</span><br><span class="line">]，内部有三个组件：</span><br><span class="line">a)Source：采集组件，用于跟数据源对接，以获取数据</span><br><span class="line">b)Sink：下沉组件，用于往下一级agent传递数据或者往最终存储系统传递数据</span><br><span class="line">c)Channel：传输通道组件，用于从source将数据传递到sink</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>Source 到 Channel 到 Sink之间传递数据的形式是Event事件；Event事件是一个数据流单元。</p>
+</blockquote>
+<p><a href="https://imgchr.com/i/kzLVrd" target="_blank" rel="noopener"><img src="https://s2.ax1x.com/2019/03/08/kzLVrd.png" alt="kzLVrd.png"></a></p>
+<h5 id="Flume采集系统结构图"><a href="#Flume采集系统结构图" class="headerlink" title="Flume采集系统结构图"></a>Flume采集系统结构图</h5><h6 id="1-简单结构"><a href="#1-简单结构" class="headerlink" title="1. 简单结构"></a>1. 简单结构</h6><blockquote>
+<p>单个agent采集数据<br><a href="https://imgchr.com/i/kzLnat" target="_blank" rel="noopener"><img src="https://s2.ax1x.com/2019/03/08/kzLnat.png" alt="kzLnat.png"></a></p>
+</blockquote>
+<h6 id="复杂结构"><a href="#复杂结构" class="headerlink" title="复杂结构"></a>复杂结构</h6><blockquote>
+<p>多级agent之间串联<br><a href="https://imgchr.com/i/kzLMPf" target="_blank" rel="noopener"><img src="https://s2.ax1x.com/2019/03/08/kzLMPf.png" alt="kzLMPf.png"></a></p>
+</blockquote>
+<h5 id="Flume实战案例"><a href="#Flume实战案例" class="headerlink" title="Flume实战案例"></a>Flume实战案例</h5><h6 id="1-2-1-Flume的安装部署"><a href="#1-2-1-Flume的安装部署" class="headerlink" title="1.2.1 Flume的安装部署"></a>1.2.1 Flume的安装部署</h6><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">1、Flume的安装非常简单，只需要解压即可，当然，前提是已有hadoop环境</span><br><span class="line">上传安装包到数据源所在节点上</span><br><span class="line">然后解压  tar -zxvf apache-flume-1.6.0-bin.tar.gz</span><br><span class="line">然后进入flume的目录，修改conf下的flume-env.sh，在里面配置JAVA_HOME</span><br><span class="line"></span><br><span class="line">2、根据数据采集的需求配置采集方案，描述在配置文件中(文件名可任意自定义)</span><br><span class="line">3、指定采集方案配置文件，在相应的节点上启动flume agent</span><br><span class="line"></span><br><span class="line">先用一个最简单的例子来测试一下程序环境是否正常</span><br></pre></td></tr></table></figure>
+<p><a href="https://imgchr.com/i/kzLlRS" target="_blank" rel="noopener"><img src="https://s2.ax1x.com/2019/03/08/kzLlRS.png" alt="kzLlRS.png"></a><br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br></pre></td><td class="code"><pre><span class="line">1、先在flume的conf目录下新建一个配置文件（采集方案）</span><br><span class="line">vi   netcat-logger.properties</span><br><span class="line"># 定义这个agent中各组件的名字</span><br><span class="line">a1.sources = r1</span><br><span class="line">a1.sinks = k1</span><br><span class="line">a1.channels = c1</span><br><span class="line"></span><br><span class="line"># 描述和配置source组件：r1</span><br><span class="line">a1.sources.r1.type = netcat</span><br><span class="line">a1.sources.r1.bind = localhost</span><br><span class="line">a1.sources.r1.port = 44444</span><br><span class="line"></span><br><span class="line"># 描述和配置sink组件：k1</span><br><span class="line">a1.sinks.k1.type = logger</span><br><span class="line"></span><br><span class="line"># 描述和配置channel组件，此处使用是内存缓存的方式</span><br><span class="line">a1.channels.c1.type = memory</span><br><span class="line">a1.channels.c1.capacity = 1000</span><br><span class="line">a1.channels.c1.transactionCapacity = 100</span><br><span class="line"></span><br><span class="line"># 描述和配置source  channel   sink之间的连接关系</span><br><span class="line">a1.sources.r1.channels = c1</span><br><span class="line">a1.sinks.k1.channel = c1</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">2、启动agent去采集数据</span><br><span class="line">bin/flume-ng agent -c conf -f conf/netcat-logger.conf -n a1  -Dflume.root.logger=INFO,console</span><br><span class="line">-c conf   指定flume自身的配置文件所在目录</span><br><span class="line">-f conf/netcat-logger.con  指定我们所描述的采集方案</span><br><span class="line">-n a1  指定我们这个agent的名字</span><br><span class="line"></span><br><span class="line">3、测试</span><br><span class="line">先要往agent的source所监听的端口上发送数据，让agent有数据可采</span><br><span class="line">随便在一个能跟agent节点联网的机器上</span><br><span class="line">telnet anget-hostname  port   （telnet localhost 44444）</span><br></pre></td></tr></table></figure></p>
+<p><a href="https://imgchr.com/i/kzLNaq" target="_blank" rel="noopener"><img src="https://s2.ax1x.com/2019/03/08/kzLNaq.png" alt="kzLNaq.png"></a></p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/Flume/" rel="tag"># Flume</a>
+          
+            <a href="/tags/日志采集/" rel="tag"># 日志采集</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2019/02/10/HBASE运行原理/" rel="next" title="HBASE运行原理">
+                <i class="fa fa-chevron-left"></i> HBASE运行原理
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2019/02/13/Flume日志采集框架-采集案例/" rel="prev" title="Flume日志采集框架-----采集案例">
+                Flume日志采集框架-----采集案例 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image"
+                src="/images/gakki.jpg"
+                alt="Richard" />
+            
+              <p class="site-author-name" itemprop="name">Richard</p>
+              <p class="site-description motion-element" itemprop="description">悟已往之不谏,知来者之可追</p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">34</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">11</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">42</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+
+          
+          
+
+          
+          
+            <div class="links-of-blogroll motion-element links-of-blogroll-block">
+              <div class="links-of-blogroll-title">
+                <i class="fa  fa-fw fa-link"></i>
+                Links
+              </div>
+              <ul class="links-of-blogroll-list">
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://github.com/showiproute" title="Github" target="_blank">Github</a>
+                  </li>
+                
+              </ul>
+            </div>
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-5"><a class="nav-link" href="#Flume介绍"><span class="nav-number">1.</span> <span class="nav-text">Flume介绍</span></a><ol class="nav-child"><li class="nav-item nav-level-6"><a class="nav-link" href="#概述"><span class="nav-number">1.1.</span> <span class="nav-text">概述</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#运行机制"><span class="nav-number">1.2.</span> <span class="nav-text">运行机制</span></a></li></ol></li><li class="nav-item nav-level-5"><a class="nav-link" href="#Flume采集系统结构图"><span class="nav-number">2.</span> <span class="nav-text">Flume采集系统结构图</span></a><ol class="nav-child"><li class="nav-item nav-level-6"><a class="nav-link" href="#1-简单结构"><span class="nav-number">2.1.</span> <span class="nav-text">1. 简单结构</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#复杂结构"><span class="nav-number">2.2.</span> <span class="nav-text">复杂结构</span></a></li></ol></li><li class="nav-item nav-level-5"><a class="nav-link" href="#Flume实战案例"><span class="nav-number">3.</span> <span class="nav-text">Flume实战案例</span></a><ol class="nav-child"><li class="nav-item nav-level-6"><a class="nav-link" href="#1-2-1-Flume的安装部署"><span class="nav-number">3.1.</span> <span class="nav-text">1.2.1 Flume的安装部署</span></a></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2019</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Richard</span>
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Mist</a> v5.1.4</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>
