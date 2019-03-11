@@ -860,7 +860,7 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://blogoflyt.cn/2018/08/26/MySQLtest/">
+    <link itemprop="mainEntityOfPage" href="http://blogoflyt.cn/2018/08/26/Pythontest/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="Richard">
@@ -879,7 +879,7 @@
         
           <h1 class="post-title" itemprop="name headline">
                 
-                <a class="post-title-link" href="/2018/08/26/MySQLtest/" itemprop="url">MySQLtest</a></h1>
+                <a class="post-title-link" href="/2018/08/26/Pythontest/" itemprop="url">Pythontest</a></h1>
         
 
         <div class="post-meta">
@@ -914,8 +914,8 @@
               
               
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/数据库/" itemprop="url" rel="index">
-                    <span itemprop="name">数据库</span>
+                  <a href="/categories/Python/" itemprop="url" rel="index">
+                    <span itemprop="name">Python</span>
                   </a>
                 </span>
 
@@ -1001,7 +1001,7 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://blogoflyt.cn/2018/08/26/Pythontest/">
+    <link itemprop="mainEntityOfPage" href="http://blogoflyt.cn/2018/08/26/MySQLtest/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="Richard">
@@ -1020,7 +1020,7 @@
         
           <h1 class="post-title" itemprop="name headline">
                 
-                <a class="post-title-link" href="/2018/08/26/Pythontest/" itemprop="url">Pythontest</a></h1>
+                <a class="post-title-link" href="/2018/08/26/MySQLtest/" itemprop="url">MySQLtest</a></h1>
         
 
         <div class="post-meta">
@@ -1055,8 +1055,8 @@
               
               
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Python/" itemprop="url" rel="index">
-                    <span itemprop="name">Python</span>
+                  <a href="/categories/数据库/" itemprop="url" rel="index">
+                    <span itemprop="name">数据库</span>
                   </a>
                 </span>
 
@@ -1292,6 +1292,308 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://blogoflyt.cn/2018/03/17/接口和抽象类的区别/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Richard">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/gakki.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="积累技术之路">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2018/03/17/接口和抽象类的区别/" itemprop="url">接口和抽象类的区别</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-03-17T16:50:00+08:00">
+                2018-03-17
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Java/" itemprop="url" rel="index">
+                    <span itemprop="name">Java</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h6 id="抽象类与接口的区别"><a href="#抽象类与接口的区别" class="headerlink" title="抽象类与接口的区别"></a>抽象类与接口的区别</h6><p><a href="https://imgchr.com/i/ACrdJI" target="_blank" rel="noopener"><img src="https://s2.ax1x.com/2019/03/11/ACrdJI.png" alt="ACrdJI.png"></a></p>
+<blockquote>
+<p>方法实现：方法是个抽象方法，通过子类或实现接口的方式，实现该方法（重写）</p>
+</blockquote>
+<blockquote>
+<p>抽象类中有普通方法，接口没有普通方法。</p>
+</blockquote>
+<h6 id="什么时候使用抽象类和接口"><a href="#什么时候使用抽象类和接口" class="headerlink" title="什么时候使用抽象类和接口"></a>什么时候使用抽象类和接口</h6><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">1）如果你拥有一些方法并且想让它们中的一些有默认实现，那么使用抽象类吧。</span><br><span class="line">2）如果你想实现多重继承，那么你必须使用接口。由于Java不支持多继承，子类不能够继承多个类，但可以实现多个接口。因此你就可以使用接口来解决它。</span><br><span class="line">3）如果基本功能在不断改变，那么就需要使用抽象类。如果不断改变基本功能并且使用接口，那么就需要改变所有实现了该接口的类。</span><br></pre></td></tr></table></figure>
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://blogoflyt.cn/2018/03/16/接口与解耦和/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Richard">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/gakki.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="积累技术之路">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2018/03/16/接口与解耦和/" itemprop="url">接口与解耦和</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-03-16T16:46:00+08:00">
+                2018-03-16
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Java/" itemprop="url" rel="index">
+                    <span itemprop="name">Java</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p><a href="https://imgchr.com/i/ACDwKU" target="_blank" rel="noopener"><img src="https://s2.ax1x.com/2019/03/11/ACDwKU.png" alt="ACDwKU.png"></a></p>
+<blockquote>
+<p>除了实现多继承之外，接口最重要的作用就是解耦合。 什么叫解耦合呢？我们看下面这段代码的例子。<br><a href="https://imgchr.com/i/ACD0rF" target="_blank" rel="noopener"><img src="https://s2.ax1x.com/2019/03/11/ACD0rF.png" alt="ACD0rF.png"></a><br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">在上面的代码中， lamp 的 on 方法，调用了 bulb 的 shine 方法。 也就是说，当我们调用台灯对象的“开”方法时，台灯对象会去调用灯泡对象的发光方法。</span><br><span class="line">但是，问题来了：现在的这个台灯，装的是红灯泡。如果现在想要把红灯泡换成绿灯泡，应当如何操作呢？</span><br><span class="line">由于 Lamp 类中的 bulb 属性是 RedBulb 类型，因此，一旦要修改，则必须要把 Lamp类中的属性类型进行修改，并且修改 setBulb 方法的相应参数和实现。 也就是说，当我们希望把 bulb 属性由 RedBulb 替换为 GreenBulb 的时候，必须修改 Lamp 类的代码。</span><br><span class="line">也就是说，如果要想更换不同种类的灯泡，就要修改台灯的内部结构！这无疑是跟现实生活不相符合的。之所以产生这样的矛盾，原因在于 Lamp 类与 RedBulb 类型紧密联系在一起，形成了强耦合的关系，如下图：</span><br></pre></td></tr></table></figure></p>
+</blockquote>
+<p><a href="https://imgchr.com/i/ACDoad" target="_blank" rel="noopener"><img src="https://s2.ax1x.com/2019/03/11/ACDoad.png" alt="ACDoad.png"></a></p>
+<p><a href="https://imgchr.com/i/ACDqRP" target="_blank" rel="noopener"><img src="https://s2.ax1x.com/2019/03/11/ACDqRP.png" alt="ACDqRP.png"></a></p>
+<p><a href="https://imgchr.com/i/ACrSaj" target="_blank" rel="noopener"><img src="https://s2.ax1x.com/2019/03/11/ACrSaj.png" alt="ACrSaj.png"></a></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Lamp 类的 bulb 属性被改为接口类型 Bulb，从而， Lamp 类与具体的实现类之间用 Bulb接口分离开了。 当 Lamp 类希望把 bulb 属性由 RedBulb 对象变更为 GreenBulb 对象时，不需要修改任何自身代码。只需要调用 setBulb 方法，接受不同的 Bulb 接口的实现类就可以了，从而， Lamp 类通过 Bulb 接口，实现了与 Bulb 实现类的弱耦合。如下图所示：</span><br></pre></td></tr></table></figure>
+<p><a href="https://imgchr.com/i/ACrMJ1" target="_blank" rel="noopener"><img src="https://s2.ax1x.com/2019/03/11/ACrMJ1.png" alt="ACrMJ1.png"></a></p>
+<blockquote>
+<p>把原来强耦合的关系，变为了弱耦合的关系。这就是接口最重要的作用：解耦合。</p>
+</blockquote>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">由于接口中所有的方法都是抽象方法，因此，定义一个接口，可以看作是定义了一个标准。它只定义了，一个对象应该具有哪些方法，而丝毫没有定义对象如何实现这些方法。方法的实现统统交给接口的实现类来完成。</span><br><span class="line">这样，接口的出现，就阻隔了接口使用者和接口实现者之间的耦合关系。当接口实现者变化的时候，对接口使用者不产生任何影响。</span><br></pre></td></tr></table></figure>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="http://blogoflyt.cn/2018/03/15/final关键字/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -1428,297 +1730,6 @@
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://blogoflyt.cn/2018/03/14/多态/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Richard">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/gakki.jpg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="积累技术之路">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2018/03/14/多态/" itemprop="url">多态</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-03-14T15:16:00+08:00">
-                2018-03-14
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Java/" itemprop="url" rel="index">
-                    <span itemprop="name">Java</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h6 id="多态概念"><a href="#多态概念" class="headerlink" title="多态概念"></a>多态概念</h6><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">java引用变量有两个类型：一个是编译时类型，一个是运行时类型。</span><br><span class="line">编译时类型由声明该变量时使用的类型决定</span><br><span class="line">运行时类型由实际赋给该变量的对象决定</span><br><span class="line">多态：编译时类型和运行时类型不一致。</span><br><span class="line">讲继承的时候讲过，父类大于子类，可以看成子类是特殊的父类</span><br></pre></td></tr></table></figure>
-<h6 id="多态的语法特性"><a href="#多态的语法特性" class="headerlink" title="多态的语法特性"></a>多态的语法特性</h6><p><a href="https://imgchr.com/i/ACG0z9" target="_blank" rel="noopener"><img src="https://s2.ax1x.com/2019/03/11/ACG0z9.png" alt="ACG0z9.png"></a></p>
-<p><a href="https://imgchr.com/i/ACGrs1" target="_blank" rel="noopener"><img src="https://s2.ax1x.com/2019/03/11/ACGrs1.png" alt="ACGrs1.png"></a><br><a href="https://imgchr.com/i/ACGsqx" target="_blank" rel="noopener"><img src="https://s2.ax1x.com/2019/03/11/ACGsqx.png" alt="ACGsqx.png"></a><br><a href="https://imgchr.com/i/ACG6Z6" target="_blank" rel="noopener"><img src="https://s2.ax1x.com/2019/03/11/ACG6Z6.png" alt="ACG6Z6.png"></a><br><a href="https://imgchr.com/i/ACGRiD" target="_blank" rel="noopener"><img src="https://s2.ax1x.com/2019/03/11/ACGRiD.png" alt="ACGRiD.png"></a></p>
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://blogoflyt.cn/2018/03/13/super关键字/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Richard">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/gakki.jpg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="积累技术之路">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2018/03/13/super关键字/" itemprop="url">super关键字</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-03-13T15:10:00+08:00">
-                2018-03-13
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Java/" itemprop="url" rel="index">
-                    <span itemprop="name">Java</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h6 id="super用在构造方法上"><a href="#super用在构造方法上" class="headerlink" title="super用在构造方法上"></a>super用在构造方法上</h6><p><a href="https://imgchr.com/i/AC3hkD" target="_blank" rel="noopener"><img src="https://s2.ax1x.com/2019/03/11/AC3hkD.png" alt="AC3hkD.png"></a></p>
-<p><a href="https://imgchr.com/i/AC34te" target="_blank" rel="noopener"><img src="https://s2.ax1x.com/2019/03/11/AC34te.png" alt="AC34te.png"></a></p>
-<p><a href="https://imgchr.com/i/AC8FBV" target="_blank" rel="noopener"><img src="https://s2.ax1x.com/2019/03/11/AC8FBV.png" alt="AC8FBV.png"></a></p>
-<h6 id="super用作引用"><a href="#super用作引用" class="headerlink" title="super用作引用"></a>super用作引用</h6><p><a href="https://imgchr.com/i/AC8n39" target="_blank" rel="noopener"><img src="https://s2.ax1x.com/2019/03/11/AC8n39.png" alt="AC8n39.png"></a><br><a href="https://imgchr.com/i/AC8ucR" target="_blank" rel="noopener"><img src="https://s2.ax1x.com/2019/03/11/AC8ucR.png" alt="AC8ucR.png"></a></p>
-<p><a href="https://imgchr.com/i/AC8GND" target="_blank" rel="noopener"><img src="https://s2.ax1x.com/2019/03/11/AC8GND.png" alt="AC8GND.png"></a><br><a href="https://imgchr.com/i/AC8sUS" target="_blank" rel="noopener"><img src="https://s2.ax1x.com/2019/03/11/AC8sUS.png" alt="AC8sUS.png"></a><br><a href="https://imgchr.com/i/AC8cCQ" target="_blank" rel="noopener"><img src="https://s2.ax1x.com/2019/03/11/AC8cCQ.png" alt="AC8cCQ.png"></a><br><a href="https://imgchr.com/i/AC8g3j" target="_blank" rel="noopener"><img src="https://s2.ax1x.com/2019/03/11/AC8g3j.png" alt="AC8g3j.png"></a><br><a href="https://imgchr.com/i/AC8IET" target="_blank" rel="noopener"><img src="https://s2.ax1x.com/2019/03/11/AC8IET.png" alt="AC8IET.png"></a></p>
-<h6 id="this与super"><a href="#this与super" class="headerlink" title="this与super"></a>this与super</h6><p><a href="https://imgchr.com/i/ACGMGQ" target="_blank" rel="noopener"><img src="https://s2.ax1x.com/2019/03/11/ACGMGQ.png" alt="ACGMGQ.png"></a></p>
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
   </section>
 
   
@@ -1773,7 +1784,7 @@
               
                 <a href="/archives/">
               
-                  <span class="site-state-item-count">42</span>
+                  <span class="site-state-item-count">44</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
@@ -1795,7 +1806,7 @@
               
               <div class="site-state-item site-state-tags">
                 <a href="/tags/index.html">
-                  <span class="site-state-item-count">52</span>
+                  <span class="site-state-item-count">55</span>
                   <span class="site-state-item-name">标签</span>
                 </a>
               </div>
