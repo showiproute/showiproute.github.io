@@ -860,7 +860,7 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://blogoflyt.cn/2018/08/26/Pythontest/">
+    <link itemprop="mainEntityOfPage" href="http://blogoflyt.cn/2018/08/26/MySQLtest/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="Richard">
@@ -879,7 +879,7 @@
         
           <h1 class="post-title" itemprop="name headline">
                 
-                <a class="post-title-link" href="/2018/08/26/Pythontest/" itemprop="url">Pythontest</a></h1>
+                <a class="post-title-link" href="/2018/08/26/MySQLtest/" itemprop="url">MySQLtest</a></h1>
         
 
         <div class="post-meta">
@@ -914,8 +914,8 @@
               
               
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Python/" itemprop="url" rel="index">
-                    <span itemprop="name">Python</span>
+                  <a href="/categories/数据库/" itemprop="url" rel="index">
+                    <span itemprop="name">数据库</span>
                   </a>
                 </span>
 
@@ -1001,7 +1001,7 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://blogoflyt.cn/2018/08/26/MySQLtest/">
+    <link itemprop="mainEntityOfPage" href="http://blogoflyt.cn/2018/08/26/Pythontest/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="Richard">
@@ -1020,7 +1020,7 @@
         
           <h1 class="post-title" itemprop="name headline">
                 
-                <a class="post-title-link" href="/2018/08/26/MySQLtest/" itemprop="url">MySQLtest</a></h1>
+                <a class="post-title-link" href="/2018/08/26/Pythontest/" itemprop="url">Pythontest</a></h1>
         
 
         <div class="post-meta">
@@ -1055,8 +1055,8 @@
               
               
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/数据库/" itemprop="url" rel="index">
-                    <span itemprop="name">数据库</span>
+                  <a href="/categories/Python/" itemprop="url" rel="index">
+                    <span itemprop="name">Python</span>
                   </a>
                 </span>
 
@@ -1279,11 +1279,451 @@
 
 
     
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://blogoflyt.cn/2018/03/15/final关键字/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Richard">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/gakki.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="积累技术之路">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2018/03/15/final关键字/" itemprop="url">final关键字</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-03-15T15:20:00+08:00">
+                2018-03-15
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Java/" itemprop="url" rel="index">
+                    <span itemprop="name">Java</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <blockquote>
+<p>final 属性能够修饰变量、方法和类</p>
+</blockquote>
+<h6 id="常量"><a href="#常量" class="headerlink" title="常量"></a>常量</h6><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">用 final 修饰的变量则称为常量。一旦赋值，其值不能改变的变量。</span><br><span class="line">对象类型的变量中，保存的是对象的地址，因此所谓“一旦赋值，不能改变”，是指的对象的地址不能改变。</span><br><span class="line">final修饰的变量必须由程序员显示指定初始值</span><br><span class="line">final修饰的类变量、实例变量能指定初始值的地方如下</span><br><span class="line">类变量：必须在静态初始化块中或声明该变量时指定初始值。</span><br><span class="line">实例变量：必须在非静态初始化块、声明该变量或构造方法中指定初始值。</span><br></pre></td></tr></table></figure>
+<p><a href="https://imgchr.com/i/ACGbo8" target="_blank" rel="noopener"><img src="https://s2.ax1x.com/2019/03/11/ACGbo8.png" alt="ACGbo8.png"></a></p>
+<p><a href="https://imgchr.com/i/ACGjzj" target="_blank" rel="noopener"><img src="https://s2.ax1x.com/2019/03/11/ACGjzj.png" alt="ACGjzj.png"></a></p>
+<h6 id="final方法"><a href="#final方法" class="headerlink" title="final方法"></a>final方法</h6><p><a href="https://imgchr.com/i/ACGxQs" target="_blank" rel="noopener"><img src="https://s2.ax1x.com/2019/03/11/ACGxQs.png" alt="ACGxQs.png"></a></p>
+<h6 id="final类"><a href="#final类" class="headerlink" title="final类"></a>final类</h6><p><a href="https://imgchr.com/i/ACGzyn" target="_blank" rel="noopener"><img src="https://s2.ax1x.com/2019/03/11/ACGzyn.png" alt="ACGzyn.png"></a></p>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://blogoflyt.cn/2018/03/14/多态/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Richard">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/gakki.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="积累技术之路">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2018/03/14/多态/" itemprop="url">多态</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-03-14T15:16:00+08:00">
+                2018-03-14
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Java/" itemprop="url" rel="index">
+                    <span itemprop="name">Java</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h6 id="多态概念"><a href="#多态概念" class="headerlink" title="多态概念"></a>多态概念</h6><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">java引用变量有两个类型：一个是编译时类型，一个是运行时类型。</span><br><span class="line">编译时类型由声明该变量时使用的类型决定</span><br><span class="line">运行时类型由实际赋给该变量的对象决定</span><br><span class="line">多态：编译时类型和运行时类型不一致。</span><br><span class="line">讲继承的时候讲过，父类大于子类，可以看成子类是特殊的父类</span><br></pre></td></tr></table></figure>
+<h6 id="多态的语法特性"><a href="#多态的语法特性" class="headerlink" title="多态的语法特性"></a>多态的语法特性</h6><p><a href="https://imgchr.com/i/ACG0z9" target="_blank" rel="noopener"><img src="https://s2.ax1x.com/2019/03/11/ACG0z9.png" alt="ACG0z9.png"></a></p>
+<p><a href="https://imgchr.com/i/ACGrs1" target="_blank" rel="noopener"><img src="https://s2.ax1x.com/2019/03/11/ACGrs1.png" alt="ACGrs1.png"></a><br><a href="https://imgchr.com/i/ACGsqx" target="_blank" rel="noopener"><img src="https://s2.ax1x.com/2019/03/11/ACGsqx.png" alt="ACGsqx.png"></a><br><a href="https://imgchr.com/i/ACG6Z6" target="_blank" rel="noopener"><img src="https://s2.ax1x.com/2019/03/11/ACG6Z6.png" alt="ACG6Z6.png"></a><br><a href="https://imgchr.com/i/ACGRiD" target="_blank" rel="noopener"><img src="https://s2.ax1x.com/2019/03/11/ACGRiD.png" alt="ACGRiD.png"></a></p>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://blogoflyt.cn/2018/03/13/super关键字/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Richard">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/gakki.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="积累技术之路">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2018/03/13/super关键字/" itemprop="url">super关键字</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-03-13T15:10:00+08:00">
+                2018-03-13
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Java/" itemprop="url" rel="index">
+                    <span itemprop="name">Java</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h6 id="super用在构造方法上"><a href="#super用在构造方法上" class="headerlink" title="super用在构造方法上"></a>super用在构造方法上</h6><p><a href="https://imgchr.com/i/AC3hkD" target="_blank" rel="noopener"><img src="https://s2.ax1x.com/2019/03/11/AC3hkD.png" alt="AC3hkD.png"></a></p>
+<p><a href="https://imgchr.com/i/AC34te" target="_blank" rel="noopener"><img src="https://s2.ax1x.com/2019/03/11/AC34te.png" alt="AC34te.png"></a></p>
+<p><a href="https://imgchr.com/i/AC8FBV" target="_blank" rel="noopener"><img src="https://s2.ax1x.com/2019/03/11/AC8FBV.png" alt="AC8FBV.png"></a></p>
+<h6 id="super用作引用"><a href="#super用作引用" class="headerlink" title="super用作引用"></a>super用作引用</h6><p><a href="https://imgchr.com/i/AC8n39" target="_blank" rel="noopener"><img src="https://s2.ax1x.com/2019/03/11/AC8n39.png" alt="AC8n39.png"></a><br><a href="https://imgchr.com/i/AC8ucR" target="_blank" rel="noopener"><img src="https://s2.ax1x.com/2019/03/11/AC8ucR.png" alt="AC8ucR.png"></a></p>
+<p><a href="https://imgchr.com/i/AC8GND" target="_blank" rel="noopener"><img src="https://s2.ax1x.com/2019/03/11/AC8GND.png" alt="AC8GND.png"></a><br><a href="https://imgchr.com/i/AC8sUS" target="_blank" rel="noopener"><img src="https://s2.ax1x.com/2019/03/11/AC8sUS.png" alt="AC8sUS.png"></a><br><a href="https://imgchr.com/i/AC8cCQ" target="_blank" rel="noopener"><img src="https://s2.ax1x.com/2019/03/11/AC8cCQ.png" alt="AC8cCQ.png"></a><br><a href="https://imgchr.com/i/AC8g3j" target="_blank" rel="noopener"><img src="https://s2.ax1x.com/2019/03/11/AC8g3j.png" alt="AC8g3j.png"></a><br><a href="https://imgchr.com/i/AC8IET" target="_blank" rel="noopener"><img src="https://s2.ax1x.com/2019/03/11/AC8IET.png" alt="AC8IET.png"></a></p>
+<h6 id="this与super"><a href="#this与super" class="headerlink" title="this与super"></a>this与super</h6><p><a href="https://imgchr.com/i/ACGMGQ" target="_blank" rel="noopener"><img src="https://s2.ax1x.com/2019/03/11/ACGMGQ.png" alt="ACGMGQ.png"></a></p>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
   </section>
 
   
   <nav class="pagination">
-    <a class="extend prev" rel="prev" href="/page/3/"><i class="fa fa-angle-left"></i></a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/3/">3</a><span class="page-number current">4</span>
+    <a class="extend prev" rel="prev" href="/page/3/"><i class="fa fa-angle-left"></i></a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/3/">3</a><span class="page-number current">4</span><a class="page-number" href="/page/5/">5</a><a class="extend next" rel="next" href="/page/5/"><i class="fa fa-angle-right"></i></a>
   </nav>
 
 
@@ -1333,7 +1773,7 @@
               
                 <a href="/archives/">
               
-                  <span class="site-state-item-count">37</span>
+                  <span class="site-state-item-count">42</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
@@ -1355,7 +1795,7 @@
               
               <div class="site-state-item site-state-tags">
                 <a href="/tags/index.html">
-                  <span class="site-state-item-count">47</span>
+                  <span class="site-state-item-count">52</span>
                   <span class="site-state-item-name">标签</span>
                 </a>
               </div>
