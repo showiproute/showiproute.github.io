@@ -1,0 +1,772 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next mist use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="Java,Collection,ArrayList,Set,HashMap," />
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="123456789101112131415161718192021222324252627282930313233343536373839404142434445464748495051525354555657585960616263package CollectionReview;import java.util.ArrayList;import java.util.Collection">
+<meta name="keywords" content="Java,Collection,ArrayList,Set,HashMap">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Java集合总结">
+<meta property="og:url" content="http://blogoflyt.cn/2018/03/23/Java集合总结/index.html">
+<meta property="og:site_name" content="积累技术之路">
+<meta property="og:description" content="123456789101112131415161718192021222324252627282930313233343536373839404142434445464748495051525354555657585960616263package CollectionReview;import java.util.ArrayList;import java.util.Collection">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="https://s2.ax1x.com/2019/03/12/APoxb9.png">
+<meta property="og:image" content="https://s2.ax1x.com/2019/03/12/APTSER.png">
+<meta property="og:image" content="https://s2.ax1x.com/2019/03/12/APTPC6.png">
+<meta property="og:image" content="https://s2.ax1x.com/2019/03/12/APTi8K.png">
+<meta property="og:image" content="https://s2.ax1x.com/2019/03/12/APTu5t.png">
+<meta property="og:image" content="https://s2.ax1x.com/2019/03/12/APTQ8f.png">
+<meta property="og:image" content="https://s2.ax1x.com/2019/03/12/APT1xS.png">
+<meta property="og:image" content="https://s2.ax1x.com/2019/03/12/APT8Kg.png">
+<meta property="og:image" content="https://s2.ax1x.com/2019/03/12/APTGrQ.png">
+<meta property="og:image" content="https://s2.ax1x.com/2019/03/12/APTtVs.png">
+<meta property="og:image" content="https://s2.ax1x.com/2019/03/12/APTBxU.png">
+<meta property="og:image" content="https://s2.ax1x.com/2019/03/12/APTsr4.png">
+<meta property="og:image" content="https://s2.ax1x.com/2019/03/12/APTyqJ.png">
+<meta property="og:image" content="https://s2.ax1x.com/2019/03/12/APTcZ9.png">
+<meta property="og:image" content="https://s2.ax1x.com/2019/03/12/APTgaR.png">
+<meta property="og:image" content="https://s2.ax1x.com/2019/03/12/APT2I1.png">
+<meta property="og:image" content="https://s2.ax1x.com/2019/03/12/APTTqH.png">
+<meta property="og:image" content="https://s2.ax1x.com/2019/03/12/APTbdA.png">
+<meta property="og:image" content="https://s2.ax1x.com/2019/03/12/AP7pLQ.png">
+<meta property="og:updated_time" content="2019-03-12T05:55:14.139Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Java集合总结">
+<meta name="twitter:description" content="123456789101112131415161718192021222324252627282930313233343536373839404142434445464748495051525354555657585960616263package CollectionReview;import java.util.ArrayList;import java.util.Collection">
+<meta name="twitter:image" content="https://s2.ax1x.com/2019/03/12/APoxb9.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Mist',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://blogoflyt.cn/2018/03/23/Java集合总结/"/>
+
+
+
+
+
+  <title>Java集合总结 | 积累技术之路</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">积累技术之路</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">找到学习的热爱</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://blogoflyt.cn/2018/03/23/Java集合总结/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Richard">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/gakki.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="积累技术之路">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">Java集合总结</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-03-23T13:42:00+08:00">
+                2018-03-23
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Java/" itemprop="url" rel="index">
+                    <span itemprop="name">Java</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p><a href="https://imgchr.com/i/APoxb9" target="_blank" rel="noopener"><img src="https://s2.ax1x.com/2019/03/12/APoxb9.png" alt="APoxb9.png"></a></p>
+<p><a href="https://imgchr.com/i/APTSER" target="_blank" rel="noopener"><img src="https://s2.ax1x.com/2019/03/12/APTSER.png" alt="APTSER.png"></a></p>
+<p><a href="https://imgchr.com/i/APTPC6" target="_blank" rel="noopener"><img src="https://s2.ax1x.com/2019/03/12/APTPC6.png" alt="APTPC6.png"></a></p>
+<p><a href="https://imgchr.com/i/APTi8K" target="_blank" rel="noopener"><img src="https://s2.ax1x.com/2019/03/12/APTi8K.png" alt="APTi8K.png"></a></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br></pre></td><td class="code"><pre><span class="line">package CollectionReview;</span><br><span class="line"></span><br><span class="line">import java.util.ArrayList;</span><br><span class="line">import java.util.Collection;</span><br><span class="line">import java.util.Iterator;</span><br><span class="line"></span><br><span class="line">public class ArrayListTest &#123;</span><br><span class="line"></span><br><span class="line">	public static void main(String[] args) &#123;</span><br><span class="line">		</span><br><span class="line">		Collection c = new ArrayList();</span><br><span class="line">		</span><br><span class="line">		//isEmpty判断空，size为0返回true</span><br><span class="line">		System.out.println(&quot;c.isEmpty():&quot;+c.isEmpty());</span><br><span class="line">		//集合长度</span><br><span class="line">		System.out.println(&quot;c.size():&quot;+c.size());</span><br><span class="line">		//add添加集合元素</span><br><span class="line">		c.add(111);</span><br><span class="line">		c.add(&quot;aaa&quot;);</span><br><span class="line">		System.out.println(&quot;c.isEmpty():&quot;+c.isEmpty());</span><br><span class="line">		//集合长度</span><br><span class="line">		System.out.println(&quot;c.size():&quot;+c.size());</span><br><span class="line">		//删除指定集合元素</span><br><span class="line">		c.remove(&quot;aaa&quot;);</span><br><span class="line">		System.out.println(&quot;c.isEmpty():&quot;+c.isEmpty());</span><br><span class="line">		//集合长度</span><br><span class="line">		System.out.println(&quot;c.size():&quot;+c.size());</span><br><span class="line">		System.out.println(&quot;c.contains(111):&quot;+c.contains(111));</span><br><span class="line">		//清空集合元素</span><br><span class="line">		c.clear();</span><br><span class="line">		System.out.println(&quot;c.isEmpty():&quot;+c.isEmpty());</span><br><span class="line">		c.add(222);</span><br><span class="line">		c.add(&quot;bbb&quot;);</span><br><span class="line">		</span><br><span class="line">		//调用集合的实现类方法，创建Iterator</span><br><span class="line">		Iterator it = c.iterator();</span><br><span class="line">		//通过iterator变量进行迭代遍历</span><br><span class="line">		while(it.hasNext()) &#123;</span><br><span class="line">			Object obj = it.next();</span><br><span class="line">//			System.out.println(obj);</span><br><span class="line">			//因为集合里面含有不同类型的元素，所以想要获取集合中真正的元素类型，需要判断类型再强转</span><br><span class="line">			if(obj.getClass()==String.class) &#123;</span><br><span class="line">				System.out.println((String)obj);</span><br><span class="line">			&#125;</span><br><span class="line">			if(obj.getClass()==Integer.class) &#123;</span><br><span class="line">				System.out.println((Integer)obj);</span><br><span class="line">			&#125;</span><br><span class="line">		&#125;</span><br><span class="line">		</span><br><span class="line">		//规定集合泛型为String，说明集合里元素只能是String类型</span><br><span class="line">		ArrayList&lt;String&gt; c1 = new ArrayList&lt;String&gt;();</span><br><span class="line">		//如果添加的不是String，则编译器报错</span><br><span class="line">		//c1.add(111);</span><br><span class="line">		c1.add(&quot;haha&quot;);</span><br><span class="line">		c1.add(&quot;ddd&quot;);</span><br><span class="line">		c1.add(&quot;asdasd&quot;);</span><br><span class="line">		Iterator it1 = c1.iterator();</span><br><span class="line">		while (it1.hasNext()) &#123;</span><br><span class="line">			String str = (String)it1.next();</span><br><span class="line">			System.out.print(str+&quot; &quot;);</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;	</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p><a href="https://imgchr.com/i/APTu5t" target="_blank" rel="noopener"><img src="https://s2.ax1x.com/2019/03/12/APTu5t.png" alt="APTu5t.png"></a></p>
+<p><a href="https://imgchr.com/i/APTQ8f" target="_blank" rel="noopener"><img src="https://s2.ax1x.com/2019/03/12/APTQ8f.png" alt="APTQ8f.png"></a></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br></pre></td><td class="code"><pre><span class="line">package CollectionReview;</span><br><span class="line"></span><br><span class="line">import java.util.ArrayList;</span><br><span class="line">import java.util.Iterator;</span><br><span class="line">import java.util.List;</span><br><span class="line"></span><br><span class="line">public class ListTest &#123;</span><br><span class="line"></span><br><span class="line">	public static void main(String[] args) &#123;</span><br><span class="line">		</span><br><span class="line">		List list = new ArrayList();</span><br><span class="line">		//isEmpty判断空，size为0返回true</span><br><span class="line">		System.out.println(&quot;list.isEmpty():&quot;+list.isEmpty());</span><br><span class="line">		//List长度</span><br><span class="line">		System.out.println(&quot;list.size():&quot;+list.size());</span><br><span class="line">		//add添加List元素</span><br><span class="line">		list.add(111);</span><br><span class="line">		list.add(&quot;aaa&quot;);</span><br><span class="line">		System.out.println(&quot;list.isEmpty():&quot;+list.isEmpty());</span><br><span class="line">		//List长度</span><br><span class="line">		System.out.println(&quot;list.size():&quot;+list.size());</span><br><span class="line">		//删除指定List元素</span><br><span class="line">		list.remove(&quot;aaa&quot;);</span><br><span class="line">		System.out.println(&quot;list.isEmpty():&quot;+list.isEmpty());</span><br><span class="line">		//List长度</span><br><span class="line">		System.out.println(&quot;list.size():&quot;+list.size());</span><br><span class="line">		System.out.println(&quot;list.contains(111):&quot;+list.contains(111));</span><br><span class="line">		</span><br><span class="line">		//清空list元素</span><br><span class="line">		list.clear();</span><br><span class="line">		System.out.println(&quot;list.isEmpty():&quot;+list.isEmpty());</span><br><span class="line">		</span><br><span class="line">		ArrayList&lt;String&gt; list1 = new ArrayList&lt;String&gt;();</span><br><span class="line">		list1.add(&quot;aaa&quot;);</span><br><span class="line">		list1.add(&quot;bbb&quot;);</span><br><span class="line">		list1.add(&quot;ccc&quot;);</span><br><span class="line">		String str=&quot;ccc&quot;;</span><br><span class="line">		//str在List中的下标是多少，找到返回下标，找不到返回-1</span><br><span class="line">		int index = list1.indexOf(str);</span><br><span class="line">		System.out.println(&quot;str index:&quot;+index);</span><br><span class="line">		System.out.println(&quot;取List第0个下标的元素:&quot;+list1.get(0));</span><br><span class="line">		list1.add(1,&quot;ddd&quot;);</span><br><span class="line">		System.out.println(&quot;取List第1个下标的元素:&quot;+list1.get(1));</span><br><span class="line">		System.out.println(&quot;str index:&quot;+list1.indexOf(&quot;bbb&quot;));</span><br><span class="line">		</span><br><span class="line">		//List遍历方式for循环</span><br><span class="line">		for(int i=0;i&lt;list1.size();i++) &#123;</span><br><span class="line">			System.out.println(list1.get(i));</span><br><span class="line">		&#125;</span><br><span class="line">		System.out.println(&quot;\n-----------------------&quot;);</span><br><span class="line">		</span><br><span class="line">		//foreach循环遍历，前提List必须有泛型</span><br><span class="line">		for (String s : list1) &#123;</span><br><span class="line">			System.out.print(s+&quot; &quot;);</span><br><span class="line">		&#125;</span><br><span class="line">		System.out.println(&quot;\n-----------------------&quot;);</span><br><span class="line">		list1.remove(&quot;ddd&quot;);</span><br><span class="line">		list1.add(&quot;ddd&quot;);</span><br><span class="line">		for (String s : list1) &#123;</span><br><span class="line">			System.out.println(s+&quot; &quot;);</span><br><span class="line">		&#125;</span><br><span class="line">		</span><br><span class="line">		//Iterator迭代遍历</span><br><span class="line">		Iterator&lt;String&gt; it1 = list1.iterator();</span><br><span class="line">		while(it1.hasNext()) &#123;</span><br><span class="line">			String s = it1.next();</span><br><span class="line">			System.out.println(s+&quot; &quot;);</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">	</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p><a href="https://imgchr.com/i/APT1xS" target="_blank" rel="noopener"><img src="https://s2.ax1x.com/2019/03/12/APT1xS.png" alt="APT1xS.png"></a></p>
+<p><a href="https://imgchr.com/i/APT8Kg" target="_blank" rel="noopener"><img src="https://s2.ax1x.com/2019/03/12/APT8Kg.png" alt="APT8Kg.png"></a></p>
+<p><a href="https://imgchr.com/i/APTGrQ" target="_blank" rel="noopener"><img src="https://s2.ax1x.com/2019/03/12/APTGrQ.png" alt="APTGrQ.png"></a></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line">package CollectionReview;</span><br><span class="line"></span><br><span class="line">import java.util.HashSet;</span><br><span class="line">import java.util.Iterator;</span><br><span class="line">import java.util.Set;</span><br><span class="line"></span><br><span class="line">public class SetTest &#123;</span><br><span class="line"></span><br><span class="line">	public static void main(String[] args) &#123;</span><br><span class="line">		Set set = new HashSet();</span><br><span class="line">		set.add(&quot;hello&quot;);</span><br><span class="line">		set.add(&quot;world&quot;);</span><br><span class="line">		set.add(&quot;java&quot;);</span><br><span class="line">		//加入重复元素时，add方法会返回false</span><br><span class="line">//		set.add(&quot;hello&quot;);</span><br><span class="line">		//迭代办理</span><br><span class="line">		Iterator iter = set.iterator();</span><br><span class="line">		while(iter.hasNext()) &#123;</span><br><span class="line">			Object value = iter.next();</span><br><span class="line">			System.out.println(value);</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p><a href="https://imgchr.com/i/APTtVs" target="_blank" rel="noopener"><img src="https://s2.ax1x.com/2019/03/12/APTtVs.png" alt="APTtVs.png"></a></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br></pre></td><td class="code"><pre><span class="line">package CollectionReview;</span><br><span class="line"></span><br><span class="line">import java.util.HashSet;</span><br><span class="line"></span><br><span class="line">/*</span><br><span class="line"> * 实现类 HashSet</span><br><span class="line"> * 如果要正常使用HashSet存放对象，为了保证对象的内容不重复，则要求这个对象满足:</span><br><span class="line"> * 1.覆盖equals方法，要求相同的对象，调用equals方法返回true</span><br><span class="line"> * 2.覆盖hashcode方法，要求，相同对象的hashcode相同，不同对象的hashcode尽量不同</span><br><span class="line"> * HashSet存放字符串，因为字符串重写了Object的equals和hashcode方法，所以可以用HashSet给字符串去重</span><br><span class="line"> */</span><br><span class="line"></span><br><span class="line">public class HashCodeTest &#123;</span><br><span class="line"></span><br><span class="line">	private int n;</span><br><span class="line"></span><br><span class="line">	public HashCodeTest(int n) &#123;</span><br><span class="line">		this.n=n;</span><br><span class="line">	&#125;</span><br><span class="line">	</span><br><span class="line">	@Override</span><br><span class="line">	public boolean equals(Object obj) &#123;</span><br><span class="line">		System.out.println(&quot;do equals()&quot;);</span><br><span class="line">		return false;</span><br><span class="line">	&#125;</span><br><span class="line">	</span><br><span class="line">	@Override</span><br><span class="line">	public int hashCode() &#123;</span><br><span class="line">		System.out.println(&quot;do hashCode()&quot;);</span><br><span class="line">		return this.n;</span><br><span class="line">	&#125;</span><br><span class="line">	</span><br><span class="line">	public static void main(String[] args) &#123;</span><br><span class="line">		HashSet&lt;HashCodeTest&gt; set = new HashSet&lt;HashCodeTest&gt;();</span><br><span class="line">		HashCodeTest h1 = new HashCodeTest(1);</span><br><span class="line">		HashCodeTest h2= new HashCodeTest(2);</span><br><span class="line">		HashCodeTest h3 = new HashCodeTest(1);</span><br><span class="line">		</span><br><span class="line">		System.out.println(&quot;--------&quot;);</span><br><span class="line">		//先调hashCode()方法得到hash值，再和set集合里的其他hash值进行比对，如果不同，则添加进去</span><br><span class="line">		//如果有相同则调用equals()方法与hash值相同的对象进行判断，是否是同一对象</span><br><span class="line">		//如果是，则添加失败;否则添加成功</span><br><span class="line">		set.add(h1);</span><br><span class="line">		System.out.println(&quot;----------&quot;);</span><br><span class="line">	</span><br><span class="line">		if(!set.add(h2)) &#123;</span><br><span class="line">			System.out.println(&quot;添加失败&quot;);</span><br><span class="line">		&#125;else &#123;</span><br><span class="line">			System.out.println(&quot;添加成功&quot;);</span><br><span class="line">		&#125;</span><br><span class="line">		</span><br><span class="line">		if(!set.add(h3)) &#123;</span><br><span class="line">			System.out.println(&quot;添加失败&quot;);</span><br><span class="line">		&#125;else &#123;</span><br><span class="line">			System.out.println(&quot;添加成功&quot;);</span><br><span class="line">		&#125;</span><br><span class="line">	</span><br><span class="line">	&#125;</span><br><span class="line">	</span><br><span class="line">	/*</span><br><span class="line">	 * 结论：</span><br><span class="line">	 * 对于两个对象</span><br><span class="line">	 * 1)如果调用equals方法得到的结果为true，则两个对象的hashcode值必定相等</span><br><span class="line">	 * 2)如果equals方法得到的结果为false，则两个对象的hashcode值不一定不同</span><br><span class="line">	 * 3)如果两个对象的hashcode值不等，则equals方法得到的结果必定为false</span><br><span class="line">	 * 4)如果两个对象的hashcode值相等，则equals方法得到的结果未知</span><br><span class="line">	 */</span><br><span class="line">	</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p><a href="https://imgchr.com/i/APTBxU" target="_blank" rel="noopener"><img src="https://s2.ax1x.com/2019/03/12/APTBxU.png" alt="APTBxU.png"></a></p>
+<p><a href="https://imgchr.com/i/APTsr4" target="_blank" rel="noopener"><img src="https://s2.ax1x.com/2019/03/12/APTsr4.png" alt="APTsr4.png"></a></p>
+<p><a href="https://imgchr.com/i/APTyqJ" target="_blank" rel="noopener"><img src="https://s2.ax1x.com/2019/03/12/APTyqJ.png" alt="APTyqJ.png"></a></p>
+<p><a href="https://imgchr.com/i/APTcZ9" target="_blank" rel="noopener"><img src="https://s2.ax1x.com/2019/03/12/APTcZ9.png" alt="APTcZ9.png"></a></p>
+<p><a href="https://imgchr.com/i/APTgaR" target="_blank" rel="noopener"><img src="https://s2.ax1x.com/2019/03/12/APTgaR.png" alt="APTgaR.png"></a></p>
+<p><a href="https://imgchr.com/i/APT2I1" target="_blank" rel="noopener"><img src="https://s2.ax1x.com/2019/03/12/APT2I1.png" alt="APT2I1.png"></a></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br></pre></td><td class="code"><pre><span class="line">package CollectionReview;</span><br><span class="line"></span><br><span class="line">import java.util.Collection;</span><br><span class="line">import java.util.HashMap;</span><br><span class="line">import java.util.Iterator;</span><br><span class="line">import java.util.Map.Entry;</span><br><span class="line">import java.util.Set;</span><br><span class="line"></span><br><span class="line">public class mapKeyValueReview &#123;</span><br><span class="line"></span><br><span class="line">	private static final String Integer = null;</span><br><span class="line"></span><br><span class="line">	public static void main(String[] args) &#123;</span><br><span class="line">		</span><br><span class="line">		HashMap&lt;Integer, String&gt; map = new HashMap&lt;Integer,String&gt;();</span><br><span class="line">		System.out.println(&quot;map.isEmpty():&quot;+map.isEmpty());</span><br><span class="line">		System.out.println(&quot;map.size():&quot;+map.size());</span><br><span class="line">		map.put(1, &quot;a&quot;);</span><br><span class="line">		map.put(5, &quot;a&quot;);</span><br><span class="line">		map.put(3, &quot;n&quot;);</span><br><span class="line">		map.put(9, &quot;m&quot;);</span><br><span class="line">		System.out.println(&quot;map.size():&quot;+map.size());</span><br><span class="line">		System.out.println(&quot;map.containsKey(5):&quot;+map.containsKey(5));</span><br><span class="line">		System.out.println(&quot;map.containsValue(n):&quot;+map.containsValue(&quot;n&quot;));</span><br><span class="line">		</span><br><span class="line">		System.out.println(&quot;------map.remove(3)后------&quot;);</span><br><span class="line">		map.remove(3);</span><br><span class="line">		System.out.println(&quot;map.size():&quot;+map.size());</span><br><span class="line">		</span><br><span class="line">		System.out.println(&quot;-------map.clear()后------&quot;);</span><br><span class="line">		map.clear();</span><br><span class="line">		System.out.println(&quot;map.isEmpty():&quot;+map.isEmpty());</span><br><span class="line">		System.out.println(&quot;-----------------------&quot;);</span><br><span class="line">		</span><br><span class="line">		map.put(1, &quot;a&quot;);</span><br><span class="line">		map.put(5, &quot;a&quot;);</span><br><span class="line">		map.put(3, &quot;n&quot;);</span><br><span class="line">		map.put(9, &quot;m&quot;);</span><br><span class="line">		/*</span><br><span class="line">		 * Map的遍历</span><br><span class="line">		 * 1、获取map中的set键</span><br><span class="line">		 * 2、遍历set</span><br><span class="line">		 * 3、根据map的key来获取value</span><br><span class="line">		 */</span><br><span class="line">		Set&lt;Integer&gt; set = map.keySet();</span><br><span class="line">		Iterator&lt;Integer&gt; it = set.iterator();</span><br><span class="line">		while(it.hasNext()) &#123;</span><br><span class="line">			Integer key =(Integer) it.next();</span><br><span class="line">			//map.get(key); 获取map的键对应的值</span><br><span class="line">			String value=map.get(key);</span><br><span class="line">			System.out.println(key+&quot;--&gt;&quot;+value);</span><br><span class="line">		&#125;</span><br><span class="line">		</span><br><span class="line">		System.out.println(&quot;--------------------&quot;);</span><br><span class="line">		/*</span><br><span class="line">		 * 用map.entrySet()获取Entry的set集合</span><br><span class="line">		 * 遍历Entry的set集合，获取每个Entry对象</span><br><span class="line">		 * 根据entry.getKey获取key值</span><br><span class="line">		 * 根据entry.getValue来获取value值</span><br><span class="line">		 * 注意：如果map中的key值有null，不要用此种方法遍历，小心空指针</span><br><span class="line">		 */</span><br><span class="line">		Set&lt;Entry&lt;Integer, String&gt;&gt; set1 = map.entrySet();</span><br><span class="line">		Iterator&lt;Entry&lt;Integer, String&gt;&gt; iterator = set1.iterator();</span><br><span class="line">		while(iterator.hasNext()) &#123;</span><br><span class="line">			Entry&lt;Integer, String&gt; entry =(Entry) iterator.next();</span><br><span class="line">			//获取键</span><br><span class="line">			int key =(Integer) entry.getKey();</span><br><span class="line">			//获取值</span><br><span class="line">			String value = entry.getValue();</span><br><span class="line">			System.out.println(key+&quot;--&gt;&quot;+value);</span><br><span class="line">		&#125;</span><br><span class="line">		</span><br><span class="line">		//获取所有值集合</span><br><span class="line">		Collection&lt;String&gt; c = map.values();</span><br><span class="line">		Iterator&lt;String&gt; iterator2 = c.iterator();</span><br><span class="line">		while(iterator2.hasNext()) &#123;</span><br><span class="line">			String s = (String)iterator2.next();</span><br><span class="line">			System.out.print(s+&quot; &quot;);</span><br><span class="line">		&#125;</span><br><span class="line">	</span><br><span class="line">	&#125;</span><br><span class="line">	</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p><a href="https://imgchr.com/i/APTTqH" target="_blank" rel="noopener"><img src="https://s2.ax1x.com/2019/03/12/APTTqH.png" alt="APTTqH.png"></a></p>
+<p><a href="https://imgchr.com/i/APTbdA" target="_blank" rel="noopener"><img src="https://s2.ax1x.com/2019/03/12/APTbdA.png" alt="APTbdA.png"></a></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br></pre></td><td class="code"><pre><span class="line">package CollectionReview;</span><br><span class="line"></span><br><span class="line">import java.util.ArrayList;</span><br><span class="line">import java.util.Collections;</span><br><span class="line">import java.util.Iterator;</span><br><span class="line">import java.util.Map;</span><br><span class="line">import java.util.Map.Entry;</span><br><span class="line">import java.util.Set;</span><br><span class="line">import java.util.TreeMap;</span><br><span class="line">import java.util.TreeSet;</span><br><span class="line"></span><br><span class="line">/*</span><br><span class="line"> * Collections排序，需要list里面的元素，实现Comparable接口</span><br><span class="line"> */</span><br><span class="line"></span><br><span class="line">public class ListComparable &#123;</span><br><span class="line"></span><br><span class="line">	public static class Student implements Comparable&lt;Student&gt;&#123;</span><br><span class="line"></span><br><span class="line">		private String name;</span><br><span class="line">		</span><br><span class="line">		/*分数</span><br><span class="line">		 */</span><br><span class="line">		private int score;</span><br><span class="line">		</span><br><span class="line">		public Student(String name,int score) &#123;</span><br><span class="line">			this.name=name;</span><br><span class="line">			this.score=score;</span><br><span class="line">		&#125;</span><br><span class="line">		//实现compareTo方法，进行比较降序排序</span><br><span class="line">		@Override</span><br><span class="line">		public int compareTo(Student o) &#123;</span><br><span class="line">			// TODO Auto-generated method stub</span><br><span class="line">			if(this.score&lt;o.score) &#123;</span><br><span class="line">				return 1;</span><br><span class="line">			&#125;else if(this.score == o.score) &#123;</span><br><span class="line">				return 0;</span><br><span class="line">			&#125;else &#123;</span><br><span class="line">				return -1;</span><br><span class="line">			&#125;</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">	</span><br><span class="line">	public static void main(String[] args) &#123;</span><br><span class="line">		Student s1 = new Student(&quot;ming&quot;, 90);</span><br><span class="line">		Student s2 = new Student(&quot;aaa&quot;, 22);</span><br><span class="line">		Student s3 = new Student(&quot;ddd&quot;, 333);</span><br><span class="line">		ArrayList&lt;Student&gt; arrayList = new ArrayList&lt;&gt;();</span><br><span class="line">		arrayList.add(s1);</span><br><span class="line">		arrayList.add(s2);</span><br><span class="line">		arrayList.add(s3);</span><br><span class="line">		</span><br><span class="line">		for (Student s : arrayList) &#123;</span><br><span class="line">			System.out.println(s.name+&quot;\t&quot;+s.score);</span><br><span class="line">		&#125;</span><br><span class="line">		System.out.println(&quot;-----------------&quot;);</span><br><span class="line">		//对arraylist进行排序</span><br><span class="line">		Collections.sort(arrayList);</span><br><span class="line">		for (Student s : arrayList) &#123;</span><br><span class="line">			System.out.println(s.name+&quot;\t&quot;+s.score);</span><br><span class="line">		&#125;</span><br><span class="line">		System.out.println(&quot;-------------treeSet-------------&quot;);</span><br><span class="line">		//由于Student实现了Comparable类的compareTo方法，treeSet会根据Student类的排序算法进行排序</span><br><span class="line">		Set set=new TreeSet();</span><br><span class="line">		set.add(new Student(&quot;TOM&quot;, 90));</span><br><span class="line">		set.add(new Student(&quot;JIM&quot;, 60));</span><br><span class="line">		set.add(new Student(&quot;jerry&quot;, 80));</span><br><span class="line">		Iterator iter = set.iterator();</span><br><span class="line">		while(iter.hasNext()) &#123;</span><br><span class="line">			Student stu = (Student)iter.next();</span><br><span class="line">			System.out.println(stu.name+&quot; &quot;+stu.score);</span><br><span class="line">		&#125;</span><br><span class="line">		</span><br><span class="line">		//TreeMap已经实现了Comparable接口</span><br><span class="line">		Map&lt;String, String&gt; map = new TreeMap&lt;&gt;();</span><br><span class="line">		map.put(&quot;7&quot;, &quot;777&quot;);</span><br><span class="line">		map.put(&quot;5&quot;, &quot;555&quot;);</span><br><span class="line">		map.put(&quot;9&quot;, &quot;999&quot;);</span><br><span class="line">		//由于string已经实现了Comparable类的comapreTo方法</span><br><span class="line">		Set&lt;Entry&lt;String, String&gt;&gt; set2 = map.entrySet();</span><br><span class="line">		Iterator&lt;Entry&lt;String, String&gt;&gt; iterator = set2.iterator();</span><br><span class="line">		while(iterator.hasNext()) &#123;</span><br><span class="line">			Entry&lt;String, String&gt; next = iterator.next();</span><br><span class="line">			System.out.println(next.getKey()+&quot;--&gt;&quot;+next.getValue());</span><br><span class="line">		&#125;</span><br><span class="line">		</span><br><span class="line">	&#125;</span><br><span class="line">	</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p><a href="https://imgchr.com/i/AP7pLQ" target="_blank" rel="noopener"><img src="https://s2.ax1x.com/2019/03/12/AP7pLQ.png" alt="AP7pLQ.png"></a></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br></pre></td><td class="code"><pre><span class="line">package CollectionReview;</span><br><span class="line"></span><br><span class="line">import java.util.ArrayList;</span><br><span class="line">import java.util.Collections;</span><br><span class="line">import java.util.Iterator;</span><br><span class="line">import java.util.Map;</span><br><span class="line">import java.util.Map.Entry;</span><br><span class="line">import java.util.Set;</span><br><span class="line">import java.util.TreeMap;</span><br><span class="line">import java.util.TreeSet;</span><br><span class="line"></span><br><span class="line">/*</span><br><span class="line"> * Collections排序，需要list里面的元素，实现Comparable接口</span><br><span class="line"> */</span><br><span class="line"></span><br><span class="line">public class ListComparable &#123;</span><br><span class="line"></span><br><span class="line">	public static class Student implements Comparable&lt;Student&gt;&#123;</span><br><span class="line"></span><br><span class="line">		private String name;</span><br><span class="line">		</span><br><span class="line">		/*分数</span><br><span class="line">		 */</span><br><span class="line">		private int score;</span><br><span class="line">		</span><br><span class="line">		public Student(String name,int score) &#123;</span><br><span class="line">			this.name=name;</span><br><span class="line">			this.score=score;</span><br><span class="line">		&#125;</span><br><span class="line">		//实现compareTo方法，进行比较降序排序</span><br><span class="line">		@Override</span><br><span class="line">		public int compareTo(Student o) &#123;</span><br><span class="line">			// TODO Auto-generated method stub</span><br><span class="line">			if(this.score&lt;o.score) &#123;</span><br><span class="line">				return 1;</span><br><span class="line">			&#125;else if(this.score == o.score) &#123;</span><br><span class="line">				return 0;</span><br><span class="line">			&#125;else &#123;</span><br><span class="line">				return -1;</span><br><span class="line">			&#125;</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">	</span><br><span class="line">	public static void main(String[] args) &#123;</span><br><span class="line">		Student s1 = new Student(&quot;ming&quot;, 90);</span><br><span class="line">		Student s2 = new Student(&quot;aaa&quot;, 22);</span><br><span class="line">		Student s3 = new Student(&quot;ddd&quot;, 333);</span><br><span class="line">		ArrayList&lt;Student&gt; arrayList = new ArrayList&lt;&gt;();</span><br><span class="line">		arrayList.add(s1);</span><br><span class="line">		arrayList.add(s2);</span><br><span class="line">		arrayList.add(s3);</span><br><span class="line">		</span><br><span class="line">		for (Student s : arrayList) &#123;</span><br><span class="line">			System.out.println(s.name+&quot;\t&quot;+s.score);</span><br><span class="line">		&#125;</span><br><span class="line">		System.out.println(&quot;-----------------&quot;);</span><br><span class="line">		//对arraylist进行排序</span><br><span class="line">		Collections.sort(arrayList);</span><br><span class="line">		for (Student s : arrayList) &#123;</span><br><span class="line">			System.out.println(s.name+&quot;\t&quot;+s.score);</span><br><span class="line">		&#125;</span><br><span class="line">		System.out.println(&quot;-------------treeSet-------------&quot;);</span><br><span class="line">		//由于Student实现了Comparable类的compareTo方法，treeSet会根据Student类的排序算法进行排序</span><br><span class="line">		Set set=new TreeSet();</span><br><span class="line">		set.add(new Student(&quot;TOM&quot;, 90));</span><br><span class="line">		set.add(new Student(&quot;JIM&quot;, 60));</span><br><span class="line">		set.add(new Student(&quot;jerry&quot;, 80));</span><br><span class="line">		Iterator iter = set.iterator();</span><br><span class="line">		while(iter.hasNext()) &#123;</span><br><span class="line">			Student stu = (Student)iter.next();</span><br><span class="line">			System.out.println(stu.name+&quot; &quot;+stu.score);</span><br><span class="line">		&#125;</span><br><span class="line">		</span><br><span class="line">		//TreeMap已经实现了Comparable接口</span><br><span class="line">		Map&lt;String, String&gt; map = new TreeMap&lt;&gt;();</span><br><span class="line">		map.put(&quot;7&quot;, &quot;777&quot;);</span><br><span class="line">		map.put(&quot;5&quot;, &quot;555&quot;);</span><br><span class="line">		map.put(&quot;9&quot;, &quot;999&quot;);</span><br><span class="line">		//由于string已经实现了Comparable类的comapreTo方法</span><br><span class="line">		Set&lt;Entry&lt;String, String&gt;&gt; set2 = map.entrySet();</span><br><span class="line">		Iterator&lt;Entry&lt;String, String&gt;&gt; iterator = set2.iterator();</span><br><span class="line">		while(iterator.hasNext()) &#123;</span><br><span class="line">			Entry&lt;String, String&gt; next = iterator.next();</span><br><span class="line">			System.out.println(next.getKey()+&quot;--&gt;&quot;+next.getValue());</span><br><span class="line">		&#125;</span><br><span class="line">		</span><br><span class="line">	&#125;</span><br><span class="line">	</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/Java/" rel="tag"># Java</a>
+          
+            <a href="/tags/Collection/" rel="tag"># Collection</a>
+          
+            <a href="/tags/ArrayList/" rel="tag"># ArrayList</a>
+          
+            <a href="/tags/Set/" rel="tag"># Set</a>
+          
+            <a href="/tags/HashMap/" rel="tag"># HashMap</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2018/03/22/单例模式-懒汉式、饿汉式/" rel="next" title="单例模式-----懒汉式、饿汉式">
+                <i class="fa fa-chevron-left"></i> 单例模式-----懒汉式、饿汉式
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2018/03/23/String、StringBuffer、StringBuilder/" rel="prev" title="String、StringBuffer、StringBuilder">
+                String、StringBuffer、StringBuilder <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+
+      <section class="site-overview-wrap sidebar-panel sidebar-panel-active">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image"
+                src="/images/gakki.jpg"
+                alt="Richard" />
+            
+              <p class="site-author-name" itemprop="name">Richard</p>
+              <p class="site-description motion-element" itemprop="description">悟已往之不谏,知来者之可追</p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">50</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">13</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">69</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+
+          
+          
+
+          
+          
+            <div class="links-of-blogroll motion-element links-of-blogroll-block">
+              <div class="links-of-blogroll-title">
+                <i class="fa  fa-fw fa-link"></i>
+                Links
+              </div>
+              <ul class="links-of-blogroll-list">
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://github.com/showiproute" title="Github" target="_blank">Github</a>
+                  </li>
+                
+              </ul>
+            </div>
+          
+
+          
+
+        </div>
+      </section>
+
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2019</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Richard</span>
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Mist</a> v5.1.4</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>
