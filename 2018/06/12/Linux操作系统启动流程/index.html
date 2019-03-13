@@ -1,0 +1,782 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next mist use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="Linux,启动流程," />
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="转载https://www.cnblogs.com/kevingrace/p/6244584.html   12345678910总的来说，linux系统启动流程可以简单总结为以下几步：1）开机BIOS自检，加载硬盘。2）读取MBR,进行MBR引导。3）grub引导菜单(Boot Loader)。4）加载内核kernel。5）启动init进程，依据inittab文件设定运行级别6）init进程，">
+<meta name="keywords" content="Linux,启动流程">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Linux操作系统启动流程">
+<meta property="og:url" content="http://blogoflyt.cn/2018/06/12/Linux操作系统启动流程/index.html">
+<meta property="og:site_name" content="积累技术之路">
+<meta property="og:description" content="转载https://www.cnblogs.com/kevingrace/p/6244584.html   12345678910总的来说，linux系统启动流程可以简单总结为以下几步：1）开机BIOS自检，加载硬盘。2）读取MBR,进行MBR引导。3）grub引导菜单(Boot Loader)。4）加载内核kernel。5）启动init进程，依据inittab文件设定运行级别6）init进程，">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="https://s2.ax1x.com/2019/03/13/AkNRNn.png">
+<meta property="og:image" content="https://s2.ax1x.com/2019/03/13/AkNTuF.png">
+<meta property="og:image" content="https://s2.ax1x.com/2019/03/13/AkN7B4.png">
+<meta property="og:image" content="https://s2.ax1x.com/2019/03/13/AkNt7d.png">
+<meta property="og:image" content="https://s2.ax1x.com/2019/03/13/AkUpuD.png">
+<meta property="og:image" content="https://s2.ax1x.com/2019/03/13/AkUFUA.png">
+<meta property="og:image" content="https://s2.ax1x.com/2019/03/13/AkUev8.png">
+<meta property="og:image" content="https://s2.ax1x.com/2019/03/13/AkUlUs.png">
+<meta property="og:updated_time" content="2019-03-13T11:59:25.156Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Linux操作系统启动流程">
+<meta name="twitter:description" content="转载https://www.cnblogs.com/kevingrace/p/6244584.html   12345678910总的来说，linux系统启动流程可以简单总结为以下几步：1）开机BIOS自检，加载硬盘。2）读取MBR,进行MBR引导。3）grub引导菜单(Boot Loader)。4）加载内核kernel。5）启动init进程，依据inittab文件设定运行级别6）init进程，">
+<meta name="twitter:image" content="https://s2.ax1x.com/2019/03/13/AkNRNn.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Mist',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://blogoflyt.cn/2018/06/12/Linux操作系统启动流程/"/>
+
+
+
+
+
+  <title>Linux操作系统启动流程 | 积累技术之路</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">积累技术之路</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">找到学习的热爱</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://blogoflyt.cn/2018/06/12/Linux操作系统启动流程/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Richard">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/gakki.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="积累技术之路">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">Linux操作系统启动流程</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-06-12T18:24:00+08:00">
+                2018-06-12
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Linux/" itemprop="url" rel="index">
+                    <span itemprop="name">Linux</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <blockquote>
+<p>转载<a href="https://www.cnblogs.com/kevingrace/p/6244584.html" target="_blank" rel="noopener">https://www.cnblogs.com/kevingrace/p/6244584.html</a></p>
+</blockquote>
+<p><a href="https://imgchr.com/i/AkNRNn" target="_blank" rel="noopener"><img src="https://s2.ax1x.com/2019/03/13/AkNRNn.png" alt="AkNRNn.png"></a></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">总的来说，linux系统启动流程可以简单总结为以下几步：</span><br><span class="line">1）开机BIOS自检，加载硬盘。</span><br><span class="line">2）读取MBR,进行MBR引导。</span><br><span class="line">3）grub引导菜单(Boot Loader)。</span><br><span class="line">4）加载内核kernel。</span><br><span class="line">5）启动init进程，依据inittab文件设定运行级别</span><br><span class="line">6）init进程，执行rc.sysinit文件。</span><br><span class="line">7）启动内核模块，执行不同级别的脚本程序。</span><br><span class="line">8）执行/etc/rc.d/rc.local</span><br><span class="line">9）启动mingetty，进入系统登陆界面。</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>linux系统安装时，如果要想设置开启启动项，可以：<br>开机到BIOS提醒界面，按键F11（Dell服务器的做法）进入BIOS设置BOOT MENU，继而设置启动项：硬盘HD启动，光盘CD/DVD启动，还是U盘USB启动。</p>
+</blockquote>
+<h5 id="下面就linux操作系统的启动过程做一详细解析记录："><a href="#下面就linux操作系统的启动过程做一详细解析记录：" class="headerlink" title="下面就linux操作系统的启动过程做一详细解析记录："></a>下面就linux操作系统的启动过程做一详细解析记录：</h5><h6 id="加载内核"><a href="#加载内核" class="headerlink" title="加载内核"></a>加载内核</h6><p>操作系统接管硬件以后，首先读入 /boot 目录下的内核文件。</p>
+<p><a href="https://imgchr.com/i/AkNTuF" target="_blank" rel="noopener"><img src="https://s2.ax1x.com/2019/03/13/AkNTuF.png" alt="AkNTuF.png"></a><br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">[root@bastion-IDC ~]# ll /boot/</span><br><span class="line">total 21668</span><br><span class="line">-rw-r--r--. 1 root root   105195 Nov 22  2013 config-2.6.32-431.el6.x86_64</span><br><span class="line">drwxr-xr-x. 3 root root     1024 Aug 22 16:31 efi</span><br><span class="line">drwxr-xr-x. 2 root root     1024 Aug 22 16:32 grub</span><br><span class="line">-rw-------. 1 root root 15217153 Aug 22 16:32 initramfs-2.6.32-431.el6.x86_64.img</span><br><span class="line">drwx------. 2 root root    12288 Aug 22 16:24 lost+found</span><br><span class="line">-rw-r--r--. 1 root root   193758 Nov 22  2013 symvers-2.6.32-431.el6.x86_64.gz</span><br><span class="line">-rw-r--r--. 1 root root  2518236 Nov 22  2013 System.map-2.6.32-431.el6.x86_64</span><br><span class="line">-rwxr-xr-x. 1 root root  4128368 Nov 22  2013 vmlinuz-2.6.32-431.el6.x86_64</span><br></pre></td></tr></table></figure></p>
+<h6 id="启动初始化进程"><a href="#启动初始化进程" class="headerlink" title="启动初始化进程"></a>启动初始化进程</h6><p>内核文件加载以后，就开始运行第一个程序 /sbin/init，它的作用是初始化系统环境。</p>
+<p><a href="https://imgchr.com/i/AkN7B4" target="_blank" rel="noopener"><img src="https://s2.ax1x.com/2019/03/13/AkN7B4.png" alt="AkN7B4.png"></a></p>
+<p>由于init是第一个运行的程序，它的进程编号（pid）就是1。其他所有进程都从它衍生，都是它的子进程。</p>
+<h6 id="确定运行级别"><a href="#确定运行级别" class="headerlink" title="确定运行级别"></a>确定运行级别</h6><p>许多程序需要开机启动。它们在Windows叫做”服务”（service），在Linux就叫做”守护进程”（daemon）。<br>init进程的一大任务，就是去运行这些开机启动的程序。但是，不同的场合需要启动不同的程序，比如用作服务器时，需要启动Apache，用作桌面就不需要。Linux允许为不同的场合，分配不同的开机启动程序，这就叫做”运行级别”（runlevel）。也就是说，启动时根据”运行级别”，确定要运行哪些程序。<br><a href="https://imgchr.com/i/AkNt7d" target="_blank" rel="noopener"><img src="https://s2.ax1x.com/2019/03/13/AkNt7d.png" alt="AkNt7d.png"></a></p>
+<h6 id="Linux预置七种init运行级别（0-6）："><a href="#Linux预置七种init运行级别（0-6）：" class="headerlink" title="Linux预置七种init运行级别（0-6）："></a>Linux预置七种init运行级别（0-6）：</h6><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line">0：关机模式    （相当于poweroff）</span><br><span class="line">1：单用户模式（破解root密码的方法：linux系统root密码遗忘的情况下的解决办法）</span><br><span class="line">2：无网络支持的多用户模式</span><br><span class="line">3：有网络支持的多用户模式（也就是文本模式，工作中最常用的模式）</span><br><span class="line">4：保留，未使用</span><br><span class="line">5：有网络支持的X-windows支持多用户模式（也就是桌面图形模式）</span><br><span class="line">6: 重新引导系统，即重启    （相当于reboot）</span><br><span class="line">init进程首先读取文件 /etc/inittab，它是运行级别的设置文件。</span><br><span class="line">如果打开它，可以看到第一行是这样的：</span><br><span class="line">[root@bastion-IDC ~]# cat /etc/inittab </span><br><span class="line">....</span><br><span class="line">id:3:initdefault:</span><br><span class="line"></span><br><span class="line">initdefault的值是3，表明系统启动时的运行级别为3。如果需要指定其他级别，可以手动修改这个值。</span><br><span class="line">那么，运行级别3有哪些什么程序呢，系统怎么知道每个级别应该加载哪些程序呢？</span><br><span class="line">答案是每个运行级别在/etc目录下面，都有一个对应的子目录，指定要加载的程序。</span><br><span class="line"></span><br><span class="line">　　/etc/rc0.d</span><br><span class="line">　　/etc/rc1.d</span><br><span class="line">　　/etc/rc2.d</span><br><span class="line">　　/etc/rc3.d</span><br><span class="line">　　/etc/rc4.d</span><br><span class="line">　　/etc/rc5.d</span><br><span class="line">　　/etc/rc6.d</span><br><span class="line"></span><br><span class="line">上面目录名中的&quot;rc&quot;，表示run command（运行程序），最后的d表示directory（目录）。下面让我们看看 /etc/rc3.d 目录中到底指定了哪些程序。</span><br></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br></pre></td><td class="code"><pre><span class="line">[root@bastion-IDC ~]# ll /etc/rc3.d/</span><br><span class="line">total 0</span><br><span class="line">lrwxrwxrwx. 1 root root 19 Aug 22 16:30 K10saslauthd -&gt; ../init.d/saslauthd</span><br><span class="line">lrwxrwxrwx. 1 root root 18 Aug 22 16:47 K15svnserve -&gt; ../init.d/svnserve</span><br><span class="line">lrwxrwxrwx. 1 root root 15 Aug 23 16:21 K25squid -&gt; ../init.d/squid</span><br><span class="line">lrwxrwxrwx. 1 root root 19 Dec 23 13:14 K45memcached -&gt; ../init.d/memcached</span><br><span class="line">lrwxrwxrwx. 1 root root 20 Aug 22 16:30 K50netconsole -&gt; ../init.d/netconsole</span><br><span class="line">lrwxrwxrwx. 1 root root 13 Dec 21 17:45 K60nfs -&gt; ../init.d/nfs</span><br><span class="line">lrwxrwxrwx. 1 root root 20 Dec 21 17:45 K69rpcsvcgssd -&gt; ../init.d/rpcsvcgssd</span><br><span class="line">lrwxrwxrwx. 1 root root 17 Nov 24 14:45 K75ntpdate -&gt; ../init.d/ntpdate</span><br><span class="line">lrwxrwxrwx. 1 root root 20 Aug 22 16:31 K87multipathd -&gt; ../init.d/multipathd</span><br><span class="line">lrwxrwxrwx. 1 root root 21 Aug 22 16:30 K87restorecond -&gt; ../init.d/restorecond</span><br><span class="line">lrwxrwxrwx. 1 root root 15 Aug 22 16:30 K89rdisc -&gt; ../init.d/rdisc</span><br><span class="line">lrwxrwxrwx. 1 root root 22 Aug 22 16:31 S02lvm2-monitor -&gt; ../init.d/lvm2-monitor</span><br><span class="line">lrwxrwxrwx. 1 root root 16 Aug 22 16:31 S07iscsid -&gt; ../init.d/iscsid</span><br><span class="line">lrwxrwxrwx. 1 root root 19 Aug 22 16:30 S08ip6tables -&gt; ../init.d/ip6tables</span><br><span class="line">lrwxrwxrwx. 1 root root 18 Aug 22 16:30 S08iptables -&gt; ../init.d/iptables</span><br><span class="line">lrwxrwxrwx. 1 root root 17 Aug 22 16:30 S10network -&gt; ../init.d/network</span><br><span class="line">lrwxrwxrwx. 1 root root 16 Aug 22 16:31 S11auditd -&gt; ../init.d/auditd</span><br><span class="line">lrwxrwxrwx. 1 root root 17 Aug 22 16:30 S12rsyslog -&gt; ../init.d/rsyslog</span><br><span class="line">lrwxrwxrwx. 1 root root 15 Dec 21 17:45 S13iscsi -&gt; ../init.d/iscsi</span><br><span class="line">lrwxrwxrwx. 1 root root 17 Dec 21 17:45 S13rpcbind -&gt; ../init.d/rpcbind</span><br><span class="line">lrwxrwxrwx. 1 root root 17 Dec 21 17:45 S14nfslock -&gt; ../init.d/nfslock</span><br><span class="line">lrwxrwxrwx. 1 root root 19 Aug 22 16:31 S15mdmonitor -&gt; ../init.d/mdmonitor</span><br><span class="line">lrwxrwxrwx. 1 root root 17 Dec 21 17:45 S19rpcgssd -&gt; ../init.d/rpcgssd</span><br><span class="line">lrwxrwxrwx. 1 root root 26 Aug 22 16:31 S25blk-availability -&gt; ../init.d/blk-availability</span><br><span class="line">lrwxrwxrwx. 1 root root 15 Aug 22 16:30 S25netfs -&gt; ../init.d/netfs</span><br><span class="line">lrwxrwxrwx. 1 root root 19 Aug 22 16:30 S26udev-post -&gt; ../init.d/udev-post</span><br><span class="line">lrwxrwxrwx. 1 root root 18 Oct 25 11:49 S50onealert -&gt; ../init.d/onealert</span><br><span class="line">lrwxrwxrwx. 1 root root 14 Aug 22 16:31 S55sshd -&gt; ../init.d/sshd</span><br><span class="line">lrwxrwxrwx. 1 root root 16 Oct 26 09:47 S56xinetd -&gt; ../init.d/xinetd</span><br><span class="line">lrwxrwxrwx. 1 root root 17 Aug 22 16:30 S80postfix -&gt; ../init.d/postfix</span><br><span class="line">lrwxrwxrwx. 1 root root 15 Aug 22 16:30 S90crond -&gt; ../init.d/crond</span><br><span class="line">lrwxrwxrwx. 1 root root 11 Aug 22 16:30 S99local -&gt; ../rc.local</span><br></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">可以看到：</span><br><span class="line">字母S表示Start，也就是启动的意思（启动脚本的运行参数为start）</span><br><span class="line">如果这个位置是字母K，就代表Kill（关闭），即如果从其他运行级别切换过来，需要关闭的程序（启动脚本的运行参数为stop）。</span><br><span class="line">后面的两位数字表示处理顺序，数字越小越早处理，所以第一个启动的程序是motd，然后是rpcbing、nfs......数字相同时，则按照程序名的字母顺序启动，所以rsyslog会先于sudo启动。</span><br><span class="line">这个目录里的所有文件（除了README），就是启动时要加载的程序。如果想增加或删除某些程序，不建议手动修改 /etc/rcN.d 目录，最好是用一些专门命令进行管理（参考这里和这里）。</span><br></pre></td></tr></table></figure>
+<h6 id="加载开机启动程序"><a href="#加载开机启动程序" class="headerlink" title="加载开机启动程序"></a>加载开机启动程序</h6><p>前面提到，七种预设的”运行级别”各自有一个目录，存放需要开机启动的程序。不难想到，如果多个”运行级别”需要启动同一个程序，那么这个程序的启动脚本，就会在每一个目录里都有一个拷贝。这样会造成管理上的困扰：如果要修改启动脚本，岂不是每个目录都要改一遍？</p>
+<p>Linux的解决办法，就是七个 /etc/rcN.d 目录里列出的程序，都设为链接文件，指向另外一个目录 /etc/init.d ，真正的启动脚本都统一放在这个目录中。init进程逐一加载开机启动程序，其实就是运行这个目录里的启动脚本。</p>
+<p><a href="https://imgchr.com/i/AkUpuD" target="_blank" rel="noopener"><img src="https://s2.ax1x.com/2019/03/13/AkUpuD.png" alt="AkUpuD.png"></a></p>
+<p>下面就是链接文件真正的指向</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">[root@bastion-IDC ~]# ls -l /etc/rc3.d</span><br><span class="line">lrwxrwxrwx. 1 root root 10 Aug 22 16:30 /etc/rc3.d -&gt; rc.d/rc3.d</span><br></pre></td></tr></table></figure>
+<p>这样做的另一个好处，就是如果你要手动关闭或重启某个进程，直接到目录 /etc/init.d 中寻找启动脚本即可。<br>比如，我要重启iptables服务器，就运行下面的命令：<br>[root@bastion-IDC ~]# /etc/init.d/iptables restart</p>
+<p>/etc/init.d 这个目录名最后一个字母d，是directory的意思，表示这是一个目录，用来与程序 /etc/init 区分。</p>
+<h6 id="用户登录"><a href="#用户登录" class="headerlink" title="用户登录"></a>用户登录</h6><p>开机启动程序加载完毕以后，就要让用户登录了。<br><a href="https://imgchr.com/i/AkUFUA" target="_blank" rel="noopener"><img src="https://s2.ax1x.com/2019/03/13/AkUFUA.png" alt="AkUFUA.png"></a><br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">一般来说，用户的登录方式有三种：命令行登录、ssh登录、图形界面登录。这三种情况，都有自己的方式对用户进行认证。</span><br><span class="line">1）命令行登录：init进程调用getty程序（意为get teletype），让用户输入用户名和密码。输入完成后，再调用login程序，核对密码（Debian还会再多运行一个身份核对程序/etc/pam.d/login）。如果密码正确，就从文件 /etc/passwd 读取该用户指定的shell，然后启动这个shell。</span><br><span class="line">2）ssh登录：这时系统调用sshd程序（Debian还会再运行/etc/pam.d/ssh ），取代getty和login，然后启动shell。</span><br><span class="line">3）图形界面登录：init进程调用显示管理器，Gnome图形界面对应的显示管理器为gdm（GNOME Display Manager），然后用户输入用户名和密码。如果密码正确，就读取/etc/gdm3/Xsession，启动用户的会话。</span><br></pre></td></tr></table></figure></p>
+<h6 id="进入-login-shell"><a href="#进入-login-shell" class="headerlink" title="进入 login shell"></a>进入 login shell</h6><p>所谓shell，简单说就是命令行界面，让用户可以直接与操作系统对话。用户登录时打开的shell，就叫做login shell。<br><a href="https://imgchr.com/i/AkUev8" target="_blank" rel="noopener"><img src="https://s2.ax1x.com/2019/03/13/AkUev8.png" alt="AkUev8.png"></a><br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">Linuix默认的shell是Bash，它会读入一系列的配置文件。上一步的三种情况，在这一步的处理，也存在差异。</span><br><span class="line">1）命令行登录：首先读入 /etc/profile，这是对所有用户都有效的配置；然后依次寻找下面三个文件，这是针对当前用户的配置。</span><br><span class="line">　　~/.bash_profile</span><br><span class="line">　　~/.bash_login</span><br><span class="line">　　~/.profile</span><br><span class="line">需要注意的是，这三个文件只要有一个存在，就不再读入后面的文件了。比如，要是 ~/.bash_profile 存在，就不会再读入后面两个文件了。</span><br><span class="line">2）ssh登录：与第一种情况完全相同。</span><br><span class="line">3）图形界面登录：只加载 /etc/profile 和 ~/.profile。也就是说，~/.bash_profile 不管有没有，都不会运行。</span><br></pre></td></tr></table></figure></p>
+<h6 id="打开-non-login-shell"><a href="#打开-non-login-shell" class="headerlink" title="打开 non-login shell"></a>打开 non-login shell</h6><p>老实说，上一步完成以后，Linux的启动过程就算结束了，用户已经可以看到命令行提示符或者图形界面了。但是，为了内容的完整，必须再介绍一下这一步。<br>用户进入操作系统以后，常常会再手动开启一个shell。这个shell就叫做 non-login shell，意思是它不同于登录时出现的那个shell，不读取/etc/profile和.profile等配置文件。</p>
+<p><a href="https://imgchr.com/i/AkUlUs" target="_blank" rel="noopener"><img src="https://s2.ax1x.com/2019/03/13/AkUlUs.png" alt="AkUlUs.png"></a></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">non-login shell的重要性，不仅在于它是用户最常接触的那个shell，还在于它会读入用户自己的bash配置文件 ~/.bashrc。大多数时候，我们对于bash的定制，都是写在这个文件里面的。</span><br><span class="line">你也许会问，要是不进入 non-login shell，岂不是.bashrc就不会运行了，因此bash 也就不能完成定制了？事实上，Debian已经考虑到这个问题了，请打开文件 ~/.profile，可以看到下面的代码：</span><br><span class="line">　　if [ -n &quot;$BASH_VERSION&quot; ]; then</span><br><span class="line">　　　　if [ -f &quot;$HOME/.bashrc&quot; ]; then</span><br><span class="line">　　　　　　. &quot;$HOME/.bashrc&quot;</span><br><span class="line">　　　　fi</span><br><span class="line">　　fi</span><br><span class="line">　　</span><br><span class="line">上面代码先判断变量 $BASH_VERSION 是否有值，然后判断主目录下是否存在 .bashrc 文件，如果存在就运行该文件。第三行开头的那个点，是source命令的简写形式，表示运行某个文件，写成&quot;source ~/.bashrc&quot;也是可以的。</span><br><span class="line">因此，只要运行～/.profile文件，～/.bashrc文件就会连带运行。但是上一节的第一种情况提到过，如果存在～/.bash_profile文件，那么有可能不会运行～/.profile文件。解决这个问题很简单，把下面代码写入.bash_profile就行了。</span><br><span class="line">　　if [ -f ~/.profile ]; then</span><br><span class="line">　　　　. ~/.profile</span><br><span class="line">　　fi</span><br><span class="line">　</span><br><span class="line">这样一来，不管是哪种情况，.bashrc都会执行，用户的设置可以放心地都写入这个文件了。</span><br><span class="line">Bash的设置之所以如此繁琐，是由于历史原因造成的。早期的时候，计算机运行速度很慢，载入配置文件需要很长时间，Bash的作者只好把配置文件分成了几个部分，阶段性载入。系统的通用设置放在 /etc/profile，用户个人的、需要被所有子进程继承的设置放在.profile，不需要被继承的设置放在.bashrc。</span><br><span class="line">顺便提一下，除了Linux以外， Mac OS X 使用的shell也是Bash。但是，它只加载.bash_profile，然后在.bash_profile里面调用.bashrc。而且，不管是ssh登录，还是在图形界面里启动shell窗口，都是如此。</span><br></pre></td></tr></table></figure>
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/Linux/" rel="tag"># Linux</a>
+          
+            <a href="/tags/启动流程/" rel="tag"># 启动流程</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2018/03/26/对象序列化/" rel="next" title="对象序列化">
+                <i class="fa fa-chevron-left"></i> 对象序列化
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2018/08/26/hello-world/" rel="prev" title="Hello World">
+                Hello World <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image"
+                src="/images/gakki.jpg"
+                alt="Richard" />
+            
+              <p class="site-author-name" itemprop="name">Richard</p>
+              <p class="site-description motion-element" itemprop="description">悟已往之不谏,知来者之可追</p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">52</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">13</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">71</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+
+          
+          
+
+          
+          
+            <div class="links-of-blogroll motion-element links-of-blogroll-block">
+              <div class="links-of-blogroll-title">
+                <i class="fa  fa-fw fa-link"></i>
+                Links
+              </div>
+              <ul class="links-of-blogroll-list">
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://github.com/showiproute" title="Github" target="_blank">Github</a>
+                  </li>
+                
+              </ul>
+            </div>
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-5"><a class="nav-link" href="#下面就linux操作系统的启动过程做一详细解析记录："><span class="nav-number">1.</span> <span class="nav-text">下面就linux操作系统的启动过程做一详细解析记录：</span></a><ol class="nav-child"><li class="nav-item nav-level-6"><a class="nav-link" href="#加载内核"><span class="nav-number">1.1.</span> <span class="nav-text">加载内核</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#启动初始化进程"><span class="nav-number">1.2.</span> <span class="nav-text">启动初始化进程</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#确定运行级别"><span class="nav-number">1.3.</span> <span class="nav-text">确定运行级别</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#Linux预置七种init运行级别（0-6）："><span class="nav-number">1.4.</span> <span class="nav-text">Linux预置七种init运行级别（0-6）：</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#加载开机启动程序"><span class="nav-number">1.5.</span> <span class="nav-text">加载开机启动程序</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#用户登录"><span class="nav-number">1.6.</span> <span class="nav-text">用户登录</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#进入-login-shell"><span class="nav-number">1.7.</span> <span class="nav-text">进入 login shell</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#打开-non-login-shell"><span class="nav-number">1.8.</span> <span class="nav-text">打开 non-login shell</span></a></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2019</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Richard</span>
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Mist</a> v5.1.4</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>
