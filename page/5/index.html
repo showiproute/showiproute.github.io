@@ -252,6 +252,648 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://blogoflyt.cn/2018/05/15/多线程复习-线程的创建和启动/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Richard">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/gakki.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="积累技术之路">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2018/05/15/多线程复习-线程的创建和启动/" itemprop="url">多线程复习-----线程的创建和启动</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-05-15T16:18:00+08:00">
+                2018-05-15
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Java/" itemprop="url" rel="index">
+                    <span itemprop="name">Java</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h5 id="线程的创建和启动"><a href="#线程的创建和启动" class="headerlink" title="线程的创建和启动"></a>线程的创建和启动</h5><h6 id="创建线程的三种方式"><a href="#创建线程的三种方式" class="headerlink" title="创建线程的三种方式"></a>创建线程的三种方式</h6><p>通过继承Thread 类</p>
+<p>通过实现Runnable接口</p>
+<p>使用Callable 和 Futrue 创建线程</p>
+<h6 id="Thread-类"><a href="#Thread-类" class="headerlink" title="Thread 类"></a>Thread 类</h6><p>通过继承Thread类来创建并启动线程的步骤如下：</p>
+<p>1）定义Thread类的子类，并重写Thread类的run()方法，该run()方法的方法体就代表了线程需要完成的任务。因此把run()方法称为线程执行体。</p>
+<p>2）创建Thread子类的实例，及创建了线程对象。</p>
+<p>3）调用线程对象的start()方法来启动该线程。</p>
+<h6 id="Thread类常用方法"><a href="#Thread类常用方法" class="headerlink" title="Thread类常用方法"></a>Thread类常用方法</h6><p>Thread.currentThread():是Thread类的静态方法，该方法总是返回当前正在执行的线程对象。</p>
+<p>String getName()：该方法是Thread类的实例方法，是返回调用该方法的线程名字。<br>示例：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br></pre></td><td class="code"><pre><span class="line">package multithreading;</span><br><span class="line"></span><br><span class="line">public class ThreadTest &#123;</span><br><span class="line"></span><br><span class="line">//创建一个线程类，继承Thread类</span><br><span class="line">	public static class Thread1 extends Thread&#123;</span><br><span class="line">		//定义一个属性</span><br><span class="line">		private int i;</span><br><span class="line">		public Thread1() &#123;</span><br><span class="line">			</span><br><span class="line">		&#125;</span><br><span class="line">		</span><br><span class="line">		//创建带有线程名称的构造方法</span><br><span class="line">		public Thread1(String name) &#123;</span><br><span class="line">			//调用的是父类的构造方法</span><br><span class="line">			super(name);</span><br><span class="line">		&#125;</span><br><span class="line">		</span><br><span class="line">		//重写run()方法</span><br><span class="line">		@Override</span><br><span class="line">		public void run() &#123;</span><br><span class="line">			for(;i&lt;=10;i++) &#123;</span><br><span class="line">				//继承Thread类的线程类，可以用this.getName()方法获取当前线程名称</span><br><span class="line">				System.out.println(super.getName()+&quot;i=&quot;+i);</span><br><span class="line">			&#125;</span><br><span class="line">		&#125;</span><br><span class="line">		</span><br><span class="line">	&#125;</span><br><span class="line">	</span><br><span class="line">	public static void main(String[] args) &#123;</span><br><span class="line">		//main方法是主线程</span><br><span class="line">		System.out.println(Thread.currentThread().getName());</span><br><span class="line">		//创建线程对象，调用带有线程名称的构造方法</span><br><span class="line">		Thread1 t1= new Thread1(&quot;线程1&quot;);</span><br><span class="line">		Thread1 t2 = new Thread1(&quot;线程2&quot;);</span><br><span class="line">		//Thread t1=new Thread();</span><br><span class="line">		//创建Thread类的对象，调用Thread(t1)</span><br><span class="line">		Thread thread1 = new Thread(t1);</span><br><span class="line">		Thread thread2 = new Thread(t2);</span><br><span class="line">		</span><br><span class="line">		//调用start方法，执行线程</span><br><span class="line">		//继承Thread类的线程类，多个线程对象不共享类里面的属性</span><br><span class="line">		thread1.start();</span><br><span class="line">		thread2.start();</span><br><span class="line">	&#125;</span><br><span class="line">	</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<blockquote>
+<p>注意：使用Thread类的方法创建线程类时，多个线程之间无法共享线程类的实例变量。</p>
+</blockquote>
+<h6 id="Runnable-接口"><a href="#Runnable-接口" class="headerlink" title="Runnable 接口"></a>Runnable 接口</h6><p>实现Runnable接口来创建并启动多线程的步骤如下：</p>
+<p>1）定义Runnable接口的实现类，并重写该接口的run()方法，该run()方法同样是线程执行体。</p>
+<p>2）创建Runnable实现类的实例，并以此实例作为Thread的target来创建Thread对象，该Thread对象才是真正的线程对象。</p>
+<p>3）调用线程对象的start()方法来启动该线程。<br>示例：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br></pre></td><td class="code"><pre><span class="line">package multithreading;</span><br><span class="line"></span><br><span class="line">public class RunnableTest &#123;</span><br><span class="line"></span><br><span class="line">	//创建Runnable实现类</span><br><span class="line">	public static class Runnable1 implements Runnable&#123;</span><br><span class="line">		private int i;</span><br><span class="line">		//重写run方法</span><br><span class="line">		@Override</span><br><span class="line">		public void run() &#123;</span><br><span class="line">			for(;i&lt;=10;i++) &#123;</span><br><span class="line">				//只能用Thread.currentThread()获取当前运行的线程对象</span><br><span class="line">				System.out.println(Thread.currentThread().getName()+&quot;i=&quot;+i);</span><br><span class="line">				</span><br><span class="line">			&#125;</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">	</span><br><span class="line"></span><br><span class="line">	public static void main(String[] args) &#123;</span><br><span class="line">		//创建Runnable 实现类对象</span><br><span class="line">		Runnable1 n1=new Runnable1();</span><br><span class="line">		//将实现类的对象包装成Thread类对象</span><br><span class="line">		Thread thread1=new Thread(n1,&quot;线程1&quot;);</span><br><span class="line">		Thread thread2=new Thread(n1,&quot;线程2&quot;);</span><br><span class="line">		//调用start()执行</span><br><span class="line">		thread1.start();</span><br><span class="line">		thread2.start();</span><br><span class="line">		</span><br><span class="line">		</span><br><span class="line">	&#125;</span><br><span class="line">	</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>匿名类写法：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br></pre></td><td class="code"><pre><span class="line">package multithreading;</span><br><span class="line"></span><br><span class="line">public class RunnableTest2 &#123;</span><br><span class="line"></span><br><span class="line">	public static void main(String[] args) &#123;</span><br><span class="line">		</span><br><span class="line">		//创建Runnable匿名类</span><br><span class="line">		Runnable n1=new Runnable() &#123;</span><br><span class="line">			private int i;</span><br><span class="line">			</span><br><span class="line">			//重写run方法</span><br><span class="line">			@Override</span><br><span class="line">			public void run() &#123;</span><br><span class="line">				// TODO Auto-generated method stub</span><br><span class="line">				for(;i&lt;=10;i++) &#123;</span><br><span class="line">					//只能用Thread.currentThread()获取当前运行的线程对象</span><br><span class="line">					System.out.println(Thread.currentThread().getName()+&quot;i=&quot;+i);</span><br><span class="line">				&#125;</span><br><span class="line">			&#125;</span><br><span class="line">		&#125;;</span><br><span class="line">		</span><br><span class="line">		//将实现类包装成Thread类对象</span><br><span class="line">		Thread thread1 = new Thread(n1,&quot;线程1&quot;);</span><br><span class="line">		Thread thread2=new Thread(n1, &quot;线程2&quot;);</span><br><span class="line">		</span><br><span class="line">		thread1.start();</span><br><span class="line">		thread2.start();</span><br><span class="line">	</span><br><span class="line">	&#125;</span><br><span class="line">	</span><br><span class="line">	</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<blockquote>
+<p>注意：采用Runnable接口的方式创建的多个线程可以共享线程类的实例属性。</p>
+</blockquote>
+<h6 id="使用Callable-和-Future-创建线程"><a href="#使用Callable-和-Future-创建线程" class="headerlink" title="使用Callable 和 Future 创建线程"></a>使用Callable 和 Future 创建线程</h6><p>前两种方式都有一个缺陷就是：在执行完任务之后无法获取执行结果。</p>
+<p>自从Java 1.5开始，就提供了Callable和Future，通过它们可以在任务执行完毕之后得到任务执行结果。</p>
+<h6 id="Callable"><a href="#Callable" class="headerlink" title="Callable"></a>Callable</h6><p>Callable位于java.util.concurrent包下，是个接口，它提供了一个call() 方法可以作为线程执行体。</p>
+<p>call() 方法可以有返回值。</p>
+<p>call() 方法可以声明抛出异常。</p>
+<p>可以看到，这是一个泛型接口，call()函数返回的类型就是传递进来的V类型</p>
+<h6 id="Future"><a href="#Future" class="headerlink" title="Future"></a>Future</h6><p>Future就是对于具体的 Runnable 或者 Callable 任务的执行结果进行取消、查询是否完成、获取结果。必要时可以通过 get 方法获取执行结果，该方法会阻塞直到任务返回结果。</p>
+<p>在Future 接口中声明了5个方法，下面依次解释每个方法的作用：</p>
+<p>boolean cancel(boolean mayInterruptIfRunning)<br>试图取消对此任务的执行。如果取消任务成功则返回true，如果取消任务失败则返回false。<br>参数mayInterruptIfRunning表示是否允许取消正在执行却没有执行完毕的任务，如果设置true，则表示可以取消正在执行过程中的任务。如果取消已经完成的任务会返回false；如果任务正在执行，若mayInterruptIfRunning设置为true，则返回true；若mayInterruptIfRunning设置为false，则返回false；如果任务还没有执行，则无论mayInterruptIfRunning为true还是false，肯定返回true。</p>
+<p>V get()<br>方法用来获取执行结果，这个方法会产生阻塞，会一直等到任务执行完毕才返回；</p>
+<p>V get(long timeout, TimeUnit unit)<br>用来获取执行结果，如果在指定时间内，还没获取到结果，就直接返回null。</p>
+<p>boolean isCancelled()<br>如果在任务正常完成前将其取消，则返回 true。</p>
+<p>boolean isDone()<br>如果任务已完成，则返回 true。</p>
+<p>Future 接口的实现类是 FutureTask，FutrueTask 实现类提供了两个构造方法：</p>
+<p>FutureTask(Callable callable)<br>创建一个 FutureTask，一旦运行就执行给定的 Callable。</p>
+<p>FutureTask(Runnable runnable, V result)<br>创建一个 FutureTask，一旦运行就执行给定的 Runnable，并安排成功完成时<br>get 返回给定的结果 。</p>
+<p>创建并启动有返回值的线程的步骤：</p>
+<p>1）创建Callable 接口的实现类，并实现 call() 方法，该 call() 方法将作为线程执行体，且该 call() 方法有返回值 。</p>
+<p>2）创建Callable 实现类的实例，使用 FutureTask 类来包装 Callable 对象， 该 FutrueTask 对象封装了该 Callable 对象的 call() 方法的返回值。</p>
+<p>3）使用 FutureTask 对象作为 Thread 对象的 target 创建并启动新线程。</p>
+<p>4）调用FutureTask 对象的 get() 方法来获得子线程执行结束后的返回值。</p>
+<p><a href="https://imgchr.com/i/AAslzd" target="_blank" rel="noopener"><img src="https://s2.ax1x.com/2019/03/14/AAslzd.png" alt="AAslzd.png"></a></p>
+<p>代码示例：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br></pre></td><td class="code"><pre><span class="line">package multithreading;</span><br><span class="line"></span><br><span class="line">import java.util.concurrent.Callable;</span><br><span class="line">import java.util.concurrent.FutureTask;</span><br><span class="line"></span><br><span class="line">public class CallableAndFutureTaskTest &#123;</span><br><span class="line"></span><br><span class="line">	public static class Callable1 implements Callable&lt;Integer&gt;&#123;</span><br><span class="line">		private int i;</span><br><span class="line">		@Override</span><br><span class="line">		public Integer call() throws Exception&#123;</span><br><span class="line">			Thread.sleep(3000);</span><br><span class="line">			System.out.println(Thread.currentThread().isAlive());</span><br><span class="line">			for(;i&lt;=10;i++) &#123;</span><br><span class="line">				System.out.println(Thread.currentThread().getName()+&quot;i=&quot;+i);</span><br><span class="line">			&#125;</span><br><span class="line">			return i;</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">	</span><br><span class="line">	public static void main(String[] args) &#123;</span><br><span class="line">		//创建Callable实现类对象实例</span><br><span class="line">		Callable1 callable1 = new Callable1();</span><br><span class="line">		//用FutureTask类来包装Callable实现类对象</span><br><span class="line">		FutureTask&lt;Integer&gt; future = new FutureTask&lt;&gt;(callable1);</span><br><span class="line">		//用Thread类包装FutureTask类对象</span><br><span class="line">		Thread t1 = new Thread(future,&quot;线程1&quot;);</span><br><span class="line">		System.out.println(&quot;Start前：&quot;+t1.isAlive());</span><br><span class="line">		System.out.println(System.currentTimeMillis());</span><br><span class="line">		t1.start();</span><br><span class="line">		try &#123;</span><br><span class="line">			</span><br><span class="line">			//等待t1线程执行结束后返回结果</span><br><span class="line">			Integer integer = future.get();</span><br><span class="line">			System.out.println(integer.toString());</span><br><span class="line">			System.out.println(System.currentTimeMillis());</span><br><span class="line">			System.out.println(&quot;子线程结束后:&quot;+t1.isAlive());</span><br><span class="line">		&#125;catch (Exception e) &#123;</span><br><span class="line">			// TODO: handle exception</span><br><span class="line">			e.printStackTrace();</span><br><span class="line">		&#125;</span><br><span class="line">		</span><br><span class="line">		</span><br><span class="line">	&#125;</span><br><span class="line">	</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<h6 id="创建线程方式对比"><a href="#创建线程方式对比" class="headerlink" title="创建线程方式对比"></a>创建线程方式对比</h6><p>采用实现Runnable接口、Callable 接口方式</p>
+<p>线程类只实现了Runnable接口或 Callable 接口，还可以继承其他类。</p>
+<p>多线程可以共享同一个target对象，所以非常适合多个相同线程来处理同一份资源情况。</p>
+<p>编程稍复杂，如果需要访问当前线程，则必须使用Thread.currentThread()方法。</p>
+<h6 id="采用继承Thread类方式"><a href="#采用继承Thread类方式" class="headerlink" title="采用继承Thread类方式"></a>采用继承Thread类方式</h6><p>线程类已经继承了Thread类，不能再继承其他父类。</p>
+<p>编程简单，如果需要访问当前线程，直接使用this即可获得当前线程。</p>
+<h6 id="实现Runnable接口和实现Callable接口的区别"><a href="#实现Runnable接口和实现Callable接口的区别" class="headerlink" title="实现Runnable接口和实现Callable接口的区别:"></a>实现Runnable接口和实现Callable接口的区别:</h6><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">Runnable是自从java1.1就有了，而Callable是1.5之后才加上去的</span><br><span class="line">Callable规定的方法是call()，Runnable 规定的方法是run()</span><br><span class="line">Callable的任务执行后可返回值，而Runnable的任务是不能返回值(是void)</span><br><span class="line">call方法可以抛出异常，run方法不可以</span><br><span class="line">运行Callable任务可以拿到一个Future对象，表示异步计算的结果。它提供了检查计算是否完成的方法，以等待计算的完成，并检索计算的结果。通过Future对象可以了解任务执行情况，可取消任务的执行，还可获取执行结果。</span><br><span class="line">推荐采用实现 Runnable 接口、Callable 接口的方式创建多线程。</span><br></pre></td></tr></table></figure>
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://blogoflyt.cn/2018/05/14/多线程复习1/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Richard">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/gakki.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="积累技术之路">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2018/05/14/多线程复习1/" itemprop="url">多线程复习-----进程线程区别</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-05-14T16:11:00+08:00">
+                2018-05-14
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Java/" itemprop="url" rel="index">
+                    <span itemprop="name">Java</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h5 id="进程线程"><a href="#进程线程" class="headerlink" title="进程线程"></a>进程线程</h5><p>进程：<br>是具有一定独立功能的程序关于某个数据集合上的一次运行活动,进程是系统进行资源分配和调度的一个独立单位。</p>
+<p>线程：<br>是进程的一个实体，是CPU调度和分派的基本单位，它是比进程更小的能独立运行的基本单位。线程自己基本上不拥有系统资源，只拥有一点在运行中必不可少的资源(如程序计数器，一组寄存器和栈)，但是它可与同属一个进程的其他的线程共享进程所拥有的全部资源。</p>
+<p><a href="https://imgchr.com/i/AAdGqO" target="_blank" rel="noopener"><img src="https://s2.ax1x.com/2019/03/14/AAdGqO.png" alt="AAdGqO.png"></a></p>
+<h6 id="进程与线程的区别"><a href="#进程与线程的区别" class="headerlink" title="进程与线程的区别"></a>进程与线程的区别</h6><p>1） 一个程序至少有一个进程，一个进程至少有一个线程。</p>
+<p>2） 线程的划分尺度小于进程，使得多线程程序的并发性高。</p>
+<p>3） 另外，进程在执行过程中拥有独立的内存单元，而多个线程共享内存，从而极大地提高了程序的运行效率。</p>
+<p>4） 线程在执行过程中与进程还是有区别的。每个独立的线程有一个程序运行的入口、顺序执行序列和程序的出口。但是线程不能够独立执行，必须依存在应用程序中，由应用程序提供多个线程执行控制。</p>
+<p>5） 线程的调度和管理由进程本身负责。</p>
+<p>6）进程和线程的主要差别在于它们是不同的操作系统资源管理方式。进程有独立的地址空间，一个进程崩溃后，在保护模式下不会对其它进程产生影响，而线程只是一个进程中的不同执行路径。线程有自己的堆栈和局部变量，但线程之间没有单独的地址空间，一个线程死掉就等于整个进程死掉，所以多进程的程序要比多线程的程序健壮，但在进程切换时，耗费资源较大，效率要差一些。但对于一些要求同时进行并且又要共享某些变量的并发操作，只能用线程，不能用进程。</p>
+<h6 id="什么是多线程？"><a href="#什么是多线程？" class="headerlink" title="什么是多线程？"></a>什么是多线程？</h6><p>多线程是指程序中包含多个执行流，即在一个程序中可以同时运行多个不同的线程来执行不同的任务，也就是说允许单个程序创建多个并行执行的线程来完成各自的任务。</p>
+<h6 id="什么时候考虑使用多线程"><a href="#什么时候考虑使用多线程" class="headerlink" title="什么时候考虑使用多线程"></a>什么时候考虑使用多线程</h6><p>1）程序需要同时执行两个或多个任务<br>2）程序需要实现一些需要等待的任务时，如用户输入、文件读写操作、网络操作、搜索等<br>3）需要一些后台运行的程序时</p>
+<h6 id="多线程优点"><a href="#多线程优点" class="headerlink" title="多线程优点"></a>多线程优点</h6><p>充分发挥多核处理器优势，将不同线程任务分配给不同的处理器核心，真正进入“并行运算”状态<br>将耗时的任务分配到其他线程执行，由主线程负责统一更新界面会使应用程序更加流畅，用户体验更好</p>
+<h6 id="多线程弊端"><a href="#多线程弊端" class="headerlink" title="多线程弊端"></a>多线程弊端</h6><p>创建线程会消耗内存空间和CPU时间<br>线程切换占用系统资源，线程太多会降低系统的运行性能，不是线程越多越快<br>增加程序复杂度</p>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://blogoflyt.cn/2018/03/26/对象序列化/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Richard">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/gakki.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="积累技术之路">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2018/03/26/对象序列化/" itemprop="url">对象序列化</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-03-26T17:01:00+08:00">
+                2018-03-26
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Java/" itemprop="url" rel="index">
+                    <span itemprop="name">Java</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h6 id="对象序列化概念和实现方式"><a href="#对象序列化概念和实现方式" class="headerlink" title="对象序列化概念和实现方式"></a>对象序列化概念和实现方式</h6><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">对象序列化机制允许把内存中的Java对象转换成平台无关的二进制流，从而允许把这种二进制流持久地保存在磁盘上，或通过网络将这种二进制流传输到另一个网络节点。</span><br><span class="line">对象的序列化：指将一个Java对象写入IO流中。</span><br><span class="line">对象的反序列化：指从IO流中恢复该Java对象。</span><br><span class="line">如果需要让某个对象支持序列化机制，则必须让其类是可序列化的，为了让某个类是可序列化的，该类必须实现如下两个接口之一</span><br><span class="line">Serializable（建议使用）</span><br><span class="line">Externalizable</span><br></pre></td></tr></table></figure>
+<h6 id="什么情况下需要序列化？"><a href="#什么情况下需要序列化？" class="headerlink" title="什么情况下需要序列化？"></a>什么情况下需要序列化？</h6><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">当你想把的内存中的对象保存到一个文件或者数据库中时候。</span><br><span class="line">当你想用套接字（Socket 通讯）在网络上传送对象的时候。</span><br><span class="line">当你想通过RMI传输对象的时候（RMI-&gt;Remote Method Invocation 远程方法调用）。</span><br><span class="line">RMI是一种机制，能够让在某个Java虚拟机上的对象调用另一个Java虚拟机中的对象上的方法。比如你有一台支持Java的手机 还有一台台式机，手机上有一个非常复杂的运算，如果用手机来计算的话可能需要很长时间、不过如果用台式机的话几秒就结束了，这个时候就是RMI大显神通的时候，使用RMI从手机发送请求 然后交给台式机计算 然后台式机返回计算和的结果。</span><br></pre></td></tr></table></figure>
+<h6 id="类版本控制"><a href="#类版本控制" class="headerlink" title="类版本控制"></a>类版本控制</h6><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">建议在序列化对象的类中增加 private static final long serialVersionUID，并给初始值</span><br><span class="line">    serialVersionUID：用来表明类的不同版本间的兼容性</span><br><span class="line">如果类没有显示定义这个静态变量，它的值是Java运行时环境根据类的内部细节自动生成的。若类的源代码作了修改，serialVersionUID 可能发生变化，建议显示声明显示定义。</span><br><span class="line">    serialVersionUID的用途</span><br><span class="line">希望类的不同版本对序列化兼容，因此需确保类的不同版本具有相同的serialVersionUID</span><br><span class="line">不希望类的不同版本对序列化兼容，因此需确保类的不同版本具有不同的serialVersionUID</span><br></pre></td></tr></table></figure>
+<h6 id="处理流-对象流"><a href="#处理流-对象流" class="headerlink" title="处理流-对象流"></a>处理流-对象流</h6><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">ObjectInputStream和ObjectOutputSteam用于存储和读取对象的处理流。它的强大之处就是可以把Java中的对象写入到数据源中，也能把对象从数据源中还原回来。</span><br><span class="line">序列化(Serialize)：用ObjectOutputStream类将一个Java对象写入IO流中</span><br><span class="line">反序列化(Deserialize)：用ObjectInputStream类从IO流中恢复该Java对象Object</span><br><span class="line">OutputStream和ObjectInputStream不能序列化 static 和 transient 修饰的成员变量</span><br><span class="line">如果类实现了 Serializable 接口，该类的对象就是可序列化的</span><br><span class="line">        1）创建一个 ObjectOutputStream，调用 ObjectOutputStream 对象的 writeObject(对象) 方法输出可序列化对象。</span><br><span class="line">                  注意写出一次，操作flush()。</span><br><span class="line">        2）反序列化创建一个 ObjectInputStream调用 readObject() 方法读取流中的对象</span><br><span class="line">如果某个类的字段不是基本数据类型或 String  类型，而是另一个引用类型，那么这个引用类型必须是可序列化的，否则拥有该类型的 Field 的类也不能序列化。</span><br></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br></pre></td><td class="code"><pre><span class="line">package SerializableTest;</span><br><span class="line"></span><br><span class="line">import java.io.DataOutput;</span><br><span class="line">import java.io.DataOutputStream;</span><br><span class="line">import java.io.FileInputStream;</span><br><span class="line">import java.io.FileOutputStream;</span><br><span class="line">import java.io.ObjectInputStream;</span><br><span class="line">import java.io.ObjectOutputStream;</span><br><span class="line">import java.io.Serializable;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">/*</span><br><span class="line"> * Person类：实现序列化</span><br><span class="line"> */</span><br><span class="line">public class Person implements Serializable&#123;</span><br><span class="line"></span><br><span class="line">	private static final long serialVersionUID=-2222222222222L;</span><br><span class="line">	</span><br><span class="line">	/* (non-Javadoc)</span><br><span class="line">	 * @see java.lang.Object#toString()</span><br><span class="line">	 */</span><br><span class="line">	@Override</span><br><span class="line">	public String toString() &#123;</span><br><span class="line">		return &quot;Person [name=&quot; + name + &quot;, age=&quot; + age + &quot;, getName()=&quot; + getName() + &quot;, getAge()=&quot; + getAge()</span><br><span class="line">				+ &quot;, getClass()=&quot; + getClass() + &quot;, hashCode()=&quot; + hashCode() + &quot;, toString()=&quot; + super.toString()</span><br><span class="line">				+ &quot;]&quot;;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">	private String name;</span><br><span class="line">	</span><br><span class="line">	private int age;</span><br><span class="line">	</span><br><span class="line">	public Person(String name,int age) &#123;</span><br><span class="line">		this.name=name;</span><br><span class="line">		this.age=age;</span><br><span class="line">		</span><br><span class="line">	&#125;</span><br><span class="line">	</span><br><span class="line">	public String getName() &#123;</span><br><span class="line">		return name;</span><br><span class="line">	&#125;</span><br><span class="line">	</span><br><span class="line">	public void setName(String name) &#123;</span><br><span class="line">		this.name=name;</span><br><span class="line">	&#125;</span><br><span class="line">	</span><br><span class="line">	public int getAge() &#123;</span><br><span class="line">		return age;</span><br><span class="line">	&#125;</span><br><span class="line">	</span><br><span class="line">	</span><br><span class="line">	public void setAge(int age) &#123;</span><br><span class="line">		this.age=age;</span><br><span class="line">	&#125;</span><br><span class="line">	</span><br><span class="line">	</span><br><span class="line">	public static void main(String[] args) throws Exception&#123;</span><br><span class="line">		</span><br><span class="line">		Person p1 = new Person(&quot;aaa&quot;, 22);</span><br><span class="line">		</span><br><span class="line">		String path=&quot;C:\\Users\\liangyintian\\Desktop\\data.txt&quot;;</span><br><span class="line">		</span><br><span class="line">		try(</span><br><span class="line">				FileOutputStream fos=new FileOutputStream(path);</span><br><span class="line">		</span><br><span class="line">				ObjectOutputStream oos=new ObjectOutputStream(fos);</span><br><span class="line">				</span><br><span class="line">		)&#123;</span><br><span class="line">			oos.writeObject(p1);</span><br><span class="line">			oos.flush();</span><br><span class="line">		&#125;catch (Exception e) &#123;</span><br><span class="line">			// TODO: handle exception</span><br><span class="line">			e.printStackTrace();</span><br><span class="line">		&#125;</span><br><span class="line">		</span><br><span class="line">		</span><br><span class="line">		try(</span><br><span class="line">				FileInputStream fis=new FileInputStream(path);</span><br><span class="line">				ObjectInputStream ois=new ObjectInputStream(fis);</span><br><span class="line">		)&#123;</span><br><span class="line">			Person result = (Person) ois.readObject();</span><br><span class="line">			System.out.println(result);</span><br><span class="line">		&#125;catch (Exception e) &#123;</span><br><span class="line">			// TODO: handle exception</span><br><span class="line">			e.printStackTrace();</span><br><span class="line">		&#125;</span><br><span class="line">		</span><br><span class="line">		</span><br><span class="line">		</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://blogoflyt.cn/2018/03/25/Java泛型/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Richard">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/gakki.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="积累技术之路">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2018/03/25/Java泛型/" itemprop="url">Java泛型</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-03-25T13:57:00+08:00">
+                2018-03-25
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Java/" itemprop="url" rel="index">
+                    <span itemprop="name">Java</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <blockquote>
+<p>转载 <a href="http://www.hainiubl.com/topics/159" target="_blank" rel="noopener">http://www.hainiubl.com/topics/159</a></p>
+</blockquote>
+<p><a href="https://imgchr.com/i/AP7Wwj" target="_blank" rel="noopener"><img src="https://s2.ax1x.com/2019/03/12/AP7Wwj.png" alt="AP7Wwj.png"></a></p>
+<p><a href="https://imgchr.com/i/AP74kn" target="_blank" rel="noopener"><img src="https://s2.ax1x.com/2019/03/12/AP74kn.png" alt="AP74kn.png"></a></p>
+<p><a href="https://imgchr.com/i/AP7bXF" target="_blank" rel="noopener"><img src="https://s2.ax1x.com/2019/03/12/AP7bXF.png" alt="AP7bXF.png"></a></p>
+<p><a href="https://imgchr.com/i/AP7If0" target="_blank" rel="noopener"><img src="https://s2.ax1x.com/2019/03/12/AP7If0.png" alt="AP7If0.png"></a></p>
+<p><a href="https://imgchr.com/i/AP7TpV" target="_blank" rel="noopener"><img src="https://s2.ax1x.com/2019/03/12/AP7TpV.png" alt="AP7TpV.png"></a></p>
+<p><a href="https://imgchr.com/i/AP7xt1" target="_blank" rel="noopener"><img src="https://s2.ax1x.com/2019/03/12/AP7xt1.png" alt="AP7xt1.png"></a></p>
+<p><a href="https://imgchr.com/i/AP7zfx" target="_blank" rel="noopener"><img src="https://s2.ax1x.com/2019/03/12/AP7zfx.png" alt="AP7zfx.png"></a></p>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="http://blogoflyt.cn/2018/03/23/String、StringBuffer、StringBuilder/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -1151,600 +1793,6 @@
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://blogoflyt.cn/2018/03/16/接口与解耦和/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Richard">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/gakki.jpg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="积累技术之路">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2018/03/16/接口与解耦和/" itemprop="url">接口与解耦和</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-03-16T16:46:00+08:00">
-                2018-03-16
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Java/" itemprop="url" rel="index">
-                    <span itemprop="name">Java</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p><a href="https://imgchr.com/i/ACDwKU" target="_blank" rel="noopener"><img src="https://s2.ax1x.com/2019/03/11/ACDwKU.png" alt="ACDwKU.png"></a></p>
-<blockquote>
-<p>除了实现多继承之外，接口最重要的作用就是解耦合。 什么叫解耦合呢？我们看下面这段代码的例子。<br><a href="https://imgchr.com/i/ACD0rF" target="_blank" rel="noopener"><img src="https://s2.ax1x.com/2019/03/11/ACD0rF.png" alt="ACD0rF.png"></a><br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">在上面的代码中， lamp 的 on 方法，调用了 bulb 的 shine 方法。 也就是说，当我们调用台灯对象的“开”方法时，台灯对象会去调用灯泡对象的发光方法。</span><br><span class="line">但是，问题来了：现在的这个台灯，装的是红灯泡。如果现在想要把红灯泡换成绿灯泡，应当如何操作呢？</span><br><span class="line">由于 Lamp 类中的 bulb 属性是 RedBulb 类型，因此，一旦要修改，则必须要把 Lamp类中的属性类型进行修改，并且修改 setBulb 方法的相应参数和实现。 也就是说，当我们希望把 bulb 属性由 RedBulb 替换为 GreenBulb 的时候，必须修改 Lamp 类的代码。</span><br><span class="line">也就是说，如果要想更换不同种类的灯泡，就要修改台灯的内部结构！这无疑是跟现实生活不相符合的。之所以产生这样的矛盾，原因在于 Lamp 类与 RedBulb 类型紧密联系在一起，形成了强耦合的关系，如下图：</span><br></pre></td></tr></table></figure></p>
-</blockquote>
-<p><a href="https://imgchr.com/i/ACDoad" target="_blank" rel="noopener"><img src="https://s2.ax1x.com/2019/03/11/ACDoad.png" alt="ACDoad.png"></a></p>
-<p><a href="https://imgchr.com/i/ACDqRP" target="_blank" rel="noopener"><img src="https://s2.ax1x.com/2019/03/11/ACDqRP.png" alt="ACDqRP.png"></a></p>
-<p><a href="https://imgchr.com/i/ACrSaj" target="_blank" rel="noopener"><img src="https://s2.ax1x.com/2019/03/11/ACrSaj.png" alt="ACrSaj.png"></a></p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Lamp 类的 bulb 属性被改为接口类型 Bulb，从而， Lamp 类与具体的实现类之间用 Bulb接口分离开了。 当 Lamp 类希望把 bulb 属性由 RedBulb 对象变更为 GreenBulb 对象时，不需要修改任何自身代码。只需要调用 setBulb 方法，接受不同的 Bulb 接口的实现类就可以了，从而， Lamp 类通过 Bulb 接口，实现了与 Bulb 实现类的弱耦合。如下图所示：</span><br></pre></td></tr></table></figure>
-<p><a href="https://imgchr.com/i/ACrMJ1" target="_blank" rel="noopener"><img src="https://s2.ax1x.com/2019/03/11/ACrMJ1.png" alt="ACrMJ1.png"></a></p>
-<blockquote>
-<p>把原来强耦合的关系，变为了弱耦合的关系。这就是接口最重要的作用：解耦合。</p>
-</blockquote>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">由于接口中所有的方法都是抽象方法，因此，定义一个接口，可以看作是定义了一个标准。它只定义了，一个对象应该具有哪些方法，而丝毫没有定义对象如何实现这些方法。方法的实现统统交给接口的实现类来完成。</span><br><span class="line">这样，接口的出现，就阻隔了接口使用者和接口实现者之间的耦合关系。当接口实现者变化的时候，对接口使用者不产生任何影响。</span><br></pre></td></tr></table></figure>
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://blogoflyt.cn/2018/03/15/final关键字/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Richard">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/gakki.jpg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="积累技术之路">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2018/03/15/final关键字/" itemprop="url">final关键字</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-03-15T15:20:00+08:00">
-                2018-03-15
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Java/" itemprop="url" rel="index">
-                    <span itemprop="name">Java</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <blockquote>
-<p>final 属性能够修饰变量、方法和类</p>
-</blockquote>
-<h6 id="常量"><a href="#常量" class="headerlink" title="常量"></a>常量</h6><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">用 final 修饰的变量则称为常量。一旦赋值，其值不能改变的变量。</span><br><span class="line">对象类型的变量中，保存的是对象的地址，因此所谓“一旦赋值，不能改变”，是指的对象的地址不能改变。</span><br><span class="line">final修饰的变量必须由程序员显示指定初始值</span><br><span class="line">final修饰的类变量、实例变量能指定初始值的地方如下</span><br><span class="line">类变量：必须在静态初始化块中或声明该变量时指定初始值。</span><br><span class="line">实例变量：必须在非静态初始化块、声明该变量或构造方法中指定初始值。</span><br></pre></td></tr></table></figure>
-<p><a href="https://imgchr.com/i/ACGbo8" target="_blank" rel="noopener"><img src="https://s2.ax1x.com/2019/03/11/ACGbo8.png" alt="ACGbo8.png"></a></p>
-<p><a href="https://imgchr.com/i/ACGjzj" target="_blank" rel="noopener"><img src="https://s2.ax1x.com/2019/03/11/ACGjzj.png" alt="ACGjzj.png"></a></p>
-<h6 id="final方法"><a href="#final方法" class="headerlink" title="final方法"></a>final方法</h6><p><a href="https://imgchr.com/i/ACGxQs" target="_blank" rel="noopener"><img src="https://s2.ax1x.com/2019/03/11/ACGxQs.png" alt="ACGxQs.png"></a></p>
-<h6 id="final类"><a href="#final类" class="headerlink" title="final类"></a>final类</h6><p><a href="https://imgchr.com/i/ACGzyn" target="_blank" rel="noopener"><img src="https://s2.ax1x.com/2019/03/11/ACGzyn.png" alt="ACGzyn.png"></a></p>
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://blogoflyt.cn/2018/03/14/多态/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Richard">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/gakki.jpg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="积累技术之路">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2018/03/14/多态/" itemprop="url">多态</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-03-14T15:16:00+08:00">
-                2018-03-14
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Java/" itemprop="url" rel="index">
-                    <span itemprop="name">Java</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h6 id="多态概念"><a href="#多态概念" class="headerlink" title="多态概念"></a>多态概念</h6><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">java引用变量有两个类型：一个是编译时类型，一个是运行时类型。</span><br><span class="line">编译时类型由声明该变量时使用的类型决定</span><br><span class="line">运行时类型由实际赋给该变量的对象决定</span><br><span class="line">多态：编译时类型和运行时类型不一致。</span><br><span class="line">讲继承的时候讲过，父类大于子类，可以看成子类是特殊的父类</span><br></pre></td></tr></table></figure>
-<h6 id="多态的语法特性"><a href="#多态的语法特性" class="headerlink" title="多态的语法特性"></a>多态的语法特性</h6><p><a href="https://imgchr.com/i/ACG0z9" target="_blank" rel="noopener"><img src="https://s2.ax1x.com/2019/03/11/ACG0z9.png" alt="ACG0z9.png"></a></p>
-<p><a href="https://imgchr.com/i/ACGrs1" target="_blank" rel="noopener"><img src="https://s2.ax1x.com/2019/03/11/ACGrs1.png" alt="ACGrs1.png"></a><br><a href="https://imgchr.com/i/ACGsqx" target="_blank" rel="noopener"><img src="https://s2.ax1x.com/2019/03/11/ACGsqx.png" alt="ACGsqx.png"></a><br><a href="https://imgchr.com/i/ACG6Z6" target="_blank" rel="noopener"><img src="https://s2.ax1x.com/2019/03/11/ACG6Z6.png" alt="ACG6Z6.png"></a><br><a href="https://imgchr.com/i/ACGRiD" target="_blank" rel="noopener"><img src="https://s2.ax1x.com/2019/03/11/ACGRiD.png" alt="ACGRiD.png"></a></p>
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://blogoflyt.cn/2018/03/13/super关键字/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Richard">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/gakki.jpg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="积累技术之路">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2018/03/13/super关键字/" itemprop="url">super关键字</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-03-13T15:10:00+08:00">
-                2018-03-13
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Java/" itemprop="url" rel="index">
-                    <span itemprop="name">Java</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h6 id="super用在构造方法上"><a href="#super用在构造方法上" class="headerlink" title="super用在构造方法上"></a>super用在构造方法上</h6><p><a href="https://imgchr.com/i/AC3hkD" target="_blank" rel="noopener"><img src="https://s2.ax1x.com/2019/03/11/AC3hkD.png" alt="AC3hkD.png"></a></p>
-<p><a href="https://imgchr.com/i/AC34te" target="_blank" rel="noopener"><img src="https://s2.ax1x.com/2019/03/11/AC34te.png" alt="AC34te.png"></a></p>
-<p><a href="https://imgchr.com/i/AC8FBV" target="_blank" rel="noopener"><img src="https://s2.ax1x.com/2019/03/11/AC8FBV.png" alt="AC8FBV.png"></a></p>
-<h6 id="super用作引用"><a href="#super用作引用" class="headerlink" title="super用作引用"></a>super用作引用</h6><p><a href="https://imgchr.com/i/AC8n39" target="_blank" rel="noopener"><img src="https://s2.ax1x.com/2019/03/11/AC8n39.png" alt="AC8n39.png"></a><br><a href="https://imgchr.com/i/AC8ucR" target="_blank" rel="noopener"><img src="https://s2.ax1x.com/2019/03/11/AC8ucR.png" alt="AC8ucR.png"></a></p>
-<p><a href="https://imgchr.com/i/AC8GND" target="_blank" rel="noopener"><img src="https://s2.ax1x.com/2019/03/11/AC8GND.png" alt="AC8GND.png"></a><br><a href="https://imgchr.com/i/AC8sUS" target="_blank" rel="noopener"><img src="https://s2.ax1x.com/2019/03/11/AC8sUS.png" alt="AC8sUS.png"></a><br><a href="https://imgchr.com/i/AC8cCQ" target="_blank" rel="noopener"><img src="https://s2.ax1x.com/2019/03/11/AC8cCQ.png" alt="AC8cCQ.png"></a><br><a href="https://imgchr.com/i/AC8g3j" target="_blank" rel="noopener"><img src="https://s2.ax1x.com/2019/03/11/AC8g3j.png" alt="AC8g3j.png"></a><br><a href="https://imgchr.com/i/AC8IET" target="_blank" rel="noopener"><img src="https://s2.ax1x.com/2019/03/11/AC8IET.png" alt="AC8IET.png"></a></p>
-<h6 id="this与super"><a href="#this与super" class="headerlink" title="this与super"></a>this与super</h6><p><a href="https://imgchr.com/i/ACGMGQ" target="_blank" rel="noopener"><img src="https://s2.ax1x.com/2019/03/11/ACGMGQ.png" alt="ACGMGQ.png"></a></p>
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
   </section>
 
   
@@ -1799,7 +1847,7 @@
               
                 <a href="/archives/">
               
-                  <span class="site-state-item-count">52</span>
+                  <span class="site-state-item-count">56</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
@@ -1821,7 +1869,7 @@
               
               <div class="site-state-item site-state-tags">
                 <a href="/tags/index.html">
-                  <span class="site-state-item-count">71</span>
+                  <span class="site-state-item-count">78</span>
                   <span class="site-state-item-name">标签</span>
                 </a>
               </div>
