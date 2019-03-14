@@ -252,6 +252,160 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://blogoflyt.cn/2018/05/17/死锁的四个必要条件以及怎样处理/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Richard">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/gakki.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="积累技术之路">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2018/05/17/死锁的四个必要条件以及怎样处理/" itemprop="url">死锁的四个必要条件以及怎样处理</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-05-17T19:28:00+08:00">
+                2018-05-17
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Java/" itemprop="url" rel="index">
+                    <span itemprop="name">Java</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <blockquote>
+<p>转载 <a href="https://www.cnblogs.com/jijiji/p/4855581.html" target="_blank" rel="noopener">https://www.cnblogs.com/jijiji/p/4855581.html</a></p>
+</blockquote>
+<h6 id="一-什么是死锁？"><a href="#一-什么是死锁？" class="headerlink" title="一. 什么是死锁？"></a>一. 什么是死锁？</h6><p>如果一个进程集合里面的每个进程都在等待这个集合中的其他一个进程（包括自身）才能继续往下执行，若无外力他们将无法推进，这种情况就是死锁，处于死锁状态的进程称为死锁进程</p>
+<h6 id="死锁产生的原因？"><a href="#死锁产生的原因？" class="headerlink" title="死锁产生的原因？"></a>死锁产生的原因？</h6><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">1.因竞争资源发生死锁 现象：系统中供多个进程共享的资源的数目不足以满足全部进程的需要时，就会引起对诸资源的竞争而发生死锁现象</span><br><span class="line"></span><br><span class="line">（1）可剥夺资源和不可剥夺资源：可剥夺资源是指某进程在获得该类资源时，该资源同样可以被其他进程或系统剥夺，不可剥夺资源是指当系统把该类资源分配给某个进程时，不能强制收回，只能在该进程使用完成后自动释放  </span><br><span class="line"></span><br><span class="line">（2）竞争不可剥夺资源：系统中不可剥夺资源的数目不足以满足诸进程运行的要求，则发生在运行进程中，不同的进程因争夺这些资源陷入僵局。</span><br><span class="line"></span><br><span class="line">举例说明：  资源A,B； 进程C,D</span><br><span class="line"></span><br><span class="line">资源A,B都是不可剥夺资源：一个进程申请了之后，不能强制收回，只能进程结束之后自动释放。内存就是可剥夺资源</span><br><span class="line"></span><br><span class="line">进程C申请了资源A，进程D申请了资源B。</span><br><span class="line"></span><br><span class="line">接下来C的操作用到资源B，D的资源用到资源A。但是C,D都得不到接下来的资源，那么就引发了死锁。</span><br><span class="line"></span><br><span class="line">（3）竞争临时资源</span><br><span class="line"></span><br><span class="line">2.进程推进顺序不当发生死锁</span><br></pre></td></tr></table></figure>
+<h6 id="产生死锁的四个必要条件？"><a href="#产生死锁的四个必要条件？" class="headerlink" title="产生死锁的四个必要条件？"></a>产生死锁的四个必要条件？</h6><p>（1）互斥条件：进程对所分配到的资源不允许其他进程进行访问，若其他进程访问该资源，只能等待，直至占有该资源的进程使用完成后释放该资源</p>
+<p>（2）请求和保持条件：进程获得一定的资源之后，又对其他资源发出请求，但是该资源可能被其他进程占有，此事请求阻塞，但又对自己获得的资源保持不放</p>
+<p>（3）不可剥夺条件：是指进程已获得的资源，在未完成使用之前，不可被剥夺，只能在使用完后自己释放</p>
+<p>（4）环路等待条件：是指进程发生死锁后，必然存在一个进程–资源之间的环形链</p>
+<h6 id="处理死锁的基本方法"><a href="#处理死锁的基本方法" class="headerlink" title="处理死锁的基本方法"></a>处理死锁的基本方法</h6><p>1.预防死锁：通过设置一些限制条件，去破坏产生死锁的必要条件</p>
+<p>2.避免死锁：在资源分配过程中，使用某种方法避免系统进入不安全的状态，从而避免发生死锁</p>
+<p>3.检测死锁：允许死锁的发生，但是通过系统的检测之后，采取一些措施，将死锁清除掉</p>
+<p>4.解除死锁：该方法与检测死锁配合使用</p>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="http://blogoflyt.cn/2018/05/15/多线程复习-线程的创建和启动/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -1645,154 +1799,6 @@
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://blogoflyt.cn/2018/03/17/接口和抽象类的区别/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Richard">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/gakki.jpg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="积累技术之路">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2018/03/17/接口和抽象类的区别/" itemprop="url">接口和抽象类的区别</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-03-17T16:50:00+08:00">
-                2018-03-17
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Java/" itemprop="url" rel="index">
-                    <span itemprop="name">Java</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h6 id="抽象类与接口的区别"><a href="#抽象类与接口的区别" class="headerlink" title="抽象类与接口的区别"></a>抽象类与接口的区别</h6><p><a href="https://imgchr.com/i/ACrdJI" target="_blank" rel="noopener"><img src="https://s2.ax1x.com/2019/03/11/ACrdJI.png" alt="ACrdJI.png"></a></p>
-<blockquote>
-<p>方法实现：方法是个抽象方法，通过子类或实现接口的方式，实现该方法（重写）</p>
-</blockquote>
-<blockquote>
-<p>抽象类中有普通方法，接口没有普通方法。</p>
-</blockquote>
-<h6 id="什么时候使用抽象类和接口"><a href="#什么时候使用抽象类和接口" class="headerlink" title="什么时候使用抽象类和接口"></a>什么时候使用抽象类和接口</h6><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">1）如果你拥有一些方法并且想让它们中的一些有默认实现，那么使用抽象类吧。</span><br><span class="line">2）如果你想实现多重继承，那么你必须使用接口。由于Java不支持多继承，子类不能够继承多个类，但可以实现多个接口。因此你就可以使用接口来解决它。</span><br><span class="line">3）如果基本功能在不断改变，那么就需要使用抽象类。如果不断改变基本功能并且使用接口，那么就需要改变所有实现了该接口的类。</span><br></pre></td></tr></table></figure>
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
   </section>
 
   
@@ -1847,7 +1853,7 @@
               
                 <a href="/archives/">
               
-                  <span class="site-state-item-count">56</span>
+                  <span class="site-state-item-count">57</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
@@ -1869,7 +1875,7 @@
               
               <div class="site-state-item site-state-tags">
                 <a href="/tags/index.html">
-                  <span class="site-state-item-count">78</span>
+                  <span class="site-state-item-count">79</span>
                   <span class="site-state-item-name">标签</span>
                 </a>
               </div>
