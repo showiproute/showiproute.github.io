@@ -1,0 +1,782 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next mist use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="Java,多线程,线程池," />
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="转载 https://www.cnblogs.com/dongguacai/p/6030187.html  线程池的优点1、线程是稀缺资源，使用线程池可以减少创建和销毁线程的次数，每个工作线程都可以重复使用。 2、可以根据系统的承受能力，调整线程池中工作线程的数量，防止因为消耗过多内存导致服务器崩溃。 线程池的创建123456public ThreadPoolExecutor(int coreP">
+<meta name="keywords" content="Java,多线程,线程池">
+<meta property="og:type" content="article">
+<meta property="og:title" content="多线程复习-----线程池">
+<meta property="og:url" content="http://blogoflyt.cn/2018/05/28/多线程复习-线程池/index.html">
+<meta property="og:site_name" content="积累技术之路">
+<meta property="og:description" content="转载 https://www.cnblogs.com/dongguacai/p/6030187.html  线程池的优点1、线程是稀缺资源，使用线程池可以减少创建和销毁线程的次数，每个工作线程都可以重复使用。 2、可以根据系统的承受能力，调整线程池中工作线程的数量，防止因为消耗过多内存导致服务器崩溃。 线程池的创建123456public ThreadPoolExecutor(int coreP">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:updated_time" content="2019-03-15T17:06:34.830Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="多线程复习-----线程池">
+<meta name="twitter:description" content="转载 https://www.cnblogs.com/dongguacai/p/6030187.html  线程池的优点1、线程是稀缺资源，使用线程池可以减少创建和销毁线程的次数，每个工作线程都可以重复使用。 2、可以根据系统的承受能力，调整线程池中工作线程的数量，防止因为消耗过多内存导致服务器崩溃。 线程池的创建123456public ThreadPoolExecutor(int coreP">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Mist',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://blogoflyt.cn/2018/05/28/多线程复习-线程池/"/>
+
+
+
+
+
+  <title>多线程复习-----线程池 | 积累技术之路</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">积累技术之路</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">找到学习的热爱</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://blogoflyt.cn/2018/05/28/多线程复习-线程池/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Richard">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/gakki.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="积累技术之路">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">多线程复习-----线程池</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-05-28T01:00:00+08:00">
+                2018-05-28
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Java/" itemprop="url" rel="index">
+                    <span itemprop="name">Java</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <blockquote>
+<p>转载 <a href="https://www.cnblogs.com/dongguacai/p/6030187.html" target="_blank" rel="noopener">https://www.cnblogs.com/dongguacai/p/6030187.html</a></p>
+</blockquote>
+<h6 id="线程池的优点"><a href="#线程池的优点" class="headerlink" title="线程池的优点"></a>线程池的优点</h6><p>1、线程是稀缺资源，使用线程池可以减少创建和销毁线程的次数，每个工作线程都可以重复使用。</p>
+<p>2、可以根据系统的承受能力，调整线程池中工作线程的数量，防止因为消耗过多内存导致服务器崩溃。</p>
+<h6 id="线程池的创建"><a href="#线程池的创建" class="headerlink" title="线程池的创建"></a>线程池的创建</h6><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">public ThreadPoolExecutor(int corePoolSize,</span><br><span class="line">                              int maximumPoolSize,</span><br><span class="line">                              long keepAliveTime,</span><br><span class="line">                              TimeUnit unit,</span><br><span class="line">                              BlockingQueue&lt;Runnable&gt; workQueue,</span><br><span class="line">                              RejectedExecutionHandler handler)</span><br></pre></td></tr></table></figure>
+<p>corePoolSize：线程池核心线程数量</p>
+<p>maximumPoolSize:线程池最大线程数量</p>
+<p>keepAliverTime：当活跃线程数大于核心线程数时，空闲的多余线程最大存活时间</p>
+<p>unit：存活时间的单位</p>
+<p>workQueue：存放任务的队列</p>
+<p>handler：超出线程范围和队列容量的任务的处理程序</p>
+<h6 id="线程池的实现原理"><a href="#线程池的实现原理" class="headerlink" title="线程池的实现原理"></a>线程池的实现原理</h6><p>提交一个任务到线程池中，线程池的处理流程如下：</p>
+<p>1、判断线程池里的核心线程是否都在执行任务，如果不是（核心线程空闲或者还有核心线程没有被创建）则创建一个新的工作线程来执行任务。如果核心线程都在执行任务，则进入下个流程。</p>
+<p>2、线程池判断工作队列是否已满，如果工作队列没有满，则将新提交的任务存储在这个工作队列里。如果工作队列满了，则进入下个流程。</p>
+<p>3、判断线程池里的线程是否都处于工作状态，如果没有，则创建一个新的工作线程来执行任务。如果已经满了，则交给饱和策略来处理这个任务。</p>
+<h6 id="线程池的源码解读"><a href="#线程池的源码解读" class="headerlink" title="线程池的源码解读"></a>线程池的源码解读</h6><p>1、ThreadPoolExecutor的execute()方法<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">public void execute(Runnable command) &#123;</span><br><span class="line">        if (command == null)</span><br><span class="line">            throw new NullPointerException();</span><br><span class="line">　　　　　　 //如果线程数大于等于基本线程数或者线程创建失败，将任务加入队列</span><br><span class="line">        if (poolSize &gt;= corePoolSize || !addIfUnderCorePoolSize(command)) &#123;</span><br><span class="line">　　　　　　　　　　//线程池处于运行状态并且加入队列成功</span><br><span class="line">            if (runState == RUNNING &amp;&amp; workQueue.offer(command)) &#123;</span><br><span class="line">                if (runState != RUNNING || poolSize == 0)</span><br><span class="line">                    ensureQueuedTaskHandled(command);</span><br><span class="line">            &#125;</span><br><span class="line">　　　　　　　　　//线程池不处于运行状态或者加入队列失败，则创建线程（创建的是非核心线程）</span><br><span class="line">            else if (!addIfUnderMaximumPoolSize(command))</span><br><span class="line">　　　　　　　　　　　//创建线程失败，则采取阻塞处理的方式</span><br><span class="line">                reject(command); // is shutdown or saturated</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure></p>
+<p>2、创建线程的方法：addIfUnderCorePoolSize(command)</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">private boolean addIfUnderCorePoolSize(Runnable firstTask) &#123;</span><br><span class="line">        Thread t = null;</span><br><span class="line">        final ReentrantLock mainLock = this.mainLock;</span><br><span class="line">        mainLock.lock();</span><br><span class="line">        try &#123;</span><br><span class="line">            if (poolSize &lt; corePoolSize &amp;&amp; runState == RUNNING)</span><br><span class="line">                t = addThread(firstTask);</span><br><span class="line">        &#125; finally &#123;</span><br><span class="line">            mainLock.unlock();</span><br><span class="line">        &#125;</span><br><span class="line">        if (t == null)</span><br><span class="line">            return false;</span><br><span class="line">        t.start();</span><br><span class="line">        return true;</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+<h6 id="我们通过一个程序来观察线程池的工作原理："><a href="#我们通过一个程序来观察线程池的工作原理：" class="headerlink" title="我们通过一个程序来观察线程池的工作原理："></a>我们通过一个程序来观察线程池的工作原理：</h6><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br></pre></td><td class="code"><pre><span class="line">package multithreading;</span><br><span class="line"></span><br><span class="line">import java.util.concurrent.LinkedBlockingQueue;</span><br><span class="line">import java.util.concurrent.RejectedExecutionHandler;</span><br><span class="line">import java.util.concurrent.ThreadPoolExecutor;</span><br><span class="line">import java.util.concurrent.TimeUnit;</span><br><span class="line"></span><br><span class="line">public class ThreadPoolReview &#123;</span><br><span class="line"></span><br><span class="line">	public static class ThreadPoolTest implements Runnable&#123;</span><br><span class="line">		</span><br><span class="line">		@Override</span><br><span class="line">		public void run() &#123;</span><br><span class="line">			// TODO Auto-generated method stub</span><br><span class="line">			</span><br><span class="line">			try &#123;</span><br><span class="line">				Thread.sleep(300);</span><br><span class="line">			&#125;catch (Exception e) &#123;</span><br><span class="line">				// TODO: handle exception</span><br><span class="line">				e.printStackTrace();</span><br><span class="line">			&#125;</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	public static void main(String[] args) &#123;</span><br><span class="line">		LinkedBlockingQueue&lt;Runnable&gt; queue = new LinkedBlockingQueue&lt;Runnable&gt;(5);</span><br><span class="line">		RejectedExecutionHandler handler=new ThreadPoolExecutor.DiscardPolicy();</span><br><span class="line">		ThreadPoolExecutor threadPool= new ThreadPoolExecutor(5, 10, 60, </span><br><span class="line">				TimeUnit.SECONDS, queue,handler);</span><br><span class="line">	</span><br><span class="line">		</span><br><span class="line">		for(int i=0;i&lt;16;i++) &#123;</span><br><span class="line">			threadPool.execute(</span><br><span class="line">					new Thread(new ThreadPoolTest(),&quot;Thread&quot;.concat(i+&quot;&quot;)));</span><br><span class="line">			System.out.println(&quot;线程池中活跃的线程数:&quot;+threadPool.getPoolSize());</span><br><span class="line">			if(queue.size()&gt;0) &#123;</span><br><span class="line">				System.out.println(&quot;---------------队列中阻塞的线程数：&quot;+queue.size());</span><br><span class="line">			&#125;</span><br><span class="line">			</span><br><span class="line">		&#125;</span><br><span class="line">		threadPool.shutdown();</span><br><span class="line">		</span><br><span class="line">	&#125;</span><br><span class="line">	</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>1、创建的线程池具体配置为：核心线程数量为5个；全部线程数量为10个；工作队列的长度为5。</p>
+<p>2、我们通过queue.size()的方法来获取工作队列中的任务数。</p>
+<p>3、运行原理：</p>
+<p>刚开始都是在创建新的线程，达到核心线程数量5个后，新的任务进来后不再创建新的线程，而是将任务加入工作队列，任务队列到达上线5个后，新的任务又会创建新的普通线程，直到达到线程池最大的线程数量10个，后面的任务则根据配置的饱和策略来处理。我们这里没有具体配置，使用的是默认的配置AbortPolicy:直接抛出异常。</p>
+<p>　　当然，为了达到我需要的效果，上述线程处理的任务都是利用休眠导致线程没有释放！！！</p>
+<h6 id="RejectedExecutionHandler：饱和策略"><a href="#RejectedExecutionHandler：饱和策略" class="headerlink" title="RejectedExecutionHandler：饱和策略"></a>RejectedExecutionHandler：饱和策略</h6><p>当队列和线程池都满了，说明线程池处于饱和状态，那么必须对新提交的任务采用一种特殊的策略来进行处理。这个策略默认配置是AbortPolicy，表示无法处理新的任务而抛出异常。JAVA提供了4中策略：</p>
+<p>1、AbortPolicy：直接抛出异常</p>
+<p>2、CallerRunsPolicy：只用调用所在的线程运行任务</p>
+<p>3、DiscardOldestPolicy：丢弃队列里最近的一个任务，并执行当前任务。</p>
+<p>4、DiscardPolicy：不处理，丢弃掉。</p>
+<p>我们现在用第四种策略来处理上面的程序：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">RejectedExecutionHandler handler = new ThreadPoolExecutor.DiscardPolicy();</span><br><span class="line">  </span><br><span class="line">ThreadPoolExecutor threadPool = new ThreadPoolExecutor(2, 5, 60, TimeUnit.SECONDS, queue,handler);</span><br></pre></td></tr></table></figure></p>
+<p>这里采用了丢弃策略后，就没有再抛出异常，而是直接丢弃。在某些重要的场景下，可以采用记录日志或者存储到数据库中，而不应该直接丢弃。</p>
+<p>设置策略有两种方式：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">RejectedExecutionHandler handler = new ThreadPoolExecutor.DiscardPolicy();</span><br><span class="line">ThreadPoolExecutor threadPool = new ThreadPoolExecutor(2, 5, 60, TimeUnit.SECONDS, queue,handler);</span><br></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">ThreadPoolExecutor threadPool = new ThreadPoolExecutor(2, 5, 60, TimeUnit.SECONDS, queue);</span><br><span class="line">threadPool.setRejectedExecutionHandler(new ThreadPoolExecutor.AbortPolicy());</span><br></pre></td></tr></table></figure>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/Java/" rel="tag"># Java</a>
+          
+            <a href="/tags/多线程/" rel="tag"># 多线程</a>
+          
+            <a href="/tags/线程池/" rel="tag"># 线程池</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2018/05/25/多线程复习-控制线程通信/" rel="next" title="多线程复习-----控制线程通信">
+                <i class="fa fa-chevron-left"></i> 多线程复习-----控制线程通信
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2018/06/12/Linux操作系统启动流程/" rel="prev" title="Linux操作系统启动流程">
+                Linux操作系统启动流程 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image"
+                src="/images/gakki.jpg"
+                alt="Richard" />
+            
+              <p class="site-author-name" itemprop="name">Richard</p>
+              <p class="site-description motion-element" itemprop="description">悟已往之不谏,知来者之可追</p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">58</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">13</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">80</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+
+          
+          
+
+          
+          
+            <div class="links-of-blogroll motion-element links-of-blogroll-block">
+              <div class="links-of-blogroll-title">
+                <i class="fa  fa-fw fa-link"></i>
+                Links
+              </div>
+              <ul class="links-of-blogroll-list">
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://github.com/showiproute" title="Github" target="_blank">Github</a>
+                  </li>
+                
+              </ul>
+            </div>
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-6"><a class="nav-link" href="#线程池的优点"><span class="nav-number">1.</span> <span class="nav-text">线程池的优点</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#线程池的创建"><span class="nav-number">2.</span> <span class="nav-text">线程池的创建</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#线程池的实现原理"><span class="nav-number">3.</span> <span class="nav-text">线程池的实现原理</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#线程池的源码解读"><span class="nav-number">4.</span> <span class="nav-text">线程池的源码解读</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#我们通过一个程序来观察线程池的工作原理："><span class="nav-number">5.</span> <span class="nav-text">我们通过一个程序来观察线程池的工作原理：</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#RejectedExecutionHandler：饱和策略"><span class="nav-number">6.</span> <span class="nav-text">RejectedExecutionHandler：饱和策略</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2019</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Richard</span>
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Mist</a> v5.1.4</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>
