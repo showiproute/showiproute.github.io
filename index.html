@@ -555,6 +555,554 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://blogoflyt.cn/2019/03/18/LXC容器简介/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Richard">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/gakki.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="积累技术之路">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2019/03/18/LXC容器简介/" itemprop="url">LXC容器简介</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-03-18T13:35:00+08:00">
+                2019-03-18
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Linux/" itemprop="url" rel="index">
+                    <span itemprop="name">Linux</span>
+                  </a>
+                </span>
+
+                
+                
+                  ， 
+                
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Linux/虚拟化/" itemprop="url" rel="index">
+                    <span itemprop="name">虚拟化</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h6 id="LCX与Docker结构关系"><a href="#LCX与Docker结构关系" class="headerlink" title="LCX与Docker结构关系"></a>LCX与Docker结构关系</h6><p>LXC负责资源管理；AUFS负责镜像管理；而LXC包括cgroup、namespace、chroot等组件，并通过cgroup进行资源管理<br><a href="https://imgchr.com/i/AVHbrt" target="_blank" rel="noopener"><img src="https://s2.ax1x.com/2019/03/16/AVHbrt.png" alt="AVHbrt.png"></a></p>
+<h6 id="LXC组成"><a href="#LXC组成" class="headerlink" title="LXC组成"></a>LXC组成</h6><p>文件系统的隔离（chroot/rootfs）</p>
+<p>rootfs是Linux系统中的根文件系统,是Linux系统的基本结构，能让操作系统正常运行的文件、文件夹的集合</p>
+<p>chroot更改root目录，通过chroot这种技术，可以指定任意路径为根目录。虚拟化技术，首要前提是要实现磁盘的虚拟化</p>
+<p>资源限制（cgroup）</p>
+<p>cgroup是linux内核的一个功能，用来限制、记录、隔离进程组所使用的物理资源(cpu、memory、io等)的机制</p>
+<p>资源隔离（namespace）</p>
+<p>在linux系统中，每个namespace下的资源对于其他namespace下的资源都是透明的。在操作系统层面上看，就会出现多个相同pid的进程，多个相同的uid等。由于属于不同的namespace,所以它们之间并不冲突，而在用户层面上只能看到属于用户自己namespace的资源</p>
+<h6 id="LXC常用使用命令"><a href="#LXC常用使用命令" class="headerlink" title="LXC常用使用命令"></a>LXC常用使用命令</h6><p>lxc-create：用于创建一个容器，后面跟参数-n代表要创建容器的名字，-f代表容器的配置文件路径    </p>
+<p>lxc-start：用于启动一个容器，后面参数-n，-f和之前的lxc-create相同，-d代表用守护进程的方式来运行容器    </p>
+<p>lxc-info：用于查看容器的状态，STARTING代表容器运行，STOP代表着容器没有启动    </p>
+<p>lxc-cgroup：用于与cgroup有关的参数，用于对容器进行动态的资源控制。</p>
+<p><a href="https://imgchr.com/i/AVHXa8" target="_blank" rel="noopener"><img src="https://s2.ax1x.com/2019/03/16/AVHXa8.jpg" alt="AVHXa8.jpg"></a></p>
+<h6 id="LXC创建容器"><a href="#LXC创建容器" class="headerlink" title="LXC创建容器"></a>LXC创建容器</h6><p>为了在指定环境下创建 LXC 容器，需要相应的 LXC 模板。LXC 提供的工具集成了一整套现成的 LXC 模板，可以在 /usr/share/lxc/templates 目录下找到它们</p>
+<p>常用的模板有：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">├── lxc-busybox	</span><br><span class="line">├── lxc-debian</span><br><span class="line">├── lxc-fedora</span><br><span class="line">├── lxc-opensuse</span><br><span class="line">├── lxc-sshd</span><br><span class="line">├── lxc-ubuntu</span><br><span class="line">└── lxc-ubuntu-cloud</span><br></pre></td></tr></table></figure></p>
+<p>我们要创建ubuntu容器，我们可以直接使用LXC为我们提供的模板<br>sudo lxc-create -n py-lxc -t ubuntu</p>
+<p>在执行命令过程，LXC会下载所需的基础rootfs，和帮助我们完成一些基本的配置</p>
+<h6 id="LXC容器启动"><a href="#LXC容器启动" class="headerlink" title="LXC容器启动"></a>LXC容器启动</h6><p>lxc-start  -n  py-lxc 启动并进入容器</p>
+<p>容器的启动只要是由lxc-start执行，lxc-start主要分成两个步骤，第一步通过解析命令行参数，加载容器的配置文件。第二步创建进程，生成新的命名空间，启动容器。</p>
+<p>sudo apt-get install python2.7  在容器中安装程序依赖</p>
+<h6 id="嵌入式lxc的虚拟化方案"><a href="#嵌入式lxc的虚拟化方案" class="headerlink" title="嵌入式lxc的虚拟化方案"></a>嵌入式lxc的虚拟化方案</h6><p>嵌入式平台下LXC移植安装</p>
+<p>嵌入式系统的资源与服务器相比相差甚远，在同一个硬件平台要运行多个操作系统，如果使用服务器的虚拟化方案会有很大的系统消耗，所以轻量级的虚拟化方案才是解决问题的关键。</p>
+<p>在嵌入式平台下LXC的移植安装步骤如下：</p>
+<p>1.使嵌入式linux内核支持lxc功能包</p>
+<p>2.使嵌入式根文件系统rootfs包含lxc基本的运行依赖库</p>
+<p>3.LXC移植安装</p>
+<h6 id="嵌入式linux的LXC移植"><a href="#嵌入式linux的LXC移植" class="headerlink" title="嵌入式linux的LXC移植"></a>嵌入式linux的LXC移植</h6><p>1.安装我们裁剪过的内核和文件系统（内核和文件系统满足前面所述）</p>
+<p>2.交叉编译安装LXC</p>
+<p>3.使用debootstrap工具创建文件系统</p>
+<p>4.在LXC配置文件中lxc.rootfs字段使用debootstrap工具创建文件系统</p>
+<p>5.运行LXC容器，启动虚拟操作系统</p>
+<p>6.在LXC虚拟操作系统中安装程序依赖，运行我们的程序</p>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://blogoflyt.cn/2019/03/18/Docker镜像优化/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Richard">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/gakki.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="积累技术之路">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2019/03/18/Docker镜像优化/" itemprop="url">Docker镜像优化</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-03-18T13:30:00+08:00">
+                2019-03-18
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Linux/" itemprop="url" rel="index">
+                    <span itemprop="name">Linux</span>
+                  </a>
+                </span>
+
+                
+                
+                  ， 
+                
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Linux/虚拟化/" itemprop="url" rel="index">
+                    <span itemprop="name">虚拟化</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h6 id="Docker容器轻量化"><a href="#Docker容器轻量化" class="headerlink" title="Docker容器轻量化"></a>Docker容器轻量化</h6><p>容器就是运行起来的镜像，若希望使一个容器变得十分轻便，就要将其镜像的大小减小。</p>
+<p>1、基础镜像小</p>
+<p>2、应用镜像小</p>
+<p>而想要为应用镜像减重，就必须把一些次要的功能和多余的依赖删除。比如我们的任务要求是要一个运行环境，那么一些调试工具、安装工具等不必需的部分就可以抛弃，以换得更小的镜像，更轻量级的容器。</p>
+<p><a href="https://imgchr.com/i/AVH05F" target="_blank" rel="noopener"><img src="https://s2.ax1x.com/2019/03/16/AVH05F.png" alt="AVH05F.png"></a></p>
+<h6 id="镜像优化思路"><a href="#镜像优化思路" class="headerlink" title="镜像优化思路"></a>镜像优化思路</h6><p>1.首先选择最简的基础镜像，一般为alpine或scratch。</p>
+<p>2.然后安装要求的运行环境（JRE、python和go），同安装应用程序一样，安装这些运行环境也要同时安装他们所需的依赖</p>
+<p>3.运行环境安装完成，删去不必要的依赖包或应用，如pip等，然后就可以得到一个使用docker可以获得的最轻量的镜像了</p>
+<p><a href="https://imgchr.com/i/AVHs29" target="_blank" rel="noopener"><img src="https://s2.ax1x.com/2019/03/16/AVHs29.png" alt="AVHs29.png"></a></p>
+<h6 id="JDK基础镜像优化举例"><a href="#JDK基础镜像优化举例" class="headerlink" title="JDK基础镜像优化举例"></a>JDK基础镜像优化举例</h6><p>1.java依赖glibc，所以基础镜像使用的是alpine-glibc而非alpine，alpine-glibc大概是11.1M</p>
+<p>2.oracle官网<a href="https://www.oracle.com/technetwork/java/javase/downloads/jre8-downloads-2133155.html下载jre，大概是75M" target="_blank" rel="noopener">https://www.oracle.com/technetwork/java/javase/downloads/jre8-downloads-2133155.html下载jre，大概是75M</a></p>
+<p>3.删除jre中一些不必要的文件</p>
+<p>4.创建Dockerfile，构建运行java的基础镜像</p>
+<h6 id="Dockerfile编写"><a href="#Dockerfile编写" class="headerlink" title="Dockerfile编写"></a>Dockerfile编写</h6><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">ROM docker.io/jeanblanchard/alpine-glibc</span><br><span class="line"></span><br><span class="line">MAINTAINER scc &lt;siwanghu@hotmail.com&gt;</span><br><span class="line"></span><br><span class="line">ADD jre8.tar.gz /usr/java/jdk/</span><br><span class="line"></span><br><span class="line">ENV JAVA_HOME /usr/java/jdk</span><br><span class="line"></span><br><span class="line">ENV PATH $&#123;PATH&#125;:$&#123;JAVA_HOME&#125;/bin</span><br><span class="line"></span><br><span class="line">WORKDIR /opt</span><br></pre></td></tr></table></figure>
+<p>Docker运行Java环境</p>
+<p><a href="https://imgchr.com/i/AVHWVK" target="_blank" rel="noopener"><img src="https://s2.ax1x.com/2019/03/16/AVHWVK.png" alt="AVHWVK.png"></a></p>
+<p>Docker运行Python环境</p>
+<p><a href="https://imgchr.com/i/AVHh5D" target="_blank" rel="noopener"><img src="https://s2.ax1x.com/2019/03/16/AVHh5D.png" alt="AVHh5D.png"></a></p>
+<p>Docker运行Ruby环境</p>
+<p><a href="https://imgchr.com/i/AVH5Pe" target="_blank" rel="noopener"><img src="https://s2.ax1x.com/2019/03/16/AVH5Pe.png" alt="AVH5Pe.png"></a></p>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://blogoflyt.cn/2019/03/18/Docker容器简介/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Richard">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/gakki.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="积累技术之路">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2019/03/18/Docker容器简介/" itemprop="url">Docker容器简介</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-03-18T13:22:00+08:00">
+                2019-03-18
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Linux/" itemprop="url" rel="index">
+                    <span itemprop="name">Linux</span>
+                  </a>
+                </span>
+
+                
+                
+                  ， 
+                
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Linux/虚拟化/" itemprop="url" rel="index">
+                    <span itemprop="name">虚拟化</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h5 id="Docker容器简介"><a href="#Docker容器简介" class="headerlink" title="Docker容器简介"></a>Docker容器简介</h5><p>Docker 是世界领先的软件容器平台。</p>
+<p>Docker 使用 Google 公司推出的 Go 语言 进行开发实现，基于 Linux 内核 的cgroup，namespace，以及AUFS类的UnionFS等技术，对进程进行封装隔离，属于操作系统层面的虚拟化技术。 由于隔离的进程独立于宿主和其它的隔离的进 程，因此也称其为容器。Docke最初实现是基于 LXC.</p>
+<p>Docker 能够自动执行重复性任务，例如搭建和配置开发环境，从而解放了开发人员以便他们专注在真正重要的事情上：构建杰出的软件。</p>
+<p>用户可以方便地创建和使用容器，把自己的应用放入容器。容器还可以进行版本管理、复制、分享、修改，就像管理普通的代码一样。</p>
+<p>比较Docker 和传统虚拟化方式的不同之处，可见容器是在操作系统层面上实现虚拟化，直接复用本地主机的操作系统，而传统方式则是在硬件层面实现。</p>
+<p><a href="https://imgchr.com/i/AVHl4g" target="_blank" rel="noopener"><img src="https://s2.ax1x.com/2019/03/16/AVHl4g.png" alt="AVHl4g.png"></a></p>
+<h6 id="为什么使用Docker"><a href="#为什么使用Docker" class="headerlink" title="为什么使用Docker"></a>为什么使用Docker</h6><ol>
+<li>更快的交付和部署</li>
+</ol>
+<p>Docker在整个开发周期都可以完美的辅助实现快速交付，允许开发者在装有应用和服务本地容器做开发，可直接集成到可持续开发流程中</p>
+<ol start="2">
+<li>高效的部署和扩容</li>
+</ol>
+<p>Docker 容器几乎可以在任意的平台上运行， 这种兼容性可以让用户把一个应用程序从一个平台直接迁移到另外一个。Docker的兼容性和轻量特性可以很轻松的实现负载的动态管理。你可以快速扩容或方便的下线的你的应用和服务，这种速度趋近实时。</p>
+<ol start="3">
+<li>更高的资源利用率</li>
+</ol>
+<p>Docker 对系统资源的利用率很高，一台主机上可以同时运行数千个 Docker 容器。容器除了运行其中应用外，基本不消耗额外的系统资源，使得应用的性能很高，同时系统的开销尽量小。</p>
+<ol start="4">
+<li>更简单的管理</li>
+</ol>
+<p>使用 Docker，只需要小小的修改，就可以替代以往大量的更新工作。所有的修改都以增量的方式被分发和更新，从而实现自动化并且高效的管理。</p>
+<p>轻量：</p>
+<p>在一台机器上运行的多个 Docker 容器可以共享这台机器的操作系统内核；它们能够迅速启动，只需占用很少的计算和内存资源。镜像是通过文件系统层进行构造的，并共享一些公共文件。这样就能尽量降低磁盘用量，并能更快地下载镜像。</p>
+<p>标准：</p>
+<p>Docker 容器基于开放式标准，能够在所有主流 Linux 版本、Microsoft Windows 以及包括 VM、裸机服务器和云在内的任何基础设施上运行。</p>
+<p>安全：</p>
+<p>Docker 赋予应用的隔离性不仅限于彼此隔离，还独立于底层的基础设施。Docker 默认提供最强的隔离，因此应用出现问题，也只是单个容器的问题，而不会波及到整台机器。</p>
+<h6 id="Docker工作模式"><a href="#Docker工作模式" class="headerlink" title="Docker工作模式"></a>Docker工作模式</h6><p><a href="https://imgchr.com/i/AVH3CQ" target="_blank" rel="noopener"><img src="https://s2.ax1x.com/2019/03/16/AVH3CQ.jpg" alt="AVH3CQ.jpg"></a></p>
+<p>Docker使用C/S架构，Client 通过接口与Server进程通信实现容器的构建，运行和发布。client和server可以运行在同一台集群，也可以通过跨主机实现远程通信。</p>
+<h6 id="Docker核心概念"><a href="#Docker核心概念" class="headerlink" title="Docker核心概念"></a>Docker核心概念</h6><p>镜像（Image）</p>
+<p>Docker 镜像是一个特殊的文件系统，除了提供容器运行时所需的程序、库、资源、配置等文件外，还包含了一些为运行时准备的一些配置参数（如匿名卷、环境变量、用户等）。 </p>
+<p>容器（Container）</p>
+<p>镜像（Image）和容器（Container）的关系，就像是面向对象程序设计中的 类 和 实例 一样，镜像是静态的定义，容器是镜像运行时的实体。容器可以被创建、启动、停止、删除、暂停等 。容器的实质是进程，但与直接在宿主执行的进程不同，容器进程运行于属于自己的独立的 命名空间。前面讲过镜像使用的是分层存储，容器也是如此。</p>
+<p>仓库（Repository）</p>
+<p>镜像构建完成后，可以很容易的在当前宿主上运行，但是， 如果需要在其它服务器上使用这个镜像，我们就需要一个集中的存储、分发镜像的服务，Docker Registry就是这样的服务。<br>镜像仓库是Docker用来集中存放镜像文件的地方类似于我们之前常用的代码仓库。</p>
+<h6 id="Docker镜像"><a href="#Docker镜像" class="headerlink" title="Docker镜像"></a>Docker镜像</h6><p>Docker镜像是一个特殊的文件系统，提供容器运行时所需的程序、库、资源、配置等文件外，还包含了一些为运行时准备的一些配置参数（如匿名卷、环境变量、用户等）。</p>
+<p><a href="https://imgchr.com/i/AVHtuq" target="_blank" rel="noopener"><img src="https://s2.ax1x.com/2019/03/16/AVHtuq.png" alt="AVHtuq.png"></a></p>
+<h6 id="定制Docker镜像"><a href="#定制Docker镜像" class="headerlink" title="定制Docker镜像"></a>定制Docker镜像</h6><p>镜像的定制实际上就是定制每一层所添加的配置、文件。如果我们可以把每一层修改、安装、构建、操作的命令都写入一个脚本，用这个脚本来构建、定制镜像，那么无法重复的问题、镜像构建透明性的问题、体积的问题就都会解决。这个脚本就是 Dockerfile。</p>
+<p><a href="https://imgchr.com/i/AVHdET" target="_blank" rel="noopener"><img src="https://s2.ax1x.com/2019/03/16/AVHdET.png" alt="AVHdET.png"></a></p>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="http://blogoflyt.cn/2019/03/17/ZooKeeper客户端编程/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -1271,449 +1819,11 @@
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://blogoflyt.cn/2019/03/12/MapReduce编程案例10-join算法/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Richard">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/gakki.jpg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="积累技术之路">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2019/03/12/MapReduce编程案例10-join算法/" itemprop="url">MapReduce编程案例10-----join算法</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-03-12T23:06:00+08:00">
-                2019-03-12
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/MapReduce/" itemprop="url" rel="index">
-                    <span itemprop="name">MapReduce</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h5 id="需求：实现类似SQL语法中的join"><a href="#需求：实现类似SQL语法中的join" class="headerlink" title="需求：实现类似SQL语法中的join"></a>需求：实现类似SQL语法中的join</h5><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">数据：</span><br><span class="line">select a.*,b.* from a join b on a.uid=b.uid;</span><br><span class="line"></span><br><span class="line">有订单数据：</span><br><span class="line">order001,u001</span><br><span class="line">order002,u001</span><br><span class="line">order003,u005</span><br><span class="line">order004,u002</span><br><span class="line">order005,u003</span><br><span class="line">order006,u004</span><br><span class="line"></span><br><span class="line">有用户数据：</span><br><span class="line">u001,senge,18,angelababy</span><br><span class="line">u002,laozhao,48,ruhua</span><br><span class="line">u003,xiaoxu,16,chunge</span><br><span class="line">u004,laoyang,28,zengge</span><br><span class="line">u005,nana,14,huangbo</span><br></pre></td></tr></table></figure>
-<h6 id="思路"><a href="#思路" class="headerlink" title="思路"></a>思路</h6><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">map端：</span><br><span class="line">不管worker读到的是什么文件，我们的map方法中是可以通过context来区分的</span><br><span class="line">对于order数据，map中切字段，封装为一个joinbean，打标记：t_order</span><br><span class="line">对于user数据，map中切字段，封装为一个joinbean，打标记：t_user</span><br><span class="line">然后，以uid作为key，以joinbean作为value返回</span><br><span class="line"></span><br><span class="line">reduce端：</span><br><span class="line">用迭代器迭代出一组相同uid的所有数据joinbean，然后判断</span><br><span class="line">如果是标记字段为t_order的，则加入一个arraylist&lt;JoinBean&gt;中</span><br><span class="line">如果标记字段为t_user的，则放入一个Joinbean对象中</span><br><span class="line"></span><br><span class="line">然后，遍历arraylist，对里面的每一个JoinBean填充userBean中的user数据，然后输出这个joinBean即可</span><br></pre></td></tr></table></figure>
-<h5 id="MapReduce编程实现"><a href="#MapReduce编程实现" class="headerlink" title="MapReduce编程实现"></a>MapReduce编程实现</h5><h6 id="BeanObject"><a href="#BeanObject" class="headerlink" title="BeanObject"></a>BeanObject</h6><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br></pre></td><td class="code"><pre><span class="line">package MRCodingTen_JoinAlgorithm;</span><br><span class="line"></span><br><span class="line">import java.io.DataInput;</span><br><span class="line">import java.io.DataOutput;</span><br><span class="line">import java.io.IOException;</span><br><span class="line"></span><br><span class="line">import org.apache.hadoop.io.Writable;</span><br><span class="line"></span><br><span class="line">public class BeanObject implements Writable&#123;</span><br><span class="line"></span><br><span class="line">	/**</span><br><span class="line">	 * @return the orderId</span><br><span class="line">	 */</span><br><span class="line">	public String getOrderId() &#123;</span><br><span class="line">		return orderId;</span><br><span class="line">	&#125;</span><br><span class="line">	/**</span><br><span class="line">	 * @param orderId the orderId to set</span><br><span class="line">	 */</span><br><span class="line">	public void setOrderId(String orderId) &#123;</span><br><span class="line">		this.orderId = orderId;</span><br><span class="line">	&#125;</span><br><span class="line">	/**</span><br><span class="line">	 * @return the userId</span><br><span class="line">	 */</span><br><span class="line">	public String getUserId() &#123;</span><br><span class="line">		return userId;</span><br><span class="line">	&#125;</span><br><span class="line">	/**</span><br><span class="line">	 * @param userId the userId to set</span><br><span class="line">	 */</span><br><span class="line">	public void setUserId(String userId) &#123;</span><br><span class="line">		this.userId = userId;</span><br><span class="line">	&#125;</span><br><span class="line">	/**</span><br><span class="line">	 * @return the userName</span><br><span class="line">	 */</span><br><span class="line">	public String getUserName() &#123;</span><br><span class="line">		return userName;</span><br><span class="line">	&#125;</span><br><span class="line">	/**</span><br><span class="line">	 * @param userName the userName to set</span><br><span class="line">	 */</span><br><span class="line">	public void setUserName(String userName) &#123;</span><br><span class="line">		this.userName = userName;</span><br><span class="line">	&#125;</span><br><span class="line">	/**</span><br><span class="line">	 * @return the age</span><br><span class="line">	 */</span><br><span class="line">	public int getAge() &#123;</span><br><span class="line">		return age;</span><br><span class="line">	&#125;</span><br><span class="line">	/**</span><br><span class="line">	 * @param age the age to set</span><br><span class="line">	 */</span><br><span class="line">	public void setAge(int age) &#123;</span><br><span class="line">		this.age = age;</span><br><span class="line">	&#125;</span><br><span class="line">	/**</span><br><span class="line">	 * @return the lover</span><br><span class="line">	 */</span><br><span class="line">	public String getLover() &#123;</span><br><span class="line">		return lover;</span><br><span class="line">	&#125;</span><br><span class="line">	/**</span><br><span class="line">	 * @param lover the lover to set</span><br><span class="line">	 */</span><br><span class="line">	public void setLover(String lover) &#123;</span><br><span class="line">		this.lover = lover;</span><br><span class="line">	&#125;</span><br><span class="line">	public void set(String orderId, String userId, String userName, int age, String lover,String tableName) &#123;</span><br><span class="line">		this.orderId = orderId;</span><br><span class="line">		this.userId = userId;</span><br><span class="line">		this.userName = userName;</span><br><span class="line">		this.age = age;</span><br><span class="line">		this.lover = lover;</span><br><span class="line">		this.tableName=tableName;</span><br><span class="line">	&#125;</span><br><span class="line">	/* (non-Javadoc)</span><br><span class="line">	 * @see java.lang.Object#toString()</span><br><span class="line">	 */</span><br><span class="line">	@Override</span><br><span class="line">	public String toString() &#123;</span><br><span class="line">		return &quot;BeanObject [orderId=&quot; + orderId + &quot;, userId=&quot; + userId + &quot;, userName=&quot; + userName + &quot;, age=&quot; + age</span><br><span class="line">				+ &quot;, lover=&quot; + lover + &quot;]&quot;;</span><br><span class="line">	&#125;</span><br><span class="line">	</span><br><span class="line">	private String orderId;</span><br><span class="line">	private String userId;</span><br><span class="line">	private String userName;</span><br><span class="line">	private int age;</span><br><span class="line">	private String lover;</span><br><span class="line">	private String tableName;</span><br><span class="line">	/**</span><br><span class="line">	 * @return the tableName</span><br><span class="line">	 */</span><br><span class="line">	public String getTableName() &#123;</span><br><span class="line">		return tableName;</span><br><span class="line">	&#125;</span><br><span class="line">	/**</span><br><span class="line">	 * @param tableName the tableName to set</span><br><span class="line">	 */</span><br><span class="line">	public void setTableName(String tableName) &#123;</span><br><span class="line">		this.tableName = tableName;</span><br><span class="line">	&#125;</span><br><span class="line">	@Override</span><br><span class="line">	public void readFields(DataInput in) throws IOException &#123;</span><br><span class="line">		// TODO Auto-generated method stub</span><br><span class="line">		this.orderId=in.readUTF();</span><br><span class="line">		this.userId=in.readUTF();</span><br><span class="line">		this.userName=in.readUTF();</span><br><span class="line">		this.age=in.readInt();</span><br><span class="line">		this.lover=in.readUTF();</span><br><span class="line">		this.tableName=in.readUTF();</span><br><span class="line">	&#125;</span><br><span class="line">	@Override</span><br><span class="line">	public void write(DataOutput out) throws IOException &#123;</span><br><span class="line">		// TODO Auto-generated method stub</span><br><span class="line">		out.writeUTF(this.orderId);</span><br><span class="line">		out.writeUTF(this.userId);</span><br><span class="line">		out.writeUTF(this.userName);</span><br><span class="line">		out.writeInt(this.age);</span><br><span class="line">		out.writeUTF(this.lover);</span><br><span class="line">		out.writeUTF(this.tableName);</span><br><span class="line">		</span><br><span class="line">	&#125;</span><br><span class="line">	</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<h6 id="MR"><a href="#MR" class="headerlink" title="MR"></a>MR</h6><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br></pre></td><td class="code"><pre><span class="line">package MRCodingTen_JoinAlgorithm;</span><br><span class="line"></span><br><span class="line">import java.io.IOException;</span><br><span class="line">import java.lang.reflect.InvocationTargetException;</span><br><span class="line">import java.util.ArrayList;</span><br><span class="line">import org.apache.commons.beanutils.BeanUtils;</span><br><span class="line">import org.apache.hadoop.conf.Configuration;</span><br><span class="line">import org.apache.hadoop.fs.Path;</span><br><span class="line">import org.apache.hadoop.io.LongWritable;</span><br><span class="line">import org.apache.hadoop.io.NullWritable;</span><br><span class="line">import org.apache.hadoop.io.Text;</span><br><span class="line">import org.apache.hadoop.mapreduce.InputSplit;</span><br><span class="line">import org.apache.hadoop.mapreduce.Job;</span><br><span class="line">import org.apache.hadoop.mapreduce.Mapper;</span><br><span class="line">import org.apache.hadoop.mapreduce.Reducer;</span><br><span class="line">import org.apache.hadoop.mapreduce.lib.input.FileInputFormat;</span><br><span class="line">import org.apache.hadoop.mapreduce.lib.input.FileSplit;</span><br><span class="line">import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat;</span><br><span class="line"></span><br><span class="line">public class JoinAlogrithm &#123;</span><br><span class="line"></span><br><span class="line">	public static class JoinAlogrithmMapper extends Mapper&lt;LongWritable, Text, Text,BeanObject &gt;&#123;</span><br><span class="line">		private String fileName=null;</span><br><span class="line">		BeanObject beanObject=new BeanObject();</span><br><span class="line">		</span><br><span class="line">		@Override</span><br><span class="line">		protected void setup(Mapper&lt;LongWritable, Text, Text, BeanObject&gt;.Context context)</span><br><span class="line">				throws IOException, InterruptedException &#123;</span><br><span class="line">			// TODO Auto-generated method stub</span><br><span class="line">			FileSplit inputSplit = (FileSplit)context.getInputSplit();</span><br><span class="line">			fileName=inputSplit.getPath().getName();</span><br><span class="line">		&#125;</span><br><span class="line">		</span><br><span class="line">		@Override</span><br><span class="line">		protected void map(LongWritable key, Text value, Mapper&lt;LongWritable, Text, Text, BeanObject&gt;.Context context)</span><br><span class="line">				throws IOException, InterruptedException &#123;</span><br><span class="line">			// TODO Auto-generated method stub</span><br><span class="line">			if(fileName.startsWith(&quot;order&quot;)) &#123;</span><br><span class="line">				String[] fields = value.toString().split(&quot;,&quot;);</span><br><span class="line">				beanObject.set(fields[0], fields[1], &quot;null&quot;, -1, &quot;null&quot;,&quot;order&quot;);</span><br><span class="line">				context.write(new Text(fields[1]), beanObject);</span><br><span class="line">			&#125;else if(fileName.startsWith(&quot;user&quot;)) &#123;</span><br><span class="line">				String[] fields = value.toString().split(&quot;,&quot;);</span><br><span class="line">				beanObject.set(&quot;null&quot;, fields[0], fields[1], Integer.parseInt(fields[2]), fields[3],&quot;user&quot;);</span><br><span class="line">				context.write(new Text(fields[0]), beanObject);</span><br><span class="line">			&#125;else &#123;</span><br><span class="line">				return ;</span><br><span class="line">			&#125;</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">	</span><br><span class="line">	public static class JoinAlogrithmReducer extends Reducer&lt;Text, BeanObject, BeanObject, NullWritable&gt;&#123;</span><br><span class="line">		</span><br><span class="line">		@Override</span><br><span class="line">		protected void reduce(Text key, Iterable&lt;BeanObject&gt; values,</span><br><span class="line">				Reducer&lt;Text, BeanObject, BeanObject,NullWritable&gt;.Context context) throws IOException, InterruptedException &#123;</span><br><span class="line">			// TODO Auto-generated method stub</span><br><span class="line">			ArrayList&lt;BeanObject&gt; arrayList = new ArrayList&lt;&gt;();</span><br><span class="line">			BeanObject beanObject=null;</span><br><span class="line">			</span><br><span class="line">			for (BeanObject value: values) &#123;</span><br><span class="line">				if(&quot;order&quot;.equals(value.getTableName())) &#123;</span><br><span class="line">					BeanObject obj = new BeanObject();</span><br><span class="line">					try &#123;</span><br><span class="line">						BeanUtils.copyProperties(obj, value);</span><br><span class="line">					&#125; catch (IllegalAccessException | InvocationTargetException e) &#123;</span><br><span class="line">						// TODO Auto-generated catch block</span><br><span class="line">						e.printStackTrace();</span><br><span class="line">					&#125;</span><br><span class="line">					arrayList.add(obj);</span><br><span class="line">				&#125;else &#123;</span><br><span class="line">					try &#123;</span><br><span class="line">						beanObject=new BeanObject();</span><br><span class="line">						BeanUtils.copyProperties(beanObject, value);</span><br><span class="line">					&#125; catch (IllegalAccessException | InvocationTargetException e) &#123;</span><br><span class="line">						// TODO Auto-generated catch block</span><br><span class="line">						e.printStackTrace();</span><br><span class="line">					&#125;</span><br><span class="line">				&#125;</span><br><span class="line">				</span><br><span class="line">			&#125;</span><br><span class="line">			</span><br><span class="line">			for (BeanObject value : arrayList) &#123;</span><br><span class="line">				value.setUserName(beanObject.getUserName());</span><br><span class="line">				value.setAge(beanObject.getAge());</span><br><span class="line">				value.setLover(beanObject.getLover());</span><br><span class="line">				value.setTableName(&quot;left join&quot;);</span><br><span class="line">				context.write(value, NullWritable.get());</span><br><span class="line">			&#125;</span><br><span class="line">			</span><br><span class="line">		&#125;</span><br><span class="line">		</span><br><span class="line">	&#125;</span><br><span class="line">	</span><br><span class="line">	public static void main(String[] args) throws Exception&#123;</span><br><span class="line">		</span><br><span class="line">		Configuration conf = new Configuration();</span><br><span class="line">		</span><br><span class="line">		Job job = Job.getInstance(conf);</span><br><span class="line">		</span><br><span class="line">		job.setJarByClass(JoinAlogrithm.class);</span><br><span class="line">		</span><br><span class="line">		job.setMapperClass(JoinAlogrithmMapper.class);</span><br><span class="line">		job.setReducerClass(JoinAlogrithmReducer.class);</span><br><span class="line">		</span><br><span class="line">		job.setMapOutputKeyClass(Text.class);</span><br><span class="line">		job.setMapOutputValueClass(BeanObject.class);</span><br><span class="line">		</span><br><span class="line">		job.setOutputKeyClass(BeanObject.class);</span><br><span class="line">		job.setOutputValueClass(NullWritable.class);</span><br><span class="line">		</span><br><span class="line">		job.setNumReduceTasks(1);</span><br><span class="line">		</span><br><span class="line">		FileInputFormat.setInputPaths(job, new Path(&quot;F:\\Linuxsource\\mrdata\\joindata\\input&quot;));</span><br><span class="line">		FileOutputFormat.setOutputPath(job, new Path(&quot;F:\\Linuxsource\\mrdata\\joindata\\output&quot;));</span><br><span class="line">		</span><br><span class="line">		boolean res = job.waitForCompletion(true);</span><br><span class="line">		</span><br><span class="line">		System.exit(res?0:-1);</span><br><span class="line">		</span><br><span class="line">	&#125;</span><br><span class="line">	</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://blogoflyt.cn/2019/03/11/MapReduce编程案例9-控制输入、输出格式/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Richard">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/gakki.jpg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="积累技术之路">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2019/03/11/MapReduce编程案例9-控制输入、输出格式/" itemprop="url">MapReduce编程案例9-----控制输入、输出格式</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-03-11T23:00:00+08:00">
-                2019-03-11
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/MapReduce/" itemprop="url" rel="index">
-                    <span itemprop="name">MapReduce</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h5 id="需求：还是对案例4中的流量数据进行汇总，然后求出汇总结果中的流量最大的TOPN条"><a href="#需求：还是对案例4中的流量数据进行汇总，然后求出汇总结果中的流量最大的TOPN条" class="headerlink" title="需求：还是对案例4中的流量数据进行汇总，然后求出汇总结果中的流量最大的TOPN条"></a>需求：还是对案例4中的流量数据进行汇总，然后求出汇总结果中的流量最大的TOPN条</h5><h6 id="步骤1"><a href="#步骤1" class="headerlink" title="步骤1:"></a>步骤1:</h6><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">思路：统计逻辑跟之前的流量统计一致：</span><br><span class="line">map：以手机号作为key，flowbean作为value</span><br><span class="line">注：步骤1输出的结果文件通过指定SequenceFileOutputFormat来产生SequenceFile文件；SequenceFile文件是hadoop定义的一种文件，里面存放的是大量key-value的对象序列化字节（文件头部还存放了key和value所属的类型名）；</span><br></pre></td></tr></table></figure>
-<h6 id="步骤2："><a href="#步骤2：" class="headerlink" title="步骤2："></a>步骤2：</h6><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">思路：读取步骤1的SequenceFile结果文件，需要指定inputformatclass为SequenceFileInputFormat组件</span><br><span class="line">既然使用了这种输入组件，那么我们的map方法中直接就接收一对KEY-VALUE数据</span><br><span class="line"></span><br><span class="line">如何实现topn呢？</span><br><span class="line">通过把所有汇总数据发给同一个reduce端的worker，并且通过定义一个GroupingComparator来让这个worker把所有手机号的flowbean对象看成一组，调用一次reduce方法，我们就只需要在reduce方法中输出前n个即可</span><br></pre></td></tr></table></figure>
-<h5 id="MapReduce编程实现"><a href="#MapReduce编程实现" class="headerlink" title="MapReduce编程实现"></a>MapReduce编程实现</h5><h6 id="Object"><a href="#Object" class="headerlink" title="Object"></a>Object</h6><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br></pre></td><td class="code"><pre><span class="line">package MRCodingNine_IOControl_haveprob;</span><br><span class="line"></span><br><span class="line">import java.io.DataInput;</span><br><span class="line">import java.io.DataOutput;</span><br><span class="line">import java.io.IOException;</span><br><span class="line"></span><br><span class="line">import org.apache.hadoop.io.WritableComparable;</span><br><span class="line"></span><br><span class="line">public class FlowObject implements WritableComparable&lt;FlowObject&gt;&#123;</span><br><span class="line"></span><br><span class="line">	/**</span><br><span class="line">	 * @return the phone</span><br><span class="line">	 */</span><br><span class="line">	public String getPhone() &#123;</span><br><span class="line">		return phone;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	/**</span><br><span class="line">	 * @param phone the phone to set</span><br><span class="line">	 */</span><br><span class="line">	public void setPhone(String phone) &#123;</span><br><span class="line">		this.phone = phone;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	/**</span><br><span class="line">	 * @return the uFlow</span><br><span class="line">	 */</span><br><span class="line">	public int getuFlow() &#123;</span><br><span class="line">		return uFlow;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	/**</span><br><span class="line">	 * @param uFlow the uFlow to set</span><br><span class="line">	 */</span><br><span class="line">	public void setuFlow(int uFlow) &#123;</span><br><span class="line">		this.uFlow = uFlow;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	/**</span><br><span class="line">	 * @return the dFlow</span><br><span class="line">	 */</span><br><span class="line">	public int getdFlow() &#123;</span><br><span class="line">		return dFlow;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	/**</span><br><span class="line">	 * @param dFlow the dFlow to set</span><br><span class="line">	 */</span><br><span class="line">	public void setdFlow(int dFlow) &#123;</span><br><span class="line">		this.dFlow = dFlow;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	/**</span><br><span class="line">	 * @return the amount</span><br><span class="line">	 */</span><br><span class="line">	public int getAmount() &#123;</span><br><span class="line">		return amount;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	/**</span><br><span class="line">	 * @param amount the amount to set</span><br><span class="line">	 */</span><br><span class="line">	public void setAmount(int amount) &#123;</span><br><span class="line">		this.amount = amount;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	public void set(String phone, int uFlow, int dFlow) &#123;</span><br><span class="line">		</span><br><span class="line">		this.phone = phone;</span><br><span class="line">		this.uFlow = uFlow;</span><br><span class="line">		this.dFlow = dFlow;</span><br><span class="line">		this.amount = this.uFlow+this.dFlow;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	/* (non-Javadoc)</span><br><span class="line">	 * @see java.lang.Object#toString()</span><br><span class="line">	 */</span><br><span class="line">	@Override</span><br><span class="line">	public String toString() &#123;</span><br><span class="line">		return &quot;FlowObject [phone=&quot; + phone + &quot;, uFlow=&quot; + uFlow + &quot;, dFlow=&quot; + dFlow + &quot;, amount=&quot; + amount + &quot;]&quot;;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	private String phone;</span><br><span class="line">	private int uFlow;</span><br><span class="line">	private int dFlow;</span><br><span class="line">	private int amount;</span><br><span class="line">	@Override</span><br><span class="line">	public void readFields(DataInput in) throws IOException &#123;</span><br><span class="line">		// TODO Auto-generated method stub</span><br><span class="line">		this.phone=in.readUTF();</span><br><span class="line">		this.uFlow=in.readInt();</span><br><span class="line">		this.dFlow=in.readInt();</span><br><span class="line">		this.amount=in.readInt();</span><br><span class="line">		</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	@Override</span><br><span class="line">	public void write(DataOutput out) throws IOException &#123;</span><br><span class="line">		// TODO Auto-generated method stub</span><br><span class="line">		out.writeUTF(this.phone);</span><br><span class="line">		out.writeInt(this.uFlow);</span><br><span class="line">		out.writeInt(this.dFlow);</span><br><span class="line">		out.writeInt(amount);</span><br><span class="line">		</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	@Override</span><br><span class="line">	public int compareTo(FlowObject o) &#123;</span><br><span class="line">		// TODO Auto-generated method stub</span><br><span class="line">		return o.getAmount()-this.getAmount()==0?</span><br><span class="line">				this.getPhone().compareTo(o.getPhone()):o.getAmount()-this.getAmount();</span><br><span class="line">	&#125;</span><br><span class="line">	</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<h6 id="Comparator"><a href="#Comparator" class="headerlink" title="Comparator"></a>Comparator</h6><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">package MRCodingNine_IOControl_haveprob;</span><br><span class="line"></span><br><span class="line">import org.apache.hadoop.io.WritableComparable;</span><br><span class="line">import org.apache.hadoop.io.WritableComparator;</span><br><span class="line"></span><br><span class="line">public class FlowObjectGroupingComparator extends WritableComparator&#123;</span><br><span class="line">	public FlowObjectGroupingComparator() &#123;</span><br><span class="line">		// TODO Auto-generated constructor stub</span><br><span class="line">		super(FlowObject.class,true);</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	@Override</span><br><span class="line">	public int compare(WritableComparable a, WritableComparable b) &#123;</span><br><span class="line">		// TODO Auto-generated method stub</span><br><span class="line">		return 0;</span><br><span class="line">	&#125;</span><br><span class="line">	</span><br><span class="line">	</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<h6 id="MR-StepOne"><a href="#MR-StepOne" class="headerlink" title="MR StepOne"></a>MR StepOne</h6><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br></pre></td><td class="code"><pre><span class="line">package MRCodingNine_IOControl_haveprob;</span><br><span class="line"></span><br><span class="line">import java.io.IOException;</span><br><span class="line"></span><br><span class="line">import org.apache.hadoop.conf.Configuration;</span><br><span class="line">import org.apache.hadoop.fs.Path;</span><br><span class="line">import org.apache.hadoop.io.LongWritable;</span><br><span class="line">import org.apache.hadoop.io.SequenceFile.CompressionType;</span><br><span class="line">import org.apache.hadoop.io.Text;</span><br><span class="line">import org.apache.hadoop.mapreduce.Job;</span><br><span class="line">import org.apache.hadoop.mapreduce.Mapper;</span><br><span class="line">import org.apache.hadoop.mapreduce.Reducer;</span><br><span class="line">import org.apache.hadoop.mapreduce.lib.input.FileInputFormat;</span><br><span class="line">import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat;</span><br><span class="line">import org.apache.hadoop.mapreduce.lib.output.SequenceFileOutputFormat;</span><br><span class="line"></span><br><span class="line">public class SelfDesinTypeStepOne &#123;</span><br><span class="line"></span><br><span class="line">	</span><br><span class="line">	public static class SelfDesinTypeMapper extends Mapper&lt;LongWritable, Text, Text,FlowObject &gt;&#123;</span><br><span class="line">		@Override</span><br><span class="line">		protected void map(LongWritable key, Text value, Mapper&lt;LongWritable, Text, Text, FlowObject&gt;.Context context)</span><br><span class="line">				throws IOException, InterruptedException &#123;</span><br><span class="line">			// TODO Auto-generated method stub</span><br><span class="line">			String[] fields = value.toString().split(&quot;\t&quot;);</span><br><span class="line">			String phone=fields[1];</span><br><span class="line">			FlowObject flowObject = new FlowObject();</span><br><span class="line">			flowObject.set(phone, Integer.parseInt(fields[fields.length-3]),Integer.parseInt(fields[fields.length-2]));</span><br><span class="line">		</span><br><span class="line">			context.write(new Text(phone), flowObject);</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">	</span><br><span class="line">	public static class SelfDesinTypeReducer extends Reducer&lt;Text, FlowObject, Text, FlowObject&gt;&#123;</span><br><span class="line">		@Override</span><br><span class="line">		protected void reduce(Text phone, Iterable&lt;FlowObject&gt; iter,</span><br><span class="line">				Reducer&lt;Text, FlowObject, Text, FlowObject&gt;.Context context) throws IOException, InterruptedException &#123;</span><br><span class="line">			// TODO Auto-generated method stub</span><br><span class="line">			</span><br><span class="line">			int uFlow=0;</span><br><span class="line">			int dFlow=0;</span><br><span class="line">			</span><br><span class="line">			for (FlowObject flowObject : iter) &#123;</span><br><span class="line">				uFlow+=flowObject.getuFlow();</span><br><span class="line">				dFlow+=flowObject.getdFlow();</span><br><span class="line">			&#125;</span><br><span class="line">			FlowObject flowObject = new FlowObject();</span><br><span class="line">			flowObject.set(phone.toString(),uFlow, dFlow);</span><br><span class="line">			context.write(phone, flowObject);</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">	</span><br><span class="line">	public static void main(String[] args) throws Exception &#123;</span><br><span class="line">		Configuration conf = new Configuration();</span><br><span class="line">		Job job = Job.getInstance(conf);</span><br><span class="line">		</span><br><span class="line">		job.setJarByClass(SelfDesinTypeStepOne.class);</span><br><span class="line">		job.setMapperClass(SelfDesinTypeMapper.class);</span><br><span class="line">		job.setReducerClass(SelfDesinTypeReducer.class);</span><br><span class="line">		</span><br><span class="line">		job.setMapOutputKeyClass(Text.class);</span><br><span class="line">		job.setMapOutputValueClass(FlowObject.class);</span><br><span class="line">//		job.setGroupingComparatorClass(FlowObjectGroupingComparator.class);</span><br><span class="line">		</span><br><span class="line">		job.setOutputKeyClass(Text.class);</span><br><span class="line">		job.setOutputValueClass(FlowObject.class);</span><br><span class="line">		</span><br><span class="line">		job.setOutputFormatClass(SequenceFileOutputFormat.class);</span><br><span class="line">		SequenceFileOutputFormat.setOutputCompressionType(job, CompressionType.NONE);</span><br><span class="line">		</span><br><span class="line">//		FileInputFormat.setInputPaths(job, new Path(&quot;f:/Linuxsource/mrdata/flow/input&quot;));</span><br><span class="line">//		FileOutputFormat.setOutputPath(job, new Path(&quot;f:/Linuxsource/mrdata/flow/output2&quot;));</span><br><span class="line">		</span><br><span class="line">		FileInputFormat.setInputPaths(job, new Path(&quot;f:/Linuxsource/mrdata/flow/input&quot;));</span><br><span class="line">		SequenceFileOutputFormat.setOutputPath(job,new Path(&quot;f:/Linuxsource/mrdata/flow/output5&quot;) );</span><br><span class="line">		</span><br><span class="line">		job.setNumReduceTasks(1);</span><br><span class="line">		</span><br><span class="line">		boolean res= job.waitForCompletion(true);</span><br><span class="line">		</span><br><span class="line">		System.exit(res?0:-1);</span><br><span class="line">	&#125;</span><br><span class="line">	</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<h6 id="MR-StepTwo"><a href="#MR-StepTwo" class="headerlink" title="MR StepTwo"></a>MR StepTwo</h6><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br></pre></td><td class="code"><pre><span class="line">package MRCodingNine_IOControl_haveprob;</span><br><span class="line"></span><br><span class="line">import java.io.IOException;</span><br><span class="line"></span><br><span class="line">import org.apache.hadoop.conf.Configuration;</span><br><span class="line">import org.apache.hadoop.fs.Path;</span><br><span class="line">import org.apache.hadoop.io.Text;</span><br><span class="line">import org.apache.hadoop.mapreduce.Job;</span><br><span class="line">import org.apache.hadoop.mapreduce.Mapper;</span><br><span class="line">import org.apache.hadoop.mapreduce.Reducer;</span><br><span class="line">import org.apache.hadoop.mapreduce.lib.input.SequenceFileInputFormat;</span><br><span class="line">import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat;</span><br><span class="line"></span><br><span class="line">public class SelfDesinTypeStepTwo &#123;</span><br><span class="line"></span><br><span class="line">	public static class SelfDesinTypeStepTwoMapper extends Mapper&lt;Text, FlowObject, Text, FlowObject&gt;&#123;</span><br><span class="line">		</span><br><span class="line">		@Override</span><br><span class="line">		protected void map(Text key, FlowObject value, Mapper&lt;Text, FlowObject, Text, FlowObject&gt;.Context context)</span><br><span class="line">				throws IOException, InterruptedException &#123;</span><br><span class="line">			// TODO Auto-generated method stub</span><br><span class="line">			context.write(key, value);</span><br><span class="line">			</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">	</span><br><span class="line">	public static class SelfDesinTypeStepTwoReducer extends Reducer&lt;Text, FlowObject, Text, FlowObject&gt;&#123;</span><br><span class="line">		@Override</span><br><span class="line">		protected void reduce(Text key, Iterable&lt;FlowObject&gt; values,</span><br><span class="line">				Reducer&lt;Text, FlowObject, Text, FlowObject&gt;.Context context) throws IOException, InterruptedException &#123;</span><br><span class="line">			// TODO Auto-generated method stub</span><br><span class="line">			</span><br><span class="line">			Configuration conf = context.getConfiguration();</span><br><span class="line">			int topn= conf.getInt(&quot;top.n.value&quot;, 3);</span><br><span class="line">			int i=0;</span><br><span class="line">			for (FlowObject value : values) &#123;</span><br><span class="line">				context.write(key,value);</span><br><span class="line">				i++;</span><br><span class="line">				if(i==topn) return;</span><br><span class="line">			&#125;</span><br><span class="line">		</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">	</span><br><span class="line">	public static void main(String[] args) throws Exception&#123;</span><br><span class="line">		</span><br><span class="line">		Configuration conf = new Configuration();</span><br><span class="line">		conf.setInt(&quot;top.n.value&quot;, 3);</span><br><span class="line">		</span><br><span class="line">		Job job = Job.getInstance(conf);		</span><br><span class="line">		</span><br><span class="line">		job.setJarByClass(SelfDesinTypeStepTwo.class);</span><br><span class="line">		job.setMapperClass(SelfDesinTypeStepTwoMapper.class);</span><br><span class="line">		job.setReducerClass(SelfDesinTypeStepTwoReducer.class);</span><br><span class="line">		</span><br><span class="line">//		job.setGroupingComparatorClass(FlowObjectGroupingComparator.class);</span><br><span class="line">		</span><br><span class="line">		job.setMapOutputKeyClass(Text.class);</span><br><span class="line">		job.setMapOutputValueClass(FlowObject.class);</span><br><span class="line">		</span><br><span class="line">		job.setOutputKeyClass(Text.class);</span><br><span class="line">		job.setOutputValueClass(FlowObject.class);</span><br><span class="line">		</span><br><span class="line">		job.setInputFormatClass(SequenceFileInputFormat.class);</span><br><span class="line"></span><br><span class="line">		SequenceFileInputFormat.setInputPaths(job, new Path(&quot;f:/Linuxsource/mrdata/flow/output5&quot;));</span><br><span class="line">		FileOutputFormat.setOutputPath(job, new Path(&quot;f:/Linuxsource/mrdata/flow/output6&quot;));</span><br><span class="line">		</span><br><span class="line"></span><br><span class="line">		job.setNumReduceTasks(1);</span><br><span class="line">		</span><br><span class="line">		boolean res= job.waitForCompletion(true);</span><br><span class="line">		</span><br><span class="line">		System.exit(res?0:-1);</span><br><span class="line">		</span><br><span class="line">	&#125;</span><br><span class="line">	</span><br><span class="line">	</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://blogoflyt.cn/2019/03/10/MapReduce编程案例8-自定义GroupingComparator/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Richard">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/gakki.jpg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="积累技术之路">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2019/03/10/MapReduce编程案例8-自定义GroupingComparator/" itemprop="url">MapReduce编程案例8-----自定义GroupingComparator</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-03-10T22:57:00+08:00">
-                2019-03-10
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/MapReduce/" itemprop="url" rel="index">
-                    <span itemprop="name">MapReduce</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h5 id="需求：有以下数据，求出每个用户总价值最高的3组数据"><a href="#需求：有以下数据，求出每个用户总价值最高的3组数据" class="headerlink" title="需求：有以下数据，求出每个用户总价值最高的3组数据"></a>需求：有以下数据，求出每个用户总价值最高的3组数据</h5><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">order001,u001,小米6,1999.9,2</span><br><span class="line">order001,u001,雀巢咖啡,99.0,2</span><br><span class="line">order001,u001,安慕希,250.0,2</span><br><span class="line">order001,u001,经典红双喜,200.0,4</span><br><span class="line">order001,u001,防水电脑包,400.0,2</span><br><span class="line">order002,u002,小米手环,199.0,3</span><br><span class="line">order002,u002,榴莲,15.0,10</span><br><span class="line">order002,u002,苹果,4.5,20</span><br><span class="line">order002,u002,肥皂,10.0,40</span><br><span class="line">order003,u001,小米6,1999.9,2</span><br><span class="line">order003,u001,雀巢咖啡,99.0,2</span><br><span class="line">order003,u001,安慕希,250.0,2</span><br><span class="line">order003,u001,经典红双喜,200.0,4</span><br><span class="line">order003,u001,防水电脑包,400.0,2</span><br></pre></td></tr></table></figure>
-<h5 id="MapReduce编程实现"><a href="#MapReduce编程实现" class="headerlink" title="MapReduce编程实现"></a>MapReduce编程实现</h5><h6 id="OrderObject"><a href="#OrderObject" class="headerlink" title="OrderObject"></a>OrderObject</h6><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br><span class="line">134</span><br><span class="line">135</span><br><span class="line">136</span><br><span class="line">137</span><br><span class="line">138</span><br><span class="line">139</span><br></pre></td><td class="code"><pre><span class="line">package MRCodingEight_GroupingComparator;</span><br><span class="line"></span><br><span class="line">import java.io.DataInput;</span><br><span class="line">import java.io.DataOutput;</span><br><span class="line">import java.io.IOException;</span><br><span class="line"></span><br><span class="line">import org.apache.hadoop.io.WritableComparable;</span><br><span class="line"></span><br><span class="line">public class OrderObject implements WritableComparable&lt;OrderObject&gt;&#123;</span><br><span class="line"></span><br><span class="line">	/**</span><br><span class="line">	 * @return the orderId</span><br><span class="line">	 */</span><br><span class="line">	public String getOrderId() &#123;</span><br><span class="line">		return orderId;</span><br><span class="line">	&#125;</span><br><span class="line">	/**</span><br><span class="line">	 * @param orderId the orderId to set</span><br><span class="line">	 */</span><br><span class="line">	public void setOrderId(String orderId) &#123;</span><br><span class="line">		this.orderId = orderId;</span><br><span class="line">	&#125;</span><br><span class="line">	/**</span><br><span class="line">	 * @return the userId</span><br><span class="line">	 */</span><br><span class="line">	public String getUserId() &#123;</span><br><span class="line">		return userId;</span><br><span class="line">	&#125;</span><br><span class="line">	/**</span><br><span class="line">	 * @param userId the userId to set</span><br><span class="line">	 */</span><br><span class="line">	public void setUserId(String userId) &#123;</span><br><span class="line">		this.userId = userId;</span><br><span class="line">	&#125;</span><br><span class="line">	/**</span><br><span class="line">	 * @return the pdtName</span><br><span class="line">	 */</span><br><span class="line">	public String getPdtName() &#123;</span><br><span class="line">		return pdtName;</span><br><span class="line">	&#125;</span><br><span class="line">	/**</span><br><span class="line">	 * @param pdtName the pdtName to set</span><br><span class="line">	 */</span><br><span class="line">	public void setPdtName(String pdtName) &#123;</span><br><span class="line">		this.pdtName = pdtName;</span><br><span class="line">	&#125;</span><br><span class="line">	/**</span><br><span class="line">	 * @return the price</span><br><span class="line">	 */</span><br><span class="line">	public float getPrice() &#123;</span><br><span class="line">		return price;</span><br><span class="line">	&#125;</span><br><span class="line">	/**</span><br><span class="line">	 * @param price the price to set</span><br><span class="line">	 */</span><br><span class="line">	public void setPrice(float price) &#123;</span><br><span class="line">		this.price = price;</span><br><span class="line">	&#125;</span><br><span class="line">	/**</span><br><span class="line">	 * @return the amount</span><br><span class="line">	 */</span><br><span class="line">	public int getAmount() &#123;</span><br><span class="line">		return amount;</span><br><span class="line">	&#125;</span><br><span class="line">	/**</span><br><span class="line">	 * @param amount the amount to set</span><br><span class="line">	 */</span><br><span class="line">	public void setAmount(int amount) &#123;</span><br><span class="line">		this.amount = amount;</span><br><span class="line">	&#125;</span><br><span class="line">	/* (non-Javadoc)</span><br><span class="line">	 * @see java.lang.Object#toString()</span><br><span class="line">	 */</span><br><span class="line"></span><br><span class="line">	public void set(String orderId, String userId, String pdtName, float price, int amount) &#123;</span><br><span class="line">		this.orderId = orderId;</span><br><span class="line">		this.userId = userId;</span><br><span class="line">		this.pdtName = pdtName;</span><br><span class="line">		this.price = price;</span><br><span class="line">		this.amount = amount;</span><br><span class="line">		this.totalPrice=this.amount*this.price;</span><br><span class="line">	&#125;</span><br><span class="line">	/* (non-Javadoc)</span><br><span class="line">	 * @see java.lang.Object#toString()</span><br><span class="line">	 */</span><br><span class="line">	@Override</span><br><span class="line">	public String toString() &#123;</span><br><span class="line">		return &quot;OrderObject [orderId=&quot; + orderId + &quot;, userId=&quot; + userId + &quot;, pdtName=&quot; + pdtName + &quot;, price=&quot; + price</span><br><span class="line">				+ &quot;, amount=&quot; + amount + &quot;, totalPrice=&quot; + totalPrice + &quot;]&quot;;</span><br><span class="line">	&#125;</span><br><span class="line">	private String orderId;</span><br><span class="line">	private String userId;</span><br><span class="line">	private String pdtName;</span><br><span class="line">	private float price;</span><br><span class="line">	private int amount;</span><br><span class="line">	private float totalPrice;</span><br><span class="line">	/**</span><br><span class="line">	 * @return the totalPrice</span><br><span class="line">	 */</span><br><span class="line">	public float getTotalPrice() &#123;</span><br><span class="line">		return totalPrice;</span><br><span class="line">	&#125;</span><br><span class="line">	/**</span><br><span class="line">	 * @param totalPrice the totalPrice to set</span><br><span class="line">	 */</span><br><span class="line">	public void setTotalPrice(float totalPrice) &#123;</span><br><span class="line">		this.totalPrice = totalPrice;</span><br><span class="line">	&#125;</span><br><span class="line">	@Override</span><br><span class="line">	public void readFields(DataInput in) throws IOException &#123;</span><br><span class="line">		// TODO Auto-generated method stub</span><br><span class="line">		this.orderId=in.readUTF();</span><br><span class="line">		this.userId=in.readUTF();</span><br><span class="line">		this.pdtName=in.readUTF();</span><br><span class="line">		this.price=in.readFloat();</span><br><span class="line">		this.amount=in.readInt();</span><br><span class="line">		this.totalPrice=in.readFloat();</span><br><span class="line">	&#125;</span><br><span class="line">	@Override</span><br><span class="line">	public void write(DataOutput out) throws IOException &#123;</span><br><span class="line">		// TODO Auto-generated method stub</span><br><span class="line">		</span><br><span class="line">		out.writeUTF(this.orderId);</span><br><span class="line">		out.writeUTF(this.userId);</span><br><span class="line">		out.writeUTF(this.pdtName);</span><br><span class="line">		out.writeFloat(this.price);</span><br><span class="line">		out.writeInt(this.amount);</span><br><span class="line">		out.writeFloat(this.totalPrice);</span><br><span class="line">	&#125;</span><br><span class="line">	@Override</span><br><span class="line">	public int compareTo(OrderObject o) &#123;</span><br><span class="line">		// TODO Auto-generated method stub</span><br><span class="line">		return this.orderId.compareTo(o.orderId)==0?</span><br><span class="line">				Float.compare(o.getTotalPrice(), this.getTotalPrice())</span><br><span class="line">				:this.getOrderId().compareTo(o.getOrderId());</span><br><span class="line">	&#125;</span><br><span class="line">	</span><br><span class="line">	</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<h6 id="GroupingComparator"><a href="#GroupingComparator" class="headerlink" title="GroupingComparator"></a>GroupingComparator</h6><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line">package MRCodingEight_GroupingComparator;</span><br><span class="line"></span><br><span class="line">import org.apache.hadoop.io.WritableComparable;</span><br><span class="line">import org.apache.hadoop.io.WritableComparator;</span><br><span class="line"></span><br><span class="line">public class OrderObjectGroupingComparator extends WritableComparator &#123;</span><br><span class="line"></span><br><span class="line">	public OrderObjectGroupingComparator() &#123;</span><br><span class="line">		// TODO Auto-generated constructor stub</span><br><span class="line">		super(OrderObject.class,true);</span><br><span class="line">	&#125;</span><br><span class="line">	</span><br><span class="line">	@Override</span><br><span class="line">	public int compare(WritableComparable a, WritableComparable b) &#123;</span><br><span class="line">		// TODO Auto-generated method stub</span><br><span class="line">		</span><br><span class="line">		OrderObject o1=(OrderObject) a;</span><br><span class="line">		OrderObject o2=(OrderObject) b; </span><br><span class="line">		</span><br><span class="line">		return o1.getOrderId().compareTo(o2.getOrderId());</span><br><span class="line">	&#125;	</span><br><span class="line">	</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<h6 id="Partitioner"><a href="#Partitioner" class="headerlink" title="Partitioner"></a>Partitioner</h6><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">package MRCodingEight_GroupingComparator;</span><br><span class="line"></span><br><span class="line">import org.apache.hadoop.io.NullWritable;</span><br><span class="line">import org.apache.hadoop.mapreduce.Partitioner;</span><br><span class="line"></span><br><span class="line">public class OrderObjectPartitioner extends Partitioner&lt;OrderObject, NullWritable&gt;&#123;</span><br><span class="line"></span><br><span class="line">	@Override</span><br><span class="line">	public int getPartition(OrderObject key, NullWritable value, int numPartitioners) &#123;</span><br><span class="line">		// TODO Auto-generated method stub</span><br><span class="line">		return (key.getOrderId().hashCode() &amp; Integer.MAX_VALUE )%numPartitioners;</span><br><span class="line">	&#125;</span><br><span class="line">	</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<h6 id="MR"><a href="#MR" class="headerlink" title="MR"></a>MR</h6><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br></pre></td><td class="code"><pre><span class="line">package MRCodingEight_GroupingComparator;</span><br><span class="line"></span><br><span class="line">import java.io.IOException;</span><br><span class="line"></span><br><span class="line">import org.apache.hadoop.conf.Configuration;</span><br><span class="line">import org.apache.hadoop.fs.Path;</span><br><span class="line">import org.apache.hadoop.io.LongWritable;</span><br><span class="line">import org.apache.hadoop.io.NullWritable;</span><br><span class="line">import org.apache.hadoop.io.Text;</span><br><span class="line">import org.apache.hadoop.mapreduce.Job;</span><br><span class="line">import org.apache.hadoop.mapreduce.Mapper;</span><br><span class="line">import org.apache.hadoop.mapreduce.Reducer;</span><br><span class="line">import org.apache.hadoop.mapreduce.lib.input.FileInputFormat;</span><br><span class="line">import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">public class GroupingComparator &#123;</span><br><span class="line"></span><br><span class="line">	public static class GroupingComparatorMapper extends Mapper&lt;LongWritable, Text, OrderObject, NullWritable&gt;&#123;</span><br><span class="line">		OrderObject orderObject=new OrderObject();</span><br><span class="line">		NullWritable v=NullWritable.get();</span><br><span class="line">		@Override</span><br><span class="line">		protected void map(LongWritable key, Text value,</span><br><span class="line">				Mapper&lt;LongWritable, Text, OrderObject, NullWritable&gt;.Context context)</span><br><span class="line">				throws IOException, InterruptedException &#123;</span><br><span class="line">			// TODO Auto-generated method stub</span><br><span class="line">			String[] fields = value.toString().split(&quot;,&quot;);</span><br><span class="line">			orderObject.set(fields[0], fields[1],fields[2],</span><br><span class="line">					Float.parseFloat(fields[3]), Integer.parseInt(fields[4]));</span><br><span class="line">		</span><br><span class="line">			context.write(orderObject, v);</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">	</span><br><span class="line">	public static class GroupingComparatorReducer extends Reducer&lt;OrderObject, NullWritable, OrderObject, NullWritable&gt;&#123;</span><br><span class="line">		@Override</span><br><span class="line">		protected void reduce(OrderObject key, Iterable&lt;NullWritable&gt; values,</span><br><span class="line">				Reducer&lt;OrderObject, NullWritable, OrderObject, NullWritable&gt;.Context context)</span><br><span class="line">				throws IOException, InterruptedException &#123;</span><br><span class="line">			// TODO Auto-generated method stub</span><br><span class="line">			</span><br><span class="line">			Configuration conf = context.getConfiguration();</span><br><span class="line">			int topn = conf.getInt(&quot;order.top.n&quot;, 3);			</span><br><span class="line">			/*</span><br><span class="line">			 * 虽然reduce方法中的参数key只有一个，但是只要迭代器迭代一次，key中的值就会变</span><br><span class="line">			 */</span><br><span class="line">			int i=0;</span><br><span class="line">			for (NullWritable value: values) &#123;</span><br><span class="line">				context.write(key, NullWritable.get());</span><br><span class="line">				i++;</span><br><span class="line">				if(i==topn) return;</span><br><span class="line">			&#125;</span><br><span class="line">			</span><br><span class="line">		&#125;</span><br><span class="line">		</span><br><span class="line">	&#125;</span><br><span class="line">	</span><br><span class="line">	public static void main(String[] args) throws Exception&#123;</span><br><span class="line">		Configuration conf = new Configuration();</span><br><span class="line">		</span><br><span class="line">		conf.setInt(&quot;order.top.n&quot;, 3);</span><br><span class="line">		</span><br><span class="line">		Job job= Job.getInstance(conf);</span><br><span class="line">		job.setJarByClass(GroupingComparator.class);</span><br><span class="line">		</span><br><span class="line">		</span><br><span class="line">		job.setPartitionerClass(OrderObjectPartitioner.class);</span><br><span class="line">		job.setGroupingComparatorClass(OrderObjectGroupingComparator.class);</span><br><span class="line">		</span><br><span class="line">		job.setMapperClass(GroupingComparatorMapper.class);</span><br><span class="line">		job.setReducerClass(GroupingComparatorReducer.class);</span><br><span class="line">		</span><br><span class="line">		job.setMapOutputKeyClass(OrderObject.class);</span><br><span class="line">		job.setMapOutputValueClass(NullWritable.class);</span><br><span class="line">		</span><br><span class="line">		job.setOutputKeyClass(OrderObject.class);</span><br><span class="line">		job.setOutputValueClass(NullWritable.class);</span><br><span class="line">		</span><br><span class="line">		FileInputFormat.setInputPaths(job, new Path(&quot;f:/Linuxsource/mrdata/ordergroup/input&quot;));</span><br><span class="line">		FileOutputFormat.setOutputPath(job, new Path(&quot;f:/Linuxsource/mrdata/ordergroup/ouput2&quot;));</span><br><span class="line">		</span><br><span class="line">		job.setNumReduceTasks(2);</span><br><span class="line">		</span><br><span class="line">		boolean res = job.waitForCompletion(true);</span><br><span class="line">		</span><br><span class="line">		System.exit(res?0:-1);</span><br><span class="line">		</span><br><span class="line">	&#125;</span><br><span class="line">	</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
   </section>
 
   
   <nav class="pagination">
-    <span class="page-number current">1</span><a class="page-number" href="/page/2/">2</a><span class="space">&hellip;</span><a class="page-number" href="/page/6/">6</a><a class="extend next" rel="next" href="/page/2/"><i class="fa fa-angle-right"></i></a>
+    <span class="page-number current">1</span><a class="page-number" href="/page/2/">2</a><span class="space">&hellip;</span><a class="page-number" href="/page/7/">7</a><a class="extend next" rel="next" href="/page/2/"><i class="fa fa-angle-right"></i></a>
   </nav>
 
 
@@ -1763,7 +1873,7 @@
               
                 <a href="/archives/">
               
-                  <span class="site-state-item-count">58</span>
+                  <span class="site-state-item-count">61</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
@@ -1785,7 +1895,7 @@
               
               <div class="site-state-item site-state-tags">
                 <a href="/tags/index.html">
-                  <span class="site-state-item-count">80</span>
+                  <span class="site-state-item-count">81</span>
                   <span class="site-state-item-name">标签</span>
                 </a>
               </div>
