@@ -252,6 +252,158 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://blogoflyt.cn/2019/02/06/HBASE安装部署/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Richard">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/gakki.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="积累技术之路">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2019/02/06/HBASE安装部署/" itemprop="url">HBASE安装部署</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-02-06T20:12:00+08:00">
+                2019-02-06
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/HBASE/" itemprop="url" rel="index">
+                    <span itemprop="name">HBASE</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h5 id="概念特性"><a href="#概念特性" class="headerlink" title="概念特性"></a>概念特性</h5><blockquote>
+<p>HBASE是一个数据库—-可以提供数据的实时随机读写</p>
+</blockquote>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">HBASE与mysql、oralce、db2等关系型数据库不同，它是一个NOSQL数据库</span><br><span class="line">Hbase的表模型与关系型数据库的表模型不同：</span><br><span class="line">Hbase的表没有固定的字段定义；</span><br><span class="line">Hbase的表中每行存储的都是一些key-value对</span><br><span class="line">Hbase的表中有列族的划分，用户可以指定将哪些kv插入哪个列族</span><br><span class="line">Hbase的表在物理存储上，是按照列族来分割的，不同列族的数据一定存储在不同的文件中</span><br><span class="line">Hbase的表中的每一行都固定有一个行键，而且每一行的行键在表中不能重复</span><br><span class="line">Hbase中的数据，包含行键，包含key，包含value，都是byte[ ]类型，hbase不负责为用户维护数据类型</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>HBASE相比于其他nosql数据库的特点：<br>Hbase的表数据存储在HDFS文件系统中<br>从而，hbase具备如下特性：存储容量可以线性扩展； 数据存储的安全性可靠性极高！</p>
+</blockquote>
+<h5 id="应用场景举例"><a href="#应用场景举例" class="headerlink" title="应用场景举例"></a>应用场景举例</h5><p><a href="https://imgchr.com/i/kxcyI1" target="_blank" rel="noopener"><img src="https://s2.ax1x.com/2019/03/07/kxcyI1.png" alt="kxcyI1.png"></a></p>
+<h5 id="安装HBASE"><a href="#安装HBASE" class="headerlink" title="安装HBASE"></a>安装HBASE</h5><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">HBASE是一个分布式系统</span><br><span class="line">其中有一个管理角色：  HMaster(一般2台，一台active，一台backup)</span><br><span class="line">其他的数据节点角色：  HRegionServer(很多台，看数据容量)</span><br></pre></td></tr></table></figure>
+<h6 id="安装准备："><a href="#安装准备：" class="headerlink" title="安装准备："></a>安装准备：</h6><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">首先，要有一个HDFS集群，并正常运行； regionserver应该跟hdfs中的datanode在一起</span><br><span class="line">其次，还需要一个zookeeper集群，并正常运行</span><br><span class="line">然后，安装HBASE</span><br><span class="line">角色分配如下：</span><br><span class="line">Hdp01:  namenode  datanode  regionserver  hmaster  zookeeper</span><br><span class="line">Hdp02:  datanode   regionserver  zookeeper</span><br><span class="line">Hdp03:  datanode   regionserver  zookeeper</span><br></pre></td></tr></table></figure>
+<h6 id="安装步骤："><a href="#安装步骤：" class="headerlink" title="安装步骤："></a>安装步骤：</h6><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br></pre></td><td class="code"><pre><span class="line">安装zookeeper(略)</span><br><span class="line">安装hbase</span><br><span class="line">解压hbase安装包</span><br><span class="line">修改hbase-env.sh</span><br><span class="line">export JAVA_HOME=/root/apps/jdk1.7.0_67</span><br><span class="line">export HBASE_MANAGES_ZK=false</span><br><span class="line"></span><br><span class="line">修改hbase-site.xml</span><br><span class="line">	&lt;configuration&gt;</span><br><span class="line">		&lt;!-- 指定hbase在HDFS上存储的路径 --&gt;</span><br><span class="line">        &lt;property&gt;</span><br><span class="line">                &lt;name&gt;hbase.rootdir&lt;/name&gt;</span><br><span class="line">                &lt;value&gt;hdfs://hdp01:9000/hbase&lt;/value&gt;</span><br><span class="line">        &lt;/property&gt;</span><br><span class="line">		&lt;!-- 指定hbase是分布式的 --&gt;</span><br><span class="line">        &lt;property&gt;</span><br><span class="line">                &lt;name&gt;hbase.cluster.distributed&lt;/name&gt;</span><br><span class="line">                &lt;value&gt;true&lt;/value&gt;</span><br><span class="line">        &lt;/property&gt;</span><br><span class="line">		&lt;!-- 指定zk的地址，多个用“,”分割 --&gt;</span><br><span class="line">        &lt;property&gt;</span><br><span class="line">                &lt;name&gt;hbase.zookeeper.quorum&lt;/name&gt;</span><br><span class="line">                &lt;value&gt;hdp01:2181,hdp02:2181,hdp03:2181&lt;/value&gt;</span><br><span class="line">        &lt;/property&gt;</span><br><span class="line">	&lt;/configuration&gt;</span><br><span class="line"></span><br><span class="line">修改 regionservers</span><br><span class="line">hdp01</span><br><span class="line">hdp02</span><br><span class="line">hdp03</span><br><span class="line"></span><br><span class="line">启动hbase集群：</span><br><span class="line">bin/start-hbase.sh</span><br><span class="line"></span><br><span class="line">启动完后，还可以在集群中找任意一台机器启动一个备用的master</span><br><span class="line">bin/hbase-daemon.sh start master</span><br><span class="line">新启的这个master会处于backup状态</span><br><span class="line"></span><br><span class="line">启动hbase的命令行客户端</span><br><span class="line">bin/hbase shell</span><br><span class="line">Hbase&gt; list     // 查看表</span><br><span class="line">Hbase&gt; status   // 查看集群状态</span><br><span class="line">Hbase&gt; version  // 查看集群版本</span><br></pre></td></tr></table></figure>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="http://blogoflyt.cn/2019/02/05/Hive学习笔记-综合查询案例/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -1333,147 +1485,6 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://blogoflyt.cn/2018/08/26/Pythontest/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Richard">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/gakki.jpg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="积累技术之路">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2018/08/26/Pythontest/" itemprop="url">Pythontest</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-08-26T22:46:00+08:00">
-                2018-08-26
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Python/" itemprop="url" rel="index">
-                    <span itemprop="name">Python</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="http://blogoflyt.cn/2018/08/26/MySQLtest/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -1615,7 +1626,7 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://blogoflyt.cn/2018/08/26/hello-world/">
+    <link itemprop="mainEntityOfPage" href="http://blogoflyt.cn/2018/08/26/Pythontest/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="Richard">
@@ -1634,7 +1645,7 @@
         
           <h1 class="post-title" itemprop="name headline">
                 
-                <a class="post-title-link" href="/2018/08/26/hello-world/" itemprop="url">Hello World</a></h1>
+                <a class="post-title-link" href="/2018/08/26/Pythontest/" itemprop="url">Pythontest</a></h1>
         
 
         <div class="post-meta">
@@ -1646,7 +1657,7 @@
               
                 <span class="post-meta-item-text">发表于</span>
               
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-08-26T18:03:00+08:00">
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-08-26T22:46:00+08:00">
                 2018-08-26
               </time>
             
@@ -1669,8 +1680,8 @@
               
               
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Linux/" itemprop="url" rel="index">
-                    <span itemprop="name">Linux</span>
+                  <a href="/categories/Python/" itemprop="url" rel="index">
+                    <span itemprop="name">Python</span>
                   </a>
                 </span>
 
@@ -1708,16 +1719,7 @@
       
         
           
-            <p>Welcome to <a href="https://hexo.io/" target="_blank" rel="noopener">Hexo</a>! This is your very first post. Check <a href="https://hexo.io/docs/" target="_blank" rel="noopener">documentation</a> for more info. If you get any problems when using Hexo, you can find the answer in <a href="https://hexo.io/docs/troubleshooting.html" target="_blank" rel="noopener">troubleshooting</a> or you can ask me on <a href="https://github.com/hexojs/hexo/issues" target="_blank" rel="noopener">GitHub</a>.</p>
-<h2 id="Quick-Start"><a href="#Quick-Start" class="headerlink" title="Quick Start"></a>Quick Start</h2><h3 id="Create-a-new-post"><a href="#Create-a-new-post" class="headerlink" title="Create a new post"></a>Create a new post</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo new <span class="string">"My New Post"</span></span><br></pre></td></tr></table></figure>
-<p>More info: <a href="https://hexo.io/docs/writing.html" target="_blank" rel="noopener">Writing</a></p>
-<h3 id="Run-server"><a href="#Run-server" class="headerlink" title="Run server"></a>Run server</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo server</span><br></pre></td></tr></table></figure>
-<p>More info: <a href="https://hexo.io/docs/server.html" target="_blank" rel="noopener">Server</a></p>
-<h3 id="Generate-static-files"><a href="#Generate-static-files" class="headerlink" title="Generate static files"></a>Generate static files</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo generate</span><br></pre></td></tr></table></figure>
-<p>More info: <a href="https://hexo.io/docs/generating.html" target="_blank" rel="noopener">Generating</a></p>
-<h3 id="Deploy-to-remote-sites"><a href="#Deploy-to-remote-sites" class="headerlink" title="Deploy to remote sites"></a>Deploy to remote sites</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo deploy</span><br></pre></td></tr></table></figure>
-<p>More info: <a href="https://hexo.io/docs/deployment.html" target="_blank" rel="noopener">Deployment</a></p>
-
+            
           
         
       
@@ -1806,7 +1808,7 @@
               
                 <a href="/archives/">
               
-                  <span class="site-state-item-count">61</span>
+                  <span class="site-state-item-count">62</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
