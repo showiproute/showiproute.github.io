@@ -252,6 +252,152 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://blogoflyt.cn/2019/03/13/MapReduce编程案例11-数据倾斜场景/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Richard">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/gakki.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="积累技术之路">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2019/03/13/MapReduce编程案例11-数据倾斜场景/" itemprop="url">MapReduce编程案例11-----数据倾斜场景</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-03-13T23:09:00+08:00">
+                2019-03-13
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/MapReduce/" itemprop="url" rel="index">
+                    <span itemprop="name">MapReduce</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h5 id="数据："><a href="#数据：" class="headerlink" title="数据："></a>数据：</h5><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">a a a a a a b b b a a a </span><br><span class="line">a a a a c c b c a a a c</span><br><span class="line">a b b c a a d d e e f f</span><br><span class="line">f g a a a b a b h h g j</span><br></pre></td></tr></table></figure>
+<h5 id="需求："><a href="#需求：" class="headerlink" title="需求："></a>需求：</h5><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">需要做wordcount</span><br><span class="line">但是，会有一个问题存在：</span><br><span class="line">a特别多，</span><br><span class="line">负责处理a这个单词数据的reduce worker就会很累（负载不均衡，过大）</span><br><span class="line">思考：如何处理？会让整个数据处理过程中，数据倾斜的状况得到缓解</span><br></pre></td></tr></table></figure>
+<h6 id="思路："><a href="#思路：" class="headerlink" title="思路："></a>思路：</h6><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">将key进行打散（具体方案：给key拼接一个随机字符串），以均衡reduce端worker的负载；</span><br></pre></td></tr></table></figure>
+<h5 id="MapReduce编程实现"><a href="#MapReduce编程实现" class="headerlink" title="MapReduce编程实现"></a>MapReduce编程实现</h5><h6 id="MR-StepOne"><a href="#MR-StepOne" class="headerlink" title="MR StepOne"></a>MR StepOne</h6><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br></pre></td><td class="code"><pre><span class="line">package MRCodingEleven_DataSlide;</span><br><span class="line"></span><br><span class="line">import java.io.IOException;</span><br><span class="line">import java.util.Random;</span><br><span class="line"></span><br><span class="line">import org.apache.hadoop.conf.Configuration;</span><br><span class="line">import org.apache.hadoop.fs.Path;</span><br><span class="line">import org.apache.hadoop.io.IntWritable;</span><br><span class="line">import org.apache.hadoop.io.LongWritable;</span><br><span class="line">import org.apache.hadoop.io.Text;</span><br><span class="line">import org.apache.hadoop.mapreduce.Job;</span><br><span class="line">import org.apache.hadoop.mapreduce.Mapper;</span><br><span class="line">import org.apache.hadoop.mapreduce.Reducer;</span><br><span class="line">import org.apache.hadoop.mapreduce.lib.input.FileInputFormat;</span><br><span class="line">import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat;</span><br><span class="line"></span><br><span class="line">public class DataSlide &#123;</span><br><span class="line"></span><br><span class="line">	public static class DataSlideMapper extends Mapper&lt;LongWritable, Text, Text, IntWritable&gt;&#123;</span><br><span class="line">		</span><br><span class="line">		int numReduceTasks=0;</span><br><span class="line">		Random random=new Random();</span><br><span class="line">		int nextInt=-1;</span><br><span class="line">		Text k=new Text();</span><br><span class="line">		IntWritable v=new IntWritable(1);</span><br><span class="line">		@Override</span><br><span class="line">		protected void setup(Mapper&lt;LongWritable, Text, Text, IntWritable&gt;.Context context)</span><br><span class="line">				throws IOException, InterruptedException &#123;</span><br><span class="line">			// TODO Auto-generated method stub</span><br><span class="line">			</span><br><span class="line">			this.numReduceTasks = context.getNumReduceTasks();</span><br><span class="line">		</span><br><span class="line">		&#125;</span><br><span class="line">		</span><br><span class="line">		@Override</span><br><span class="line">		protected void map(LongWritable key, Text value, Mapper&lt;LongWritable, Text, Text, IntWritable&gt;.Context context)</span><br><span class="line">				throws IOException, InterruptedException &#123;</span><br><span class="line">			// TODO Auto-generated method stub</span><br><span class="line">		</span><br><span class="line">			String[] words = value.toString().split(&quot; &quot;);</span><br><span class="line">			for (String word: words) &#123;</span><br><span class="line">				StringBuilder sb = new StringBuilder();</span><br><span class="line">				nextInt = random.nextInt(numReduceTasks);</span><br><span class="line">				sb.append(word).append(&quot;-&quot;).append(nextInt);</span><br><span class="line">				k.set(sb.toString());</span><br><span class="line">				context.write(k,v);</span><br><span class="line">			&#125;</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">	</span><br><span class="line">	public static class DataSlideReducer extends Reducer&lt;Text,IntWritable, Text, IntWritable&gt;&#123;</span><br><span class="line">		</span><br><span class="line">		IntWritable v=new IntWritable();</span><br><span class="line">		@Override</span><br><span class="line">		protected void reduce(Text key, Iterable&lt;IntWritable&gt; values,</span><br><span class="line">				Reducer&lt;Text, IntWritable, Text, IntWritable&gt;.Context context) throws IOException, InterruptedException &#123;</span><br><span class="line">			// TODO Auto-generated method stub</span><br><span class="line">			int total=0;</span><br><span class="line">			for (IntWritable value: values) &#123;</span><br><span class="line">				total+=value.get();</span><br><span class="line">	</span><br><span class="line">			&#125;</span><br><span class="line">			v.set(total);</span><br><span class="line">			context.write(key,v );</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">	</span><br><span class="line">	public static void main(String[] args) throws Exception&#123;</span><br><span class="line">		</span><br><span class="line">		Configuration conf = new Configuration();</span><br><span class="line">		Job job = Job.getInstance(conf);</span><br><span class="line">		</span><br><span class="line">		job.setJarByClass(DataSlide.class);</span><br><span class="line">		</span><br><span class="line">		job.setMapperClass(DataSlideMapper.class);</span><br><span class="line">		job.setReducerClass(DataSlideReducer.class);</span><br><span class="line">		</span><br><span class="line">		job.setMapOutputKeyClass(Text.class);</span><br><span class="line">		job.setMapOutputValueClass(IntWritable.class);</span><br><span class="line">		</span><br><span class="line">		</span><br><span class="line">		job.setOutputKeyClass(Text.class);</span><br><span class="line">		job.setOutputValueClass(IntWritable.class);</span><br><span class="line">		</span><br><span class="line">		FileInputFormat.setInputPaths(job, new Path(&quot;F:\\Linuxsource\\mrdata\\dataslide\\input&quot;));</span><br><span class="line">		FileOutputFormat.setOutputPath(job, new Path(&quot;F:\\Linuxsource\\mrdata\\dataslide\\output&quot;));</span><br><span class="line">		</span><br><span class="line">		job.setNumReduceTasks(3);</span><br><span class="line">		</span><br><span class="line">		boolean res = job.waitForCompletion(true);</span><br><span class="line">		System.exit(res?0:-1);</span><br><span class="line">		</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h6 id="MR-StepTwo"><a href="#MR-StepTwo" class="headerlink" title="MR StepTwo"></a>MR StepTwo</h6><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br></pre></td><td class="code"><pre><span class="line">package MRCodingEleven_DataSlide;</span><br><span class="line"></span><br><span class="line">import java.io.IOException;</span><br><span class="line"></span><br><span class="line">import org.apache.hadoop.conf.Configuration;</span><br><span class="line">import org.apache.hadoop.fs.Path;</span><br><span class="line">import org.apache.hadoop.io.IntWritable;</span><br><span class="line">import org.apache.hadoop.io.LongWritable;</span><br><span class="line">import org.apache.hadoop.io.Text;</span><br><span class="line">import org.apache.hadoop.mapreduce.Job;</span><br><span class="line">import org.apache.hadoop.mapreduce.Mapper;</span><br><span class="line">import org.apache.hadoop.mapreduce.Reducer;</span><br><span class="line">import org.apache.hadoop.mapreduce.lib.input.FileInputFormat;</span><br><span class="line">import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat;</span><br><span class="line"></span><br><span class="line">public class DataSlideStepTwo &#123;</span><br><span class="line"></span><br><span class="line">	public static class DataSlideStepTwoMapper extends Mapper&lt;LongWritable,Text, Text, IntWritable&gt;&#123;</span><br><span class="line">		</span><br><span class="line">		IntWritable v=new IntWritable();</span><br><span class="line">		Text k=new Text();</span><br><span class="line">		@Override</span><br><span class="line">		protected void map(LongWritable key, Text value, Mapper&lt;LongWritable, Text, Text, IntWritable&gt;.Context context)</span><br><span class="line">				throws IOException, InterruptedException &#123;</span><br><span class="line">			// TODO Auto-generated method stub</span><br><span class="line">			</span><br><span class="line">			String[] fields = value.toString().split(&quot;\t&quot;);</span><br><span class="line">			String word=fields[0].split(&quot;-&quot;)[0];</span><br><span class="line">			v.set(Integer.parseInt(fields[1]));</span><br><span class="line">			k.set(word);</span><br><span class="line">			context.write(k, v);	</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">	</span><br><span class="line">	public static class DataSlideStepTwoReducer extends Reducer&lt;Text, IntWritable, Text, IntWritable&gt;&#123;</span><br><span class="line">		IntWritable v=new IntWritable();</span><br><span class="line">		@Override</span><br><span class="line">		protected void reduce(Text key, Iterable&lt;IntWritable&gt; values,</span><br><span class="line">				Reducer&lt;Text, IntWritable, Text, IntWritable&gt;.Context context) throws IOException, InterruptedException &#123;</span><br><span class="line">			// TODO Auto-generated method stub</span><br><span class="line">			int total=0;</span><br><span class="line">			for (IntWritable value : values) &#123;</span><br><span class="line">				total+=value.get();</span><br><span class="line">			&#125;</span><br><span class="line">			v.set(total);</span><br><span class="line">			context.write(key,v );</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">	</span><br><span class="line">	public static void main(String[] args) throws Exception&#123;</span><br><span class="line">		</span><br><span class="line">		Configuration conf = new Configuration();</span><br><span class="line">		</span><br><span class="line">		Job job = Job.getInstance(conf);</span><br><span class="line">		</span><br><span class="line">		job.setJarByClass(DataSlideStepTwo.class);</span><br><span class="line">		</span><br><span class="line">		job.setMapperClass(DataSlideStepTwoMapper.class);</span><br><span class="line">		job.setReducerClass(DataSlideStepTwoReducer.class);</span><br><span class="line">		</span><br><span class="line">		job.setMapOutputKeyClass(Text.class);</span><br><span class="line">		job.setMapOutputValueClass(IntWritable.class);</span><br><span class="line">		</span><br><span class="line">	</span><br><span class="line">		job.setOutputKeyClass(Text.class);</span><br><span class="line">		job.setOutputValueClass(IntWritable.class);</span><br><span class="line">		</span><br><span class="line">		FileInputFormat.setInputPaths(job, new Path(&quot;F:\\Linuxsource\\mrdata\\dataslide\\output&quot;));</span><br><span class="line">		FileOutputFormat.setOutputPath(job, new Path(&quot;F:\\Linuxsource\\mrdata\\dataslide\\output2&quot;));</span><br><span class="line">	</span><br><span class="line">		job.setNumReduceTasks(1);</span><br><span class="line">		</span><br><span class="line">		boolean res = job.waitForCompletion(true);</span><br><span class="line">		</span><br><span class="line">		System.exit(res?0:-1);</span><br><span class="line">	&#125;</span><br><span class="line">	</span><br><span class="line">	</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="http://blogoflyt.cn/2019/03/12/MapReduce编程案例10-join算法/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -1564,187 +1710,6 @@
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://blogoflyt.cn/2019/03/03/MapReduce编程案例1-WordCount示例开发/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Richard">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/gakki.jpg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="积累技术之路">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2019/03/03/MapReduce编程案例1-WordCount示例开发/" itemprop="url">MapReduce编程案例1-----WordCount示例开发</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-03-03T22:30:00+08:00">
-                2019-03-03
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/MapReduce/" itemprop="url" rel="index">
-                    <span itemprop="name">MapReduce</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p>–WordCount示例开发<br>author: Richard<br>tags:</p>
-<ul>
-<li>MapReduce</li>
-<li>Yarn</li>
-<li>WordCount<br>categories:</li>
-<li>MapReduce<br>date: 2019-03-03 22:30:00</li>
-</ul>
-<hr>
-<h5 id="wordcount示例开发"><a href="#wordcount示例开发" class="headerlink" title="wordcount示例开发"></a>wordcount示例开发</h5><h6 id="wordcount程序整体运行流程示意图"><a href="#wordcount程序整体运行流程示意图" class="headerlink" title="wordcount程序整体运行流程示意图"></a>wordcount程序整体运行流程示意图</h6><p><a href="https://imgchr.com/i/kOpw4K" target="_blank" rel="noopener"><img src="https://s2.ax1x.com/2019/03/03/kOpw4K.png" alt="kOpw4K.png"></a></p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">map阶段： 将每一行文本数据变成&lt;单词,1&gt;这样的kv数据</span><br><span class="line">reduce阶段：将相同单词的一组kv数据进行聚合：累加所有的v</span><br><span class="line">注意点：mapreduce程序中，</span><br><span class="line">map阶段的进、出数据，</span><br><span class="line">reduce阶段的进、出数据，</span><br><span class="line">类型都应该是实现了HADOOP序列化框架的类型，如：</span><br><span class="line">String对应Text</span><br><span class="line">Integer对应IntWritable</span><br><span class="line">Long对应LongWritable</span><br></pre></td></tr></table></figure>
-<h5 id="编码实现"><a href="#编码实现" class="headerlink" title="编码实现"></a>编码实现</h5><ol>
-<li>WordcountMapper类开发</li>
-<li>WordcountReducer类开发</li>
-<li>JobSubmitter客户端类开发</li>
-</ol>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br></pre></td><td class="code"><pre><span class="line">package MRCodingOne_wordcount;</span><br><span class="line"></span><br><span class="line">import java.io.IOException;</span><br><span class="line">import java.util.Iterator;</span><br><span class="line"></span><br><span class="line">import org.apache.hadoop.conf.Configuration;</span><br><span class="line">import org.apache.hadoop.fs.Path;</span><br><span class="line">import org.apache.hadoop.io.IntWritable;</span><br><span class="line">import org.apache.hadoop.io.LongWritable;</span><br><span class="line">import org.apache.hadoop.io.Text;</span><br><span class="line">import org.apache.hadoop.mapreduce.Job;</span><br><span class="line">import org.apache.hadoop.mapreduce.Mapper;</span><br><span class="line">import org.apache.hadoop.mapreduce.Reducer;</span><br><span class="line">import org.apache.hadoop.mapreduce.lib.input.FileInputFormat;</span><br><span class="line">import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat;</span><br><span class="line"></span><br><span class="line">public class wordcountMapReduce &#123;</span><br><span class="line"></span><br><span class="line">	public static class wordcountMapReduceMapper extends Mapper&lt;LongWritable, Text, Text, IntWritable&gt;&#123;</span><br><span class="line">		</span><br><span class="line">		@Override</span><br><span class="line">		protected void map(LongWritable key, Text value, Mapper&lt;LongWritable, Text, Text, IntWritable&gt;.Context context)</span><br><span class="line">				throws IOException, InterruptedException &#123;</span><br><span class="line">			// TODO Auto-generated method stub</span><br><span class="line">			</span><br><span class="line">			String[] words = value.toString().split(&quot; &quot;);</span><br><span class="line">			for (String word : words) &#123;</span><br><span class="line">				context.write(new Text(word), new IntWritable(1));</span><br><span class="line">				</span><br><span class="line">			&#125;		</span><br><span class="line">		&#125;</span><br><span class="line">		</span><br><span class="line">	&#125;</span><br><span class="line">	</span><br><span class="line">	public static class wordcountMapReduceReducer extends Reducer&lt;Text, IntWritable, Text, IntWritable&gt;&#123;</span><br><span class="line">		</span><br><span class="line">		@Override</span><br><span class="line">		protected void reduce(Text word, Iterable&lt;IntWritable&gt; iter,</span><br><span class="line">				Reducer&lt;Text, IntWritable, Text, IntWritable&gt;.Context context) throws IOException, InterruptedException &#123;</span><br><span class="line">			// TODO Auto-generated method stub</span><br><span class="line">			</span><br><span class="line">			int total=0;</span><br><span class="line">			Iterator&lt;IntWritable&gt; iterator = iter.iterator();</span><br><span class="line">			while(iterator.hasNext()) &#123;</span><br><span class="line">				</span><br><span class="line">				IntWritable count = iterator.next();</span><br><span class="line">				total+=count.get();</span><br><span class="line">			&#125;</span><br><span class="line">			context.write(word, new IntWritable(total));</span><br><span class="line">			</span><br><span class="line">		&#125;</span><br><span class="line">		</span><br><span class="line">	&#125;</span><br><span class="line">	</span><br><span class="line">	</span><br><span class="line">	public static void main(String[] args) throws IOException, ClassNotFoundException, InterruptedException &#123;</span><br><span class="line">		</span><br><span class="line">		Configuration conf = new Configuration();</span><br><span class="line">		</span><br><span class="line">		Job job = Job.getInstance(conf);</span><br><span class="line">		</span><br><span class="line">		job.setJarByClass(wordcountMapReduce.class);</span><br><span class="line">		</span><br><span class="line">		job.setMapperClass(wordcountMapReduceMapper.class);</span><br><span class="line">		job.setReducerClass(wordcountMapReduceReducer.class);</span><br><span class="line">		</span><br><span class="line">		job.setMapOutputKeyClass(Text.class);</span><br><span class="line">		job.setMapOutputValueClass(IntWritable.class);</span><br><span class="line">		</span><br><span class="line">		job.setOutputKeyClass(Text.class);</span><br><span class="line">		job.setOutputValueClass(IntWritable.class);</span><br><span class="line">		</span><br><span class="line">		job.setNumReduceTasks(1);</span><br><span class="line">		</span><br><span class="line">		FileInputFormat.setInputPaths(job,new Path(&quot;F:\\Linuxsource\\mrdata\\wordcount\\input&quot;));</span><br><span class="line">		FileOutputFormat.setOutputPath(job, new Path(&quot;F:\\Linuxsource\\mrdata\\wordcount\\output&quot;));</span><br><span class="line">		</span><br><span class="line">		boolean res = job.waitForCompletion(true);</span><br><span class="line">		</span><br><span class="line">		System.exit(res?0:-1);</span><br><span class="line">		</span><br><span class="line">	&#125;</span><br><span class="line">	</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<hr>
-<h5 id="运行mr程序"><a href="#运行mr程序" class="headerlink" title="运行mr程序"></a>运行mr程序</h5><ol>
-<li>将工程整体打成一个jar包并上传到linux机器上，</li>
-<li>准备好要处理的数据文件放到hdfs的指定目录中</li>
-<li>用命令启动jar包中的Jobsubmitter，让它去提交jar包给yarn来运行其中的mapreduce程序  ：  hadoop jar wc.jar cn.edu360.mr.wordcount.JobSubmitter …..</li>
-<li>去hdfs的输出目录中查看结果</li>
-</ol>
-<hr>
-<h5 id="yarn快速理解"><a href="#yarn快速理解" class="headerlink" title="yarn快速理解"></a>yarn快速理解</h5><blockquote>
-<p>node manager在物理上应该跟data node部署在一起<br>resource manager在物理上应该独立部署在一台专门的机器上</p>
-</blockquote>
-<ol>
-<li><p>修改配置文件：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">vi yarn-site.xml</span><br><span class="line">&lt;configuration&gt;</span><br><span class="line">&lt;property&gt;</span><br><span class="line">&lt;name&gt;yarn.resourcemanager.hostname&lt;/name&gt;</span><br><span class="line">&lt;value&gt;hdp20-01&lt;/value&gt;</span><br><span class="line">&lt;/property&gt;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">&lt;property&gt;</span><br><span class="line">&lt;name&gt;yarn.nodemanager.aux-services&lt;/name&gt;</span><br><span class="line">&lt;value&gt;mapreduce_shuffle&lt;/value&gt;</span><br><span class="line">&lt;/property&gt;</span><br></pre></td></tr></table></figure>
-</li>
-<li><p>scp这个yarn-site.xml到其他节点</p>
-</li>
-<li>启动yarn集群：start-yarn.sh  （注：该命令应该在resourcemanager所在的机器上执行）</li>
-<li>用jps检查yarn的进程，用web浏览器查看yarn的web控制台<a href="http://hdp20-01:8088" target="_blank" rel="noopener">http://hdp20-01:8088</a></li>
-</ol>
-<p><a href="https://imgchr.com/i/kOp6ud" target="_blank" rel="noopener"><img src="https://s2.ax1x.com/2019/03/03/kOp6ud.png" alt="kOp6ud.png" border="0"></a></p>
-<hr>
-<h5 id="MapReduce框架运行机制"><a href="#MapReduce框架运行机制" class="headerlink" title="MapReduce框架运行机制"></a>MapReduce框架运行机制</h5><h6 id="核心角色："><a href="#核心角色：" class="headerlink" title="核心角色："></a>核心角色：</h6><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">MRAppmaster</span><br><span class="line">Worker(map task)</span><br><span class="line">Worker(reduce task)</span><br></pre></td></tr></table></figure>
-<h6 id="运行机制全图："><a href="#运行机制全图：" class="headerlink" title="运行机制全图："></a>运行机制全图：</h6><p><a href="https://imgchr.com/i/kOP8gS" target="_blank" rel="noopener"><img src="https://s2.ax1x.com/2019/03/03/kOP8gS.png" alt="kOP8gS.png"></a></p>
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
   </section>
 
   
@@ -1799,7 +1764,7 @@
               
                 <a href="/archives/">
               
-                  <span class="site-state-item-count">63</span>
+                  <span class="site-state-item-count">64</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
