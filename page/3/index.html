@@ -768,6 +768,160 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://blogoflyt.cn/2019/03/01/Zookeeper介绍/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Richard">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/gakki.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="积累技术之路">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2019/03/01/Zookeeper介绍/" itemprop="url">Zookeeper介绍</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-03-01T16:17:00+08:00">
+                2019-03-01
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/ZooKeeper/" itemprop="url" rel="index">
+                    <span itemprop="name">ZooKeeper</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h6 id="zookeeper-是什么？"><a href="#zookeeper-是什么？" class="headerlink" title="zookeeper 是什么？"></a>zookeeper 是什么？</h6><p>zookeeper 是一个分布式的，开放源码的分布式应用程序协调服务，是 google chubby 的开源实现，是 hadoop 和 hbase 的重要组件。它是一个为分布式应用提供一致性服务的软件，提供的功能包括：配置维护、域名服务、分布式同步、组服务等。</p>
+<h6 id="zookeeper-都有哪些功能？"><a href="#zookeeper-都有哪些功能？" class="headerlink" title="zookeeper 都有哪些功能？"></a>zookeeper 都有哪些功能？</h6><p>集群管理：监控节点存活状态、运行请求等。</p>
+<p>主节点选举：主节点挂掉了之后可以从备用的节点开始新一轮选主，主节点选举说的就是这个选举的过程，使用 zookeeper 可以协助完成这个过程。</p>
+<p>分布式锁：zookeeper 提供两种锁：独占锁、共享锁。独占锁即一次只能有一个线程使用资源，共享锁是读锁共享，读写互斥，即可以有多线线程同时读同一个资源，如果要使用写锁也只能有一个线程使用。zookeeper可以对分布式锁进行控制。</p>
+<p>命名服务：在分布式系统中，通过使用命名服务，客户端应用能够根据指定名字来获取资源或服务的地址，提供者等信息。</p>
+<h6 id="zookeeper-有几种部署模式？"><a href="#zookeeper-有几种部署模式？" class="headerlink" title="zookeeper 有几种部署模式？"></a>zookeeper 有几种部署模式？</h6><p>zookeeper 有三种部署模式：</p>
+<p>单机部署：一台集群上运行；</p>
+<p>集群部署：多台集群运行；</p>
+<p>伪集群部署：一台集群启动多个 zookeeper 实例运行。</p>
+<h6 id="zookeeper-怎么保证主从节点的状态同步？"><a href="#zookeeper-怎么保证主从节点的状态同步？" class="headerlink" title="zookeeper 怎么保证主从节点的状态同步？"></a>zookeeper 怎么保证主从节点的状态同步？</h6><p>zookeeper 的核心是原子广播，这个机制保证了各个 server 之间的同步。实现这个机制的协议叫做 zab 协议。 zab 协议有两种模式，分别是恢复模式（选主）和广播模式（同步）。当服务启动或者在领导者崩溃后，zab 就进入了恢复模式，当领导者被选举出来，且大多数 server 完成了和 leader 的状态同步以后，恢复模式就结束了。状态同步保证了 leader 和 server 具有相同的系统状态。</p>
+<h6 id="集群中为什么要有主节点？"><a href="#集群中为什么要有主节点？" class="headerlink" title="集群中为什么要有主节点？"></a>集群中为什么要有主节点？</h6><p>在分布式环境中，有些业务逻辑只需要集群中的某一台机器进行执行，其他的机器可以共享这个结果，这样可以大大减少重复计算，提高性能，所以就需要主节点。</p>
+<h6 id="集群中有-3-台服务器，其中一个节点宕机，这个时候-zookeeper-还可以使用吗？"><a href="#集群中有-3-台服务器，其中一个节点宕机，这个时候-zookeeper-还可以使用吗？" class="headerlink" title="集群中有 3 台服务器，其中一个节点宕机，这个时候 zookeeper 还可以使用吗？"></a>集群中有 3 台服务器，其中一个节点宕机，这个时候 zookeeper 还可以使用吗？</h6><p>可以继续使用，单数服务器只要没超过一半的服务器宕机就可以继续使用。</p>
+<h6 id="说一下-zookeeper-的通知机制？"><a href="#说一下-zookeeper-的通知机制？" class="headerlink" title="说一下 zookeeper 的通知机制？"></a>说一下 zookeeper 的通知机制？</h6><p>客户端端会对某个 znode 建立一个 watcher 事件，当该 znode 发生变化时，这些客户端会收到 zookeeper 的通知，然后客户端可以根据 znode 变化来做出业务上的改变。</p>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="http://blogoflyt.cn/2019/02/19/基础知识回顾/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -1842,162 +1996,6 @@
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://blogoflyt.cn/2019/02/13/Flume日志采集框架-安装配置/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Richard">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/gakki.jpg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="积累技术之路">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2019/02/13/Flume日志采集框架-安装配置/" itemprop="url">Flume日志采集框架-----安装配置</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-02-13T19:23:00+08:00">
-                2019-02-13
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Flume/" itemprop="url" rel="index">
-                    <span itemprop="name">Flume</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h5 id="Flume介绍"><a href="#Flume介绍" class="headerlink" title="Flume介绍"></a>Flume介绍</h5><h6 id="概述"><a href="#概述" class="headerlink" title="概述"></a>概述</h6><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">Flume是一个分布式、可靠、和高可用的海量日志采集、聚合和传输的系统。</span><br><span class="line">Flume可以采集文件，socket数据包、文件、文件夹、kafka等各种形式源数据，又可以将采集到的数据(下沉sink)输出到HDFS、hbase、hive、kafka等众多外部存储系统中</span><br><span class="line">一般的采集需求，通过对flume的简单配置即可实现</span><br><span class="line">Flume针对特殊场景也具备良好的自定义扩展能力，</span><br><span class="line">因此，flume可以适用于大部分的日常数据采集场景</span><br></pre></td></tr></table></figure>
-<h6 id="运行机制"><a href="#运行机制" class="headerlink" title="运行机制"></a>运行机制</h6><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">1、Flume分布式系统中最核心的角色是agent，flume采集系统就是由一个个agent所连接起来形成</span><br><span class="line">2、每一个agent相当于一个数据传递员[Source 到 Channel 到 Sink之间传递数据的形式是Event事件；Event事件是一个数据流单元。</span><br><span class="line">]，内部有三个组件：</span><br><span class="line">a)Source：采集组件，用于跟数据源对接，以获取数据</span><br><span class="line">b)Sink：下沉组件，用于往下一级agent传递数据或者往最终存储系统传递数据</span><br><span class="line">c)Channel：传输通道组件，用于从source将数据传递到sink</span><br></pre></td></tr></table></figure>
-<blockquote>
-<p>Source 到 Channel 到 Sink之间传递数据的形式是Event事件；Event事件是一个数据流单元。</p>
-</blockquote>
-<p><a href="https://imgchr.com/i/kzLVrd" target="_blank" rel="noopener"><img src="https://s2.ax1x.com/2019/03/08/kzLVrd.png" alt="kzLVrd.png"></a></p>
-<h5 id="Flume采集系统结构图"><a href="#Flume采集系统结构图" class="headerlink" title="Flume采集系统结构图"></a>Flume采集系统结构图</h5><h6 id="1-简单结构"><a href="#1-简单结构" class="headerlink" title="1. 简单结构"></a>1. 简单结构</h6><blockquote>
-<p>单个agent采集数据<br><a href="https://imgchr.com/i/kzLnat" target="_blank" rel="noopener"><img src="https://s2.ax1x.com/2019/03/08/kzLnat.png" alt="kzLnat.png"></a></p>
-</blockquote>
-<h6 id="复杂结构"><a href="#复杂结构" class="headerlink" title="复杂结构"></a>复杂结构</h6><blockquote>
-<p>多级agent之间串联<br><a href="https://imgchr.com/i/kzLMPf" target="_blank" rel="noopener"><img src="https://s2.ax1x.com/2019/03/08/kzLMPf.png" alt="kzLMPf.png"></a></p>
-</blockquote>
-<h5 id="Flume实战案例"><a href="#Flume实战案例" class="headerlink" title="Flume实战案例"></a>Flume实战案例</h5><h6 id="1-2-1-Flume的安装部署"><a href="#1-2-1-Flume的安装部署" class="headerlink" title="1.2.1 Flume的安装部署"></a>1.2.1 Flume的安装部署</h6><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">1、Flume的安装非常简单，只需要解压即可，当然，前提是已有hadoop环境</span><br><span class="line">上传安装包到数据源所在节点上</span><br><span class="line">然后解压  tar -zxvf apache-flume-1.6.0-bin.tar.gz</span><br><span class="line">然后进入flume的目录，修改conf下的flume-env.sh，在里面配置JAVA_HOME</span><br><span class="line"></span><br><span class="line">2、根据数据采集的需求配置采集方案，描述在配置文件中(文件名可任意自定义)</span><br><span class="line">3、指定采集方案配置文件，在相应的节点上启动flume agent</span><br><span class="line"></span><br><span class="line">先用一个最简单的例子来测试一下程序环境是否正常</span><br></pre></td></tr></table></figure>
-<p><a href="https://imgchr.com/i/kzLlRS" target="_blank" rel="noopener"><img src="https://s2.ax1x.com/2019/03/08/kzLlRS.png" alt="kzLlRS.png"></a><br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br></pre></td><td class="code"><pre><span class="line">1、先在flume的conf目录下新建一个配置文件（采集方案）</span><br><span class="line">vi   netcat-logger.properties</span><br><span class="line"># 定义这个agent中各组件的名字</span><br><span class="line">a1.sources = r1</span><br><span class="line">a1.sinks = k1</span><br><span class="line">a1.channels = c1</span><br><span class="line"></span><br><span class="line"># 描述和配置source组件：r1</span><br><span class="line">a1.sources.r1.type = netcat</span><br><span class="line">a1.sources.r1.bind = localhost</span><br><span class="line">a1.sources.r1.port = 44444</span><br><span class="line"></span><br><span class="line"># 描述和配置sink组件：k1</span><br><span class="line">a1.sinks.k1.type = logger</span><br><span class="line"></span><br><span class="line"># 描述和配置channel组件，此处使用是内存缓存的方式</span><br><span class="line">a1.channels.c1.type = memory</span><br><span class="line">a1.channels.c1.capacity = 1000</span><br><span class="line">a1.channels.c1.transactionCapacity = 100</span><br><span class="line"></span><br><span class="line"># 描述和配置source  channel   sink之间的连接关系</span><br><span class="line">a1.sources.r1.channels = c1</span><br><span class="line">a1.sinks.k1.channel = c1</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">2、启动agent去采集数据</span><br><span class="line">bin/flume-ng agent -c conf -f conf/netcat-logger.conf -n a1  -Dflume.root.logger=INFO,console</span><br><span class="line">-c conf   指定flume自身的配置文件所在目录</span><br><span class="line">-f conf/netcat-logger.con  指定我们所描述的采集方案</span><br><span class="line">-n a1  指定我们这个agent的名字</span><br><span class="line"></span><br><span class="line">3、测试</span><br><span class="line">先要往agent的source所监听的端口上发送数据，让agent有数据可采</span><br><span class="line">随便在一个能跟agent节点联网的机器上</span><br><span class="line">telnet anget-hostname  port   （telnet localhost 44444）</span><br></pre></td></tr></table></figure></p>
-<p><a href="https://imgchr.com/i/kzLNaq" target="_blank" rel="noopener"><img src="https://s2.ax1x.com/2019/03/08/kzLNaq.png" alt="kzLNaq.png"></a></p>
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
   </section>
 
   
@@ -2052,7 +2050,7 @@
               
                 <a href="/archives/">
               
-                  <span class="site-state-item-count">64</span>
+                  <span class="site-state-item-count">65</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
@@ -2063,7 +2061,7 @@
               
               <div class="site-state-item site-state-categories">
                 <a href="/categories/index.html">
-                  <span class="site-state-item-count">13</span>
+                  <span class="site-state-item-count">14</span>
                   <span class="site-state-item-name">分类</span>
                 </a>
               </div>
@@ -2074,7 +2072,7 @@
               
               <div class="site-state-item site-state-tags">
                 <a href="/tags/index.html">
-                  <span class="site-state-item-count">84</span>
+                  <span class="site-state-item-count">87</span>
                   <span class="site-state-item-name">标签</span>
                 </a>
               </div>
