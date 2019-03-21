@@ -252,6 +252,154 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://blogoflyt.cn/2019/03/04/MapReduce编程案例1-求TopN/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Richard">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/gakki.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="积累技术之路">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2019/03/04/MapReduce编程案例1-求TopN/" itemprop="url">MapReduce编程案例2-----求TopN</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-03-04T22:23:00+08:00">
+                2019-03-04
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/MapReduce/" itemprop="url" rel="index">
+                    <span itemprop="name">MapReduce</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h5 id="读取附件中的文件request-dat，"><a href="#读取附件中的文件request-dat，" class="headerlink" title="读取附件中的文件request.dat，"></a>读取附件中的文件request.dat，</h5><h6 id="需求1：求出每一个url被访问的总次数，并将结果输出到一个结果文件中"><a href="#需求1：求出每一个url被访问的总次数，并将结果输出到一个结果文件中" class="headerlink" title="需求1：求出每一个url被访问的总次数，并将结果输出到一个结果文件中"></a>需求1：求出每一个url被访问的总次数，并将结果输出到一个结果文件中</h6><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">思路：就是一个wordcount</span><br><span class="line">map阶段： 解析数据，将url作为key，1作为value发出</span><br><span class="line">reduce阶段：将一组数据的value累加</span><br></pre></td></tr></table></figure>
+<h6 id="需求2：求出每个网站被访问次数最多的top3个url《分组TOPN》"><a href="#需求2：求出每个网站被访问次数最多的top3个url《分组TOPN》" class="headerlink" title="需求2：求出每个网站被访问次数最多的top3个url《分组TOPN》"></a>需求2：求出每个网站被访问次数最多的top3个url《分组TOPN》</h6><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">思路： </span><br><span class="line">map阶段——切字段，抽取域名作为key，url作为value，返回即可</span><br><span class="line">reduce阶段——用迭代器，将一个域名的一组url迭代出来，挨个放入一个hashmap中进行计数，最后从这个hashmap中挑出次数最多的3个url作为结果返回</span><br></pre></td></tr></table></figure>
+<h6 id="需求3：求访问次数最多的topn个网站（只能有1个reduce-worker）"><a href="#需求3：求访问次数最多的topn个网站（只能有1个reduce-worker）" class="headerlink" title="需求3：求访问次数最多的topn个网站（只能有1个reduce worker）"></a>需求3：求访问次数最多的topn个网站（只能有1个reduce worker）</h6><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">思路：</span><br><span class="line">map阶段：解析数据，将域名作为key，1作为value</span><br><span class="line">reduce阶段： </span><br><span class="line">reduce方法中——对一个域名的一组1累加，然后将 &lt;域名,总次数&gt;放入一个成员变量Treemap中</span><br><span class="line">cleanup方法中——从treemap中挑出次数最高的n个域名作为结果输出</span><br></pre></td></tr></table></figure>
+<h6 id="要点1：每一个reduce-worker程序，会在处理完自己的所有数据后，调用一次cleanup方法"><a href="#要点1：每一个reduce-worker程序，会在处理完自己的所有数据后，调用一次cleanup方法" class="headerlink" title="要点1：每一个reduce worker程序，会在处理完自己的所有数据后，调用一次cleanup方法"></a>要点1：每一个reduce worker程序，会在处理完自己的所有数据后，调用一次cleanup方法</h6><h6 id="要点2：如何向map和reduce传自定义参数"><a href="#要点2：如何向map和reduce传自定义参数" class="headerlink" title="要点2：如何向map和reduce传自定义参数"></a>要点2：如何向map和reduce传自定义参数</h6><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">从JobSubmitter的main方法中，可以向map worker和reduce worker传递自定义参数（通过configuration对象来写入自定义参数）；然后，我们的map方法和reduce方法中，可以通过context.getConfiguration()来取自定义参数</span><br></pre></td></tr></table></figure>
+<h5 id="request-dat数据"><a href="#request-dat数据" class="headerlink" title="request.dat数据"></a>request.dat数据</h5><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br></pre></td><td class="code"><pre><span class="line">2017/07/28 qq.com/a</span><br><span class="line">2017/07/28 qq.com/bx</span><br><span class="line">2017/07/28 qq.com/by</span><br><span class="line">2017/07/28 qq.com/by3</span><br><span class="line">2017/07/28 qq.com/news</span><br><span class="line">2017/07/28 sina.com/news/socail</span><br><span class="line">2017/07/28 163.com/ac</span><br><span class="line">2017/07/28 sina.com/news/socail</span><br><span class="line">2017/07/28 163.com/sport</span><br><span class="line">2017/07/28 163.com/ac</span><br><span class="line">2017/07/28 sina.com/play</span><br><span class="line">2017/07/28 163.com/sport</span><br><span class="line">2017/07/28 163.com/ac</span><br><span class="line">2017/07/28 sina.com/movie</span><br><span class="line">2017/07/28 sina.com/play</span><br><span class="line">2017/07/28 sina.com/movie</span><br><span class="line">2017/07/28 163.com/sport</span><br><span class="line">2017/07/28 sina.com/movie</span><br><span class="line">2017/07/28 163.com/ac</span><br><span class="line">2017/07/28 163.com/ac</span><br><span class="line">2017/07/28 163.com/acc</span><br><span class="line">2017/07/28 qq.com/by</span><br><span class="line">2017/07/28 qq.com/by3</span><br><span class="line">2017/07/28 qq.com/news</span><br><span class="line">2017/07/28 163.com/sport</span><br><span class="line">2017/07/28 sina.com/news/socail</span><br><span class="line">2017/07/28 163.com/sport</span><br><span class="line">2017/07/28 sina.com/movie</span><br><span class="line">2017/07/28 sina.com/news/socail</span><br><span class="line">2017/07/28 sina.com/movie</span><br><span class="line">2017/07/28 qq.com/news</span><br><span class="line">2017/07/28 163.com/bb</span><br><span class="line">2017/07/28 163.com/cc</span><br><span class="line">2017/07/28 sina.com/lady/</span><br><span class="line">2017/07/28 163.com/cc</span><br><span class="line">2017/07/28 qq.com/news</span><br><span class="line">2017/07/28 qq.com/by</span><br><span class="line">2017/07/28 qq.com/by3</span><br><span class="line">2017/07/28 sina.com/lady/</span><br><span class="line">2017/07/28 qq.com/by3</span><br><span class="line">2017/07/28 sina.com/lady/</span><br><span class="line">2017/07/28 qq.com/by3</span><br><span class="line">2017/07/28 qq.com/news</span><br><span class="line">2017/07/28 qq.com/by3</span><br><span class="line">2017/07/28 163.com/sport</span><br><span class="line">2017/07/28 163.com/sport</span><br><span class="line">2017/07/28 sina.com/news/socail</span><br><span class="line">2017/07/28 sina.com/lady/</span><br><span class="line">2017/07/28 sina.com/play</span><br><span class="line">2017/07/28 sina.com/movie</span><br><span class="line">2017/07/28 sina.com/music</span><br><span class="line">2017/07/28 sina.com/sport</span><br><span class="line">2017/07/28 sina.com/sport</span><br><span class="line">2017/07/28 163.com/sport</span><br><span class="line">2017/07/28 sina.com/news/socail</span><br><span class="line">2017/07/28 sohu.com/lady/</span><br><span class="line">2017/07/28 sohu.com/play</span><br><span class="line">2017/07/28 sohu.com/movie</span><br><span class="line">2017/07/28 sohu.com/music</span><br><span class="line">2017/07/28 sohu.com/sport</span><br><span class="line">2017/07/28 sohu.com/sport</span><br><span class="line">2017/07/28 sina.com/news/socail</span><br><span class="line">2017/07/28 baidu.com/lady/</span><br><span class="line">2017/07/28 baidu.com/play</span><br><span class="line">2017/07/28 baidu.com/movie</span><br><span class="line">2017/07/28 baidu.com/music</span><br><span class="line">2017/07/28 baidu.com/movie</span><br><span class="line">2017/07/28 baidu.com/music</span><br><span class="line">2017/07/28 baidu.com/movie</span><br><span class="line">2017/07/28 baidu.com/music</span><br><span class="line">2017/07/28 baidu.com/movie</span><br><span class="line">2017/07/28 baidu.com/music</span><br><span class="line">2017/07/28 baidu.com/movie</span><br><span class="line">2017/07/28 baidu.com/music</span><br><span class="line">2017/07/28 baidu.com/music</span><br><span class="line">2017/07/28 baidu.com/movie</span><br><span class="line">2017/07/28 baidu.com/music</span><br><span class="line">2017/07/28 baidu.com/sport</span><br><span class="line">2017/07/28 baidu.com/sport</span><br></pre></td></tr></table></figure>
+<h5 id="MapReduce代码实现"><a href="#MapReduce代码实现" class="headerlink" title="MapReduce代码实现"></a>MapReduce代码实现</h5><h6 id="Object对象"><a href="#Object对象" class="headerlink" title="Object对象"></a>Object对象</h6><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br></pre></td><td class="code"><pre><span class="line">package MRCodingTwo_Topn;</span><br><span class="line"></span><br><span class="line">import java.util.Set;</span><br><span class="line"></span><br><span class="line">public class PageObject implements Comparable&lt;PageObject&gt;&#123;</span><br><span class="line"></span><br><span class="line">	/**</span><br><span class="line">	 * @return the url</span><br><span class="line">	 */</span><br><span class="line">	public String getUrl() &#123;</span><br><span class="line">		return url;</span><br><span class="line">	&#125;</span><br><span class="line">	/**</span><br><span class="line">	 * @param url the url to set</span><br><span class="line">	 */</span><br><span class="line">	public void setUrl(String url) &#123;</span><br><span class="line">		this.url = url;</span><br><span class="line">	&#125;</span><br><span class="line">	/**</span><br><span class="line">	 * @return the counts</span><br><span class="line">	 */</span><br><span class="line">	public int getCounts() &#123;</span><br><span class="line">		return counts;</span><br><span class="line">	&#125;</span><br><span class="line">	/**</span><br><span class="line">	 * @param counts the counts to set</span><br><span class="line">	 */</span><br><span class="line">	public void setCounts(int counts) &#123;</span><br><span class="line">		this.counts = counts;</span><br><span class="line">	&#125;</span><br><span class="line">	/* (non-Javadoc)</span><br><span class="line">	 * @see java.lang.Object#toString()</span><br><span class="line">	 */</span><br><span class="line">	@Override</span><br><span class="line">	public String toString() &#123;</span><br><span class="line">		return &quot;PageObject [url=&quot; + url + &quot;, counts=&quot; + counts + &quot;]&quot;;</span><br><span class="line">	&#125;</span><br><span class="line">	private String url;</span><br><span class="line">	private int counts;</span><br><span class="line">	</span><br><span class="line">	public void set(String url,int counts) &#123;</span><br><span class="line">		this.url=url;</span><br><span class="line">		this.counts=counts;</span><br><span class="line">	&#125;</span><br><span class="line">	</span><br><span class="line">	@Override</span><br><span class="line">	public int compareTo(PageObject o) &#123;</span><br><span class="line">		// TODO Auto-generated method stub</span><br><span class="line">		return (o.getCounts()-this.counts)==0?</span><br><span class="line">			this.getUrl().compareTo(o.getUrl()):o.getCounts()-this.getCounts();</span><br><span class="line">	&#125;</span><br><span class="line">	</span><br><span class="line">	</span><br><span class="line">	</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h6 id="MR"><a href="#MR" class="headerlink" title="MR"></a>MR</h6><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br></pre></td><td class="code"><pre><span class="line">package MRCodingTwo_Topn;</span><br><span class="line"></span><br><span class="line">import java.io.IOException;</span><br><span class="line">import java.util.Iterator;</span><br><span class="line">import java.util.Map.Entry;</span><br><span class="line">import java.util.Set;</span><br><span class="line">import java.util.TreeMap;</span><br><span class="line"></span><br><span class="line">import org.apache.hadoop.conf.Configuration;</span><br><span class="line">import org.apache.hadoop.fs.Path;</span><br><span class="line">import org.apache.hadoop.io.IntWritable;</span><br><span class="line">import org.apache.hadoop.io.LongWritable;</span><br><span class="line">import org.apache.hadoop.io.Text;</span><br><span class="line">import org.apache.hadoop.mapreduce.Job;</span><br><span class="line">import org.apache.hadoop.mapreduce.Mapper;</span><br><span class="line">import org.apache.hadoop.mapreduce.Reducer;</span><br><span class="line">import org.apache.hadoop.mapreduce.lib.input.FileInputFormat;</span><br><span class="line">import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat;</span><br><span class="line"></span><br><span class="line">public class PageTopN &#123;</span><br><span class="line"></span><br><span class="line">	public static class PageTopNMapper extends Mapper&lt;LongWritable,Text, Text, IntWritable&gt;&#123;</span><br><span class="line">		</span><br><span class="line">		@Override</span><br><span class="line">		protected void map(LongWritable key, Text value, Mapper&lt;LongWritable, Text, Text, IntWritable&gt;.Context context)</span><br><span class="line">				throws IOException, InterruptedException &#123;</span><br><span class="line">			// TODO Auto-generated method stub</span><br><span class="line">			</span><br><span class="line">			String[] fields = value.toString().split(&quot; &quot;);</span><br><span class="line">			</span><br><span class="line">			context.write(new Text(fields[1]), new IntWritable(1));</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">	</span><br><span class="line">	public static class PageTopNReducer extends Reducer&lt;Text, IntWritable, Text, IntWritable&gt;&#123;</span><br><span class="line">			</span><br><span class="line">		TreeMap&lt;PageObject, Object&gt; treeMap=new TreeMap&lt;&gt;();</span><br><span class="line">		</span><br><span class="line">		@Override</span><br><span class="line">		protected void reduce(Text url, Iterable&lt;IntWritable&gt; iter,</span><br><span class="line">				Reducer&lt;Text, IntWritable, Text, IntWritable&gt;.Context context) throws IOException, InterruptedException &#123;</span><br><span class="line">			// TODO Auto-generated method stub</span><br><span class="line">			</span><br><span class="line">			int total=0;</span><br><span class="line">			Iterator&lt;IntWritable&gt; iterator = iter.iterator();</span><br><span class="line">			while(iterator.hasNext()) &#123;</span><br><span class="line">				total += iterator.next().get();</span><br><span class="line">			&#125;</span><br><span class="line">			PageObject pageObject = new PageObject();</span><br><span class="line">			pageObject.set(url.toString(), total);</span><br><span class="line">			</span><br><span class="line">			treeMap.put(pageObject, null);</span><br><span class="line">			</span><br><span class="line">		&#125;</span><br><span class="line">		</span><br><span class="line">		@Override</span><br><span class="line">		protected void cleanup(Reducer&lt;Text, IntWritable, Text, IntWritable&gt;.Context context)</span><br><span class="line">				throws IOException, InterruptedException &#123;</span><br><span class="line">			// TODO Auto-generated method stub</span><br><span class="line">			</span><br><span class="line">			Configuration conf = new Configuration();</span><br><span class="line">			int topn = conf.getInt(&quot;top.n.value&quot;, 3);</span><br><span class="line">			int i=0;</span><br><span class="line">			Set&lt;Entry&lt;PageObject,Object&gt;&gt; entrySet = treeMap.entrySet();</span><br><span class="line">			for (Entry&lt;PageObject, Object&gt; entry : entrySet) &#123;</span><br><span class="line">				context.write(new Text(entry.getKey().getUrl()), new IntWritable(entry.getKey().getCounts()));</span><br><span class="line">				i++;</span><br><span class="line">				if(i==topn) return;</span><br><span class="line">			&#125;</span><br><span class="line">			</span><br><span class="line">			</span><br><span class="line">		&#125;</span><br><span class="line">		</span><br><span class="line">		public static void main(String[] args) throws Exception&#123;</span><br><span class="line">			Configuration conf = new Configuration();</span><br><span class="line">			</span><br><span class="line">			conf.setInt(&quot;top.n.value&quot;, 3);</span><br><span class="line">			</span><br><span class="line">			Job job = Job.getInstance(conf);</span><br><span class="line">			job.setJarByClass(PageTopN.class);</span><br><span class="line">			</span><br><span class="line">			job.setMapperClass(PageTopNMapper.class);</span><br><span class="line">			job.setReducerClass(PageTopNReducer.class);</span><br><span class="line">			</span><br><span class="line">			job.setMapOutputKeyClass(Text.class);</span><br><span class="line">			job.setMapOutputValueClass(IntWritable.class);</span><br><span class="line">			</span><br><span class="line">			job.setOutputKeyClass(Text.class);</span><br><span class="line">			job.setOutputValueClass(IntWritable.class);</span><br><span class="line">			</span><br><span class="line">			job.setNumReduceTasks(1);</span><br><span class="line">			</span><br><span class="line">			FileInputFormat.setInputPaths(job, new Path(&quot;f:/Linuxsource/mrdata/topn/input&quot;));</span><br><span class="line">			FileOutputFormat.setOutputPath(job, new Path(&quot;f:/Linuxsource/mrdata/topn/output2&quot;));</span><br><span class="line">			</span><br><span class="line">			boolean res = job.waitForCompletion(true);</span><br><span class="line">			</span><br><span class="line">			System.exit(res?0:-1);</span><br><span class="line">			</span><br><span class="line">		&#125;</span><br><span class="line">		</span><br><span class="line">	&#125;</span><br><span class="line">	</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="http://blogoflyt.cn/2019/03/03/MapReduce编程案例1-WordCount示例开发/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -1847,155 +1995,6 @@
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://blogoflyt.cn/2019/02/13/Flume日志采集框架-采集案例/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Richard">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/gakki.jpg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="积累技术之路">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2019/02/13/Flume日志采集框架-采集案例/" itemprop="url">Flume日志采集框架-----采集案例</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-02-13T19:33:00+08:00">
-                2019-02-13
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Flume/" itemprop="url" rel="index">
-                    <span itemprop="name">Flume</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h5 id="采集案例"><a href="#采集案例" class="headerlink" title="采集案例"></a>采集案例</h5><h6 id="1、采集日志目录中的文件到HDFS"><a href="#1、采集日志目录中的文件到HDFS" class="headerlink" title="1、采集日志目录中的文件到HDFS"></a>1、采集日志目录中的文件到HDFS</h6><blockquote>
-<p>结构示意图：</p>
-</blockquote>
-<p><a href="https://imgchr.com/i/kzLssJ" target="_blank" rel="noopener"><img src="https://s2.ax1x.com/2019/03/08/kzLssJ.png" alt="kzLssJ.png"></a><br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br></pre></td><td class="code"><pre><span class="line">采集需求：某服务器的某特定目录下，会不断产生新的文件，每当有新文件出现，就需要把文件采集到HDFS中去</span><br><span class="line">根据需求，首先定义以下3大要素</span><br><span class="line">数据源组件，即source ——监控文件目录 :  spooldir</span><br><span class="line">spooldir特性：</span><br><span class="line">   1、监视一个目录，只要目录中出现新文件，就会采集文件中的内容</span><br><span class="line">   2、采集完成的文件，会被agent自动添加一个后缀：COMPLETED</span><br><span class="line">   3、所监视的目录中不允许重复出现相同文件名的文件</span><br><span class="line">下沉组件，即sink——HDFS文件系统  :  hdfs sink</span><br><span class="line">通道组件，即channel——可用file channel 也可以用内存channel</span><br><span class="line"></span><br><span class="line">配置文件编写：</span><br><span class="line">#定义三大组件的名称</span><br><span class="line">agent1.sources = source1</span><br><span class="line">agent1.sinks = sink1</span><br><span class="line">agent1.channels = channel1</span><br><span class="line"></span><br><span class="line"># 配置source组件</span><br><span class="line">agent1.sources.source1.type = spooldir</span><br><span class="line">agent1.sources.source1.spoolDir = /home/hadoop/logs/</span><br><span class="line">agent1.sources.source1.fileHeader = false</span><br><span class="line"></span><br><span class="line">#配置拦截器</span><br><span class="line">agent1.sources.source1.interceptors = i1</span><br><span class="line">agent1.sources.source1.interceptors.i1.type = host</span><br><span class="line">agent1.sources.source1.interceptors.i1.hostHeader = hostname</span><br><span class="line"></span><br><span class="line"># 配置sink组件</span><br><span class="line">agent1.sinks.sink1.type = hdfs</span><br><span class="line">agent1.sinks.sink1.hdfs.path =hdfs://hdp-node-01:9000/weblog/flume-collection/%y-%m-%d/%H-%M</span><br><span class="line">agent1.sinks.sink1.hdfs.filePrefix = access_log</span><br><span class="line">agent1.sinks.sink1.hdfs.maxOpenFiles = 5000</span><br><span class="line">agent1.sinks.sink1.hdfs.batchSize= 100</span><br><span class="line">agent1.sinks.sink1.hdfs.fileType = DataStream</span><br><span class="line">agent1.sinks.sink1.hdfs.writeFormat =Text</span><br><span class="line">agent1.sinks.sink1.hdfs.rollSize = 102400</span><br><span class="line">agent1.sinks.sink1.hdfs.rollCount = 1000000</span><br><span class="line">agent1.sinks.sink1.hdfs.rollInterval = 60</span><br><span class="line">#agent1.sinks.sink1.hdfs.round = true</span><br><span class="line">#agent1.sinks.sink1.hdfs.roundValue = 10</span><br><span class="line">#agent1.sinks.sink1.hdfs.roundUnit = minute</span><br><span class="line">agent1.sinks.sink1.hdfs.useLocalTimeStamp = true</span><br><span class="line"># Use a channel which buffers events in memory</span><br><span class="line">agent1.channels.channel1.type = memory</span><br><span class="line">agent1.channels.channel1.keep-alive = 120</span><br><span class="line">agent1.channels.channel1.capacity = 500000</span><br><span class="line">agent1.channels.channel1.transactionCapacity = 600</span><br><span class="line"></span><br><span class="line"># Bind the source and sink to the channel</span><br><span class="line">agent1.sources.source1.channels = channel1</span><br><span class="line">agent1.sinks.sink1.channel = channel1</span><br><span class="line"></span><br><span class="line">Channel参数解释：</span><br><span class="line">capacity：默认该通道中最大的可以存储的event数量</span><br><span class="line">trasactionCapacity：每次最大可以从source中拿到或者送到sink中的event数量</span><br><span class="line">keep-alive：event添加到通道中或者移出的允许时间</span><br><span class="line"></span><br><span class="line">测试阶段，启动flume agent的命令：</span><br><span class="line">bin/flume-ng  agent  -c  ./conf  -f ./dir-hdfs.conf -n  agent1 -Dflume.root.logger=DEBUG,console</span><br><span class="line">-D后面跟的是log4j的参数，用于测试观察</span><br><span class="line"></span><br><span class="line">生产中，启动flume，应该把flume启动在后台：</span><br><span class="line">nohup bin/flume-ng  agent  -c  ./conf  -f ./dir-hdfs.conf -n  agent1 1&gt;/dev/null 2&gt;&amp;1 &amp;</span><br></pre></td></tr></table></figure></p>
-<h6 id="采集文件到HDFS"><a href="#采集文件到HDFS" class="headerlink" title="采集文件到HDFS"></a>采集文件到HDFS</h6><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br></pre></td><td class="code"><pre><span class="line">采集需求：比如业务系统使用log4j生成的日志，日志内容不断增加，需要把追加到日志文件中的数据实时采集到hdfs</span><br><span class="line"></span><br><span class="line">根据需求，首先定义以下3大要素</span><br><span class="line">采集源，即source——监控文件内容更新 :  exec  ‘tail -F file’</span><br><span class="line">下沉目标，即sink——HDFS文件系统  :  hdfs sink</span><br><span class="line">Source和sink之间的传递通道——channel，可用file channel 也可以用 内存channel</span><br><span class="line"></span><br><span class="line">配置文件编写：</span><br><span class="line">agent1.sources = source1</span><br><span class="line">agent1.sinks = sink1</span><br><span class="line">agent1.channels = channel1</span><br><span class="line"></span><br><span class="line"># Describe/configure tail -F source1</span><br><span class="line">agent1.sources.source1.type = exec</span><br><span class="line">agent1.sources.source1.command = tail -F /home/hadoop/logs/access_log</span><br><span class="line">agent1.sources.source1.channels = channel1</span><br><span class="line"></span><br><span class="line">#configure host for source</span><br><span class="line">agent1.sources.source1.interceptors = i1</span><br><span class="line">agent1.sources.source1.interceptors.i1.type = host</span><br><span class="line">agent1.sources.source1.interceptors.i1.hostHeader = hostname</span><br><span class="line"></span><br><span class="line"># Describe sink1</span><br><span class="line">agent1.sinks.sink1.type = hdfs</span><br><span class="line">#a1.sinks.k1.channel = c1</span><br><span class="line">agent1.sinks.sink1.hdfs.path =hdfs://hdp-node-01:9000/weblog/flume-collection/%y-%m-%d/%H-%M</span><br><span class="line">agent1.sinks.sink1.hdfs.filePrefix = access_log</span><br><span class="line">agent1.sinks.sink1.hdfs.maxOpenFiles = 5000</span><br><span class="line">agent1.sinks.sink1.hdfs.batchSize= 100</span><br><span class="line">agent1.sinks.sink1.hdfs.fileType = DataStream</span><br><span class="line">agent1.sinks.sink1.hdfs.writeFormat =Text</span><br><span class="line">agent1.sinks.sink1.hdfs.rollSize = 102400</span><br><span class="line">agent1.sinks.sink1.hdfs.rollCount = 1000000</span><br><span class="line">agent1.sinks.sink1.hdfs.rollInterval = 60</span><br><span class="line">agent1.sinks.sink1.hdfs.round = true</span><br><span class="line">agent1.sinks.sink1.hdfs.roundValue = 10</span><br><span class="line">agent1.sinks.sink1.hdfs.roundUnit = minute</span><br><span class="line">agent1.sinks.sink1.hdfs.useLocalTimeStamp = true</span><br><span class="line"></span><br><span class="line"># Use a channel which buffers events in memory</span><br><span class="line">agent1.channels.channel1.type = memory</span><br><span class="line">agent1.channels.channel1.keep-alive = 120</span><br><span class="line">agent1.channels.channel1.capacity = 500000</span><br><span class="line">agent1.channels.channel1.transactionCapacity = 600</span><br><span class="line"></span><br><span class="line"># Bind the source and sink to the channel</span><br><span class="line">agent1.sources.source1.channels = channel1</span><br><span class="line">agent1.sinks.sink1.channel = channel1</span><br></pre></td></tr></table></figure>
-<h6 id="两个agent级联"><a href="#两个agent级联" class="headerlink" title="两个agent级联"></a>两个agent级联</h6><p><a href="https://imgchr.com/i/kzLTLd" target="_blank" rel="noopener"><img src="https://s2.ax1x.com/2019/03/08/kzLTLd.png" alt="kzLTLd.png"></a></p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><span class="line">从tail命令获取数据发送到avro端口</span><br><span class="line">另一个节点可配置一个avro源来中继数据，发送外部存储</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">##################</span><br><span class="line"># Name the components on this agent</span><br><span class="line">a1.sources = r1</span><br><span class="line">a1.sinks = k1</span><br><span class="line">a1.channels = c1</span><br><span class="line"></span><br><span class="line"># Describe/configure the source</span><br><span class="line">a1.sources.r1.type = exec</span><br><span class="line">a1.sources.r1.command = tail -F /root/log/access.log</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"># Describe the sink</span><br><span class="line">a1.sinks.k1.type = avro</span><br><span class="line">a1.sinks.k1.hostname = hdp-05</span><br><span class="line">a1.sinks.k1.port = 4141</span><br><span class="line">a1.sinks.k1.batch-size = 2</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"># Use a channel which buffers events in memory</span><br><span class="line">a1.channels.c1.type = memory</span><br><span class="line">a1.channels.c1.capacity = 1000</span><br><span class="line">a1.channels.c1.transactionCapacity = 100</span><br><span class="line"></span><br><span class="line"># Bind the source and sink to the channel</span><br><span class="line">a1.sources.r1.channels = c1</span><br><span class="line">a1.sinks.k1.channel = c1</span><br></pre></td></tr></table></figure>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br></pre></td><td class="code"><pre><span class="line">从avro端口接收数据，下沉到hdfs</span><br><span class="line">#####</span><br><span class="line">bin/flume-ng agent -c conf -f conf/avro-m-log.conf -n a1 -Dflume.root.logger=INFO,console</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">采集配置文件，avro-hdfs.conf</span><br><span class="line"></span><br><span class="line"># Name the components on this agent</span><br><span class="line">a1.sources = r1</span><br><span class="line">a1.sinks = k1</span><br><span class="line">a1.channels = c1</span><br><span class="line"></span><br><span class="line"># Describe/configure the source</span><br><span class="line">##source中的avro组件是一个接收者服务</span><br><span class="line">a1.sources.r1.type = avro</span><br><span class="line">a1.sources.r1.bind = hdp-05</span><br><span class="line">a1.sources.r1.port = 4141</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"># Describe the sink</span><br><span class="line">a1.sinks.k1.type = hdfs</span><br><span class="line">a1.sinks.k1.hdfs.path = /flume/taildata/%y-%m-%d/</span><br><span class="line">a1.sinks.k1.hdfs.filePrefix = tail-</span><br><span class="line">a1.sinks.k1.hdfs.round = true</span><br><span class="line">a1.sinks.k1.hdfs.roundValue = 24</span><br><span class="line">a1.sinks.k1.hdfs.roundUnit = hour</span><br><span class="line">a1.sinks.k1.hdfs.rollInterval = 0</span><br><span class="line">a1.sinks.k1.hdfs.rollSize = 0</span><br><span class="line">a1.sinks.k1.hdfs.rollCount = 50</span><br><span class="line">a1.sinks.k1.hdfs.batchSize = 10</span><br><span class="line">a1.sinks.k1.hdfs.useLocalTimeStamp = true</span><br><span class="line">#生成的文件类型，默认是Sequencefile，可用DataStream，则为普通文本</span><br><span class="line">a1.sinks.k1.hdfs.fileType = DataStream</span><br><span class="line"></span><br><span class="line"># Use a channel which buffers events in memory</span><br><span class="line">a1.channels.c1.type = memory</span><br><span class="line">a1.channels.c1.capacity = 1000</span><br><span class="line">a1.channels.c1.transactionCapacity = 100</span><br><span class="line"></span><br><span class="line"># Bind the source and sink to the channel</span><br><span class="line">a1.sources.r1.channels = c1</span><br><span class="line">a1.sinks.k1.channel = c1</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">发送数据：</span><br><span class="line">$ bin/flume-ng avro-client -H localhost -p 4141 -F /usr/logs/log.10</span><br></pre></td></tr></table></figure>
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
   </section>
 
   
@@ -2072,7 +2071,7 @@
               
               <div class="site-state-item site-state-tags">
                 <a href="/tags/index.html">
-                  <span class="site-state-item-count">87</span>
+                  <span class="site-state-item-count">88</span>
                   <span class="site-state-item-name">标签</span>
                 </a>
               </div>
