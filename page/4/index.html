@@ -252,6 +252,163 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://blogoflyt.cn/2019/02/14/Flume日志采集框架-高可用/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Richard">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/gakki.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="积累技术之路">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2019/02/14/Flume日志采集框架-高可用/" itemprop="url">Flume日志采集框架-----高可用</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-02-14T19:40:00+08:00">
+                2019-02-14
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Flume/" itemprop="url" rel="index">
+                    <span itemprop="name">Flume</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h5 id="FLUME高级应用"><a href="#FLUME高级应用" class="headerlink" title="FLUME高级应用"></a>FLUME高级应用</h5><h6 id="案例：高可用Flum-NG配置案例"><a href="#案例：高可用Flum-NG配置案例" class="headerlink" title="案例：高可用Flum-NG配置案例"></a>案例：高可用Flum-NG配置案例</h6><blockquote>
+<p>在完成单点的Flume NG搭建后，下面我们搭建一个高可用的Flume NG集群，架构图如下所示：<br><a href="https://imgchr.com/i/kzOPwn" target="_blank" rel="noopener"><img src="https://s2.ax1x.com/2019/03/08/kzOPwn.png" alt="kzOPwn.png"></a></p>
+</blockquote>
+<blockquote>
+<p>图中，我们可以看出，Flume的存储可以支持多种，这里只列举了HDFS和Kafka（如：存储最新的一周日志，并给Storm系统提供实时日志流）。</p>
+</blockquote>
+<h6 id="角色分配"><a href="#角色分配" class="headerlink" title="角色分配"></a>角色分配</h6><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">Flume的Agent和Collector分布如下表所示：</span><br><span class="line">名称　	HOST	角色</span><br><span class="line">Agent1	mini1	Web Server</span><br><span class="line">Agent2	mini2	Web Server</span><br><span class="line">Agent3	mini3	Web Server</span><br><span class="line">Collector1	mini4	AgentMstr1</span><br><span class="line">Collector2	mini5	AgentMstr2</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>图中所示，Agent1，Agent2，Agent3数据分别流入到Collector1和Collector2，Flume NG本身提供了Failover机制，可以自动切换和恢复。在上图中，有3个产生日志服务器分布在不同的机房，要把所有的日志都收集到一个集群中存储。下 面我们开发配置Flume NG集群</p>
+</blockquote>
+<h6 id="配置"><a href="#配置" class="headerlink" title="配置"></a>配置</h6><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br></pre></td><td class="code"><pre><span class="line">在下面单点Flume中，基本配置都完成了，我们只需要新添加两个配置文件，它们是agent.properties和collector.properties，其配置内容如下所示：</span><br><span class="line">1、agent配置</span><br><span class="line">[root@mini1 apache-flume-1.6.0-bin]# vi conf/agent.properties</span><br><span class="line">#agent1 name</span><br><span class="line">agent1.channels = c1</span><br><span class="line">agent1.sources = r1</span><br><span class="line">agent1.sinks = k1 k2</span><br><span class="line"></span><br><span class="line">#set gruop</span><br><span class="line">agent1.sinkgroups = g1</span><br><span class="line"></span><br><span class="line">#set channel</span><br><span class="line">agent1.channels.c1.type = memory</span><br><span class="line">agent1.channels.c1.capacity = 1000</span><br><span class="line">agent1.channels.c1.transactionCapacity = 100</span><br><span class="line"></span><br><span class="line">agent1.sources.r1.channels = c1</span><br><span class="line">agent1.sources.r1.type = exec</span><br><span class="line">agent1.sources.r1.command = tail -F /root/log/test.log</span><br><span class="line"></span><br><span class="line">agent1.sources.r1.interceptors = i1 i2</span><br><span class="line">agent1.sources.r1.interceptors.i1.type = static</span><br><span class="line">agent1.sources.r1.interceptors.i1.key = Type</span><br><span class="line">agent1.sources.r1.interceptors.i1.value = LOGIN</span><br><span class="line">agent1.sources.r1.interceptors.i2.type = timestamp</span><br><span class="line"></span><br><span class="line"># set sink1</span><br><span class="line">agent1.sinks.k1.channel = c1</span><br><span class="line">agent1.sinks.k1.type = avro</span><br><span class="line">agent1.sinks.k1.hostname = mini2</span><br><span class="line">agent1.sinks.k1.port = 52020</span><br><span class="line"></span><br><span class="line"># set sink2</span><br><span class="line">agent1.sinks.k2.channel = c1</span><br><span class="line">agent1.sinks.k2.type = avro</span><br><span class="line">agent1.sinks.k2.hostname = mini3</span><br><span class="line">agent1.sinks.k2.port = 52020</span><br><span class="line"></span><br><span class="line">#set sink group</span><br><span class="line">agent1.sinkgroups.g1.sinks = k1 k2</span><br><span class="line"></span><br><span class="line">#set failover</span><br><span class="line">agent1.sinkgroups.g1.processor.type = failover</span><br><span class="line">agent1.sinkgroups.g1.processor.priority.k1 = 10</span><br><span class="line">agent1.sinkgroups.g1.processor.priority.k2 = 1</span><br><span class="line">agent1.sinkgroups.g1.processor.maxpenalty = 10000</span><br><span class="line">启动命令：</span><br><span class="line">bin/flume-ng agent -n agent1 -c conf -f conf/agent.properties -Dflume.root.logger=DEBUG,console</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">2、collector配置</span><br><span class="line">[root@mini2 conf]# vi collector.properties </span><br><span class="line">#set Agent name</span><br><span class="line">a1.sources = r1</span><br><span class="line">a1.channels = c1</span><br><span class="line">a1.sinks = k1</span><br><span class="line"></span><br><span class="line">#set channel</span><br><span class="line">a1.channels.c1.type = memory</span><br><span class="line">a1.channels.c1.capacity = 1000</span><br><span class="line">a1.channels.c1.transactionCapacity = 100</span><br><span class="line"></span><br><span class="line"># other node,nna to nns</span><br><span class="line">a1.sources.r1.type = avro</span><br><span class="line">a1.sources.r1.bind = mini2</span><br><span class="line">a1.sources.r1.port = 52020</span><br><span class="line">a1.sources.r1.interceptors = i1</span><br><span class="line">a1.sources.r1.interceptors.i1.type = static</span><br><span class="line">a1.sources.r1.interceptors.i1.key = Collector</span><br><span class="line">a1.sources.r1.interceptors.i1.value = mini2</span><br><span class="line">a1.sources.r1.channels = c1</span><br><span class="line"></span><br><span class="line">#set sink to hdfs</span><br><span class="line">a1.sinks.k1.type=hdfs</span><br><span class="line">a1.sinks.k1.hdfs.path=/home/hdfs/flume/logdfs</span><br><span class="line">a1.sinks.k1.hdfs.fileType=DataStream</span><br><span class="line">a1.sinks.k1.hdfs.writeFormat=TEXT</span><br><span class="line">a1.sinks.k1.hdfs.rollInterval=10</span><br><span class="line">a1.sinks.k1.channel=c1</span><br><span class="line">a1.sinks.k1.hdfs.filePrefix=%Y-%m-%d</span><br><span class="line">在mini3上，需要修改上述配置中的红色字体主机名为mini3</span><br></pre></td></tr></table></figure>
+<h6 id="启动命令："><a href="#启动命令：" class="headerlink" title="启动命令："></a>启动命令：</h6><p>bin/flume-ng agent -n a1 -c conf -f conf/collector.properties -Dflume.root.logger=DEBUG,console</p>
+<h6 id="FAILOVER测试"><a href="#FAILOVER测试" class="headerlink" title="FAILOVER测试"></a>FAILOVER测试</h6><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">下面我们来测试下Flume NG集群的高可用（故障转移）。场景如下：我们在Agent1节点上传文件，由于我们配置Collector1的权重比Collector2大，所以 Collector1优先采集并上传到存储系统。然后我们kill掉Collector1，此时有Collector2负责日志的采集上传工作，之后，我 们手动恢复Collector1节点的Flume服务，再次在Agent1上次文件，发现Collector1恢复优先级别的采集工作。具体截图如下所 示：</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>Collector1优先上传<br><a href="https://imgchr.com/i/kzOelF" target="_blank" rel="noopener"><img src="https://s2.ax1x.com/2019/03/08/kzOelF.png" alt="kzOelF.png"></a><br>HDFS集群中上传的log内容预览<br><a href="https://imgchr.com/i/kzOmy4" target="_blank" rel="noopener"><img src="https://s2.ax1x.com/2019/03/08/kzOmy4.png" alt="kzOmy4.png"></a><br>Collector1宕机，Collector2获取优先上传权限<br><a href="https://imgchr.com/i/kzOnOJ" target="_blank" rel="noopener"><img src="https://s2.ax1x.com/2019/03/08/kzOnOJ.png" alt="kzOnOJ.png"></a><br>重启Collector1服务，Collector1重新获得优先上传的权限</p>
+</blockquote>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="http://blogoflyt.cn/2019/02/13/Flume日志采集框架-采集案例/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -1640,156 +1797,6 @@
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://blogoflyt.cn/2019/02/01/Hive学习笔记/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Richard">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/gakki.jpg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="积累技术之路">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2019/02/01/Hive学习笔记/" itemprop="url">Hive学习笔记-----安装使用</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-02-01T20:13:00+08:00">
-                2019-02-01
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Hive/" itemprop="url" rel="index">
-                    <span itemprop="name">Hive</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h5 id="hive基本思想"><a href="#hive基本思想" class="headerlink" title="hive基本思想"></a>hive基本思想</h5><p>Hive是基于Hadoop的一个数据仓库工具(离线)，可以将结构化的数据文件映射为一张数据库表，并提供类SQL查询功能。<br><a href="https://imgchr.com/i/kvBO1J" target="_blank" rel="noopener"><img src="https://s2.ax1x.com/2019/03/06/kvBO1J.png" alt="kvBO1J.png"></a></p>
-<h6 id="为什么使用Hive"><a href="#为什么使用Hive" class="headerlink" title="为什么使用Hive"></a>为什么使用Hive</h6><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">直接使用hadoop所面临的问题 </span><br><span class="line">人员学习成本太高 </span><br><span class="line">项目周期要求太短 </span><br><span class="line">MapReduce实现复杂查询逻辑开发难度太大 </span><br><span class="line"></span><br><span class="line">为什么要使用Hive </span><br><span class="line">操作接口采用类SQL语法，提供快速开发的能力。 </span><br><span class="line">避免了去写MapReduce，减少开发人员的学习成本。 </span><br><span class="line">功能扩展很方便。</span><br></pre></td></tr></table></figure>
-<h6 id="Hive的特点"><a href="#Hive的特点" class="headerlink" title="Hive的特点"></a>Hive的特点</h6><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">可扩展 </span><br><span class="line">Hive可以自由的扩展集群的规模，一般情况下不需要重启服务。</span><br><span class="line">延展性 </span><br><span class="line">Hive支持用户自定义函数，用户可以根据自己的需求来实现自己的函数。</span><br><span class="line">容错 </span><br><span class="line">良好的容错性，节点出现问题SQL仍可完成执行。</span><br></pre></td></tr></table></figure>
-<hr>
-<h5 id="hive的基本架构"><a href="#hive的基本架构" class="headerlink" title="hive的基本架构"></a>hive的基本架构</h5><p><a href="https://imgchr.com/i/kvDS76" target="_blank" rel="noopener"><img src="https://s2.ax1x.com/2019/03/06/kvDS76.jpg" alt="kvDS76.jpg"></a><br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">Jobtracker是hadoop1.x中的组件，它的功能相当于：</span><br><span class="line">Resourcemanager+MRAppMaster</span><br><span class="line"></span><br><span class="line">TaskTracker 相当于：  </span><br><span class="line">Nodemanager  +  yarnchild</span><br></pre></td></tr></table></figure></p>
-<hr>
-<h5 id="hive安装"><a href="#hive安装" class="headerlink" title="hive安装"></a>hive安装</h5><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br></pre></td><td class="code"><pre><span class="line">1. 最简安装：用内嵌derby作为元数据库</span><br><span class="line">准备工作：安装hive的机器上应该有HADOOP环境（安装目录，HADOOP_HOME环境变量）</span><br><span class="line">安装：直接解压一个hive安装包即可</span><br><span class="line">此时，安装的这个hive实例使用其内嵌的derby数据库作为记录元数据的数据库</span><br><span class="line">此模式不便于让团队成员之间共享协作</span><br><span class="line">2.标准安装：将mysql作为元数据库</span><br><span class="line">2.1.mysql安装</span><br><span class="line">①　上传mysql安装包</span><br><span class="line">②　解压：</span><br><span class="line">[root@mylove ~]# tar -xvf MySQL-5.6.26-1.linux_glibc2.5.x86_64.rpm-bundle.tar </span><br><span class="line"></span><br><span class="line">③　安装mysql的server包</span><br><span class="line">[root@mylove ~]# rpm -ivh MySQL-server-5.6.26-1.linux_glibc2.5.x86_64.rpm </span><br><span class="line">依赖报错：</span><br><span class="line">缺perl</span><br><span class="line">yum install perl</span><br><span class="line">安装完perl后 ，继续重新安装mysql-server</span><br><span class="line">（可以配置一个本地yum源进行安装：</span><br><span class="line">1、先在vmware中给这台虚拟机连接一个光盘镜像</span><br><span class="line">2、挂在光驱到一个指定目录：mount -t iso9660 -o loop /dev/cdrom /mnt/cdrom</span><br><span class="line">3、将yum的配置文件中baseURL指向/mnt/cdrom</span><br><span class="line">）</span><br><span class="line"></span><br><span class="line">[root@mylove ~]# rpm -ivh MySQL-server-5.6.26-1.linux_glibc2.5.x86_64.rpm </span><br><span class="line">又出错：包冲突conflict with</span><br><span class="line">移除老版本的冲突包：mysql-libs-5.1.73-3.el6_5.x86_64</span><br><span class="line">[root@mylove ~]# rpm -e mysql-libs-5.1.73-3.el6_5.x86_64 --nodeps</span><br><span class="line"></span><br><span class="line">继续重新安装mysql-server</span><br><span class="line">[root@mylove ~]# rpm -ivh MySQL-server-5.6.26-1.linux_glibc2.5.x86_64.rpm </span><br><span class="line"></span><br><span class="line">成功后，注意提示：里面有初始密码及如何改密码的信息</span><br><span class="line">初始密码：/root/.mysql_secret  </span><br><span class="line">改密码脚本：/usr/bin/mysql_secure_installation</span><br><span class="line"></span><br><span class="line">④　安装mysql的客户端包：</span><br><span class="line">[root@mylove ~]# rpm -ivh MySQL-client-5.6.26-1.linux_glibc2.5.x86_64.rpm</span><br><span class="line"></span><br><span class="line">⑤　启动mysql的服务端：</span><br><span class="line">[root@mylove ~]# service mysql start</span><br><span class="line">Starting MySQL. SUCCESS!</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">⑥　修改root的初始密码：</span><br><span class="line">[root@mylove ~]# /usr/bin/mysql_secure_installation  按提示</span><br><span class="line"></span><br><span class="line">⑦　测试：</span><br><span class="line">用mysql命令行客户端登陆mysql服务器看能否成功</span><br><span class="line">[root@mylove ~]# mysql -uroot -proot</span><br><span class="line">mysql&gt; show databases;</span><br><span class="line"></span><br><span class="line">⑧　给root用户授予从任何机器上登陆mysql服务器的权限：</span><br><span class="line">mysql&gt; grant all privileges on *.* to &apos;root&apos;@&apos;%&apos; identified by &apos;你的密码&apos; with grant option;</span><br><span class="line">Query OK, 0 rows affected (0.00 sec)</span><br><span class="line"></span><br><span class="line">mysql&gt; flush privileges;</span><br><span class="line">Query OK, 0 rows affected (0.00 sec)</span><br><span class="line">注意点：要让mysql可以远程登录访问</span><br><span class="line">最直接测试方法：从windows上用Navicat去连接，能连，则可以，不能连，则要去mysql的机器上用命令行客户端进行授权：</span><br><span class="line">在mysql的机器上,启动命令行客户端： </span><br><span class="line">mysql -uroot -proot</span><br><span class="line">mysql&gt;grant all privileges on *.* to &apos;root&apos;@&apos;%&apos; identified by &apos;root的密码&apos; with grant option;</span><br><span class="line">mysql&gt;flush privileges;</span><br></pre></td></tr></table></figure>
-<h6 id="hive的元数据库配置"><a href="#hive的元数据库配置" class="headerlink" title="hive的元数据库配置"></a>hive的元数据库配置</h6><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br></pre></td><td class="code"><pre><span class="line">vi conf/hive-site.xml</span><br><span class="line">&lt;configuration&gt;</span><br><span class="line">&lt;property&gt;</span><br><span class="line">&lt;name&gt;javax.jdo.option.ConnectionURL&lt;/name&gt;</span><br><span class="line">&lt;value&gt;jdbc:mysql://localhost:3306/hive?createDatabaseIfNotExist=true&lt;/value&gt;</span><br><span class="line">&lt;description&gt;JDBC connect string for a JDBC metastore&lt;/description&gt;</span><br><span class="line">&lt;/property&gt;</span><br><span class="line"></span><br><span class="line">&lt;property&gt;</span><br><span class="line">&lt;name&gt;javax.jdo.option.ConnectionDriverName&lt;/name&gt;</span><br><span class="line">&lt;value&gt;com.mysql.jdbc.Driver&lt;/value&gt;</span><br><span class="line">&lt;description&gt;Driver class name for a JDBC metastore&lt;/description&gt;</span><br><span class="line">&lt;/property&gt;</span><br><span class="line"></span><br><span class="line">&lt;property&gt;</span><br><span class="line">&lt;name&gt;javax.jdo.option.ConnectionUserName&lt;/name&gt;</span><br><span class="line">&lt;value&gt;root&lt;/value&gt;</span><br><span class="line">&lt;description&gt;username to use against metastore database&lt;/description&gt;</span><br><span class="line">&lt;/property&gt;</span><br><span class="line"></span><br><span class="line">&lt;property&gt;</span><br><span class="line">&lt;name&gt;javax.jdo.option.ConnectionPassword&lt;/name&gt;</span><br><span class="line">&lt;value&gt;root&lt;/value&gt;</span><br><span class="line">&lt;description&gt;password to use against metastore database&lt;/description&gt;</span><br><span class="line">&lt;/property&gt;</span><br><span class="line">&lt;/configuration&gt;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">2、上传一个mysql的驱动jar包到hive的安装目录的lib中</span><br><span class="line"></span><br><span class="line">3、配置HADOOP_HOME 和HIVE_HOME到系统环境变量中：/etc/profile</span><br><span class="line">4、source /etc/profile</span><br><span class="line">5、hive启动测试</span><br><span class="line">然后用命令启动hive交互界面：   </span><br><span class="line">[root@hdp20-04 ~]# hive</span><br></pre></td></tr></table></figure>
-<h5 id="hive使用方式"><a href="#hive使用方式" class="headerlink" title="hive使用方式"></a>hive使用方式</h5><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br></pre></td><td class="code"><pre><span class="line">最基本使用方式</span><br><span class="line">启动一个hive交互shell</span><br><span class="line">bin/hive</span><br><span class="line">hive&gt;</span><br><span class="line"></span><br><span class="line">设置一些基本参数，让hive使用起来更便捷，比如：</span><br><span class="line">1、让提示符显示当前库：</span><br><span class="line">hive&gt;set hive.cli.print.current.db=true;</span><br><span class="line">2、显示查询结果时显示字段名称：</span><br><span class="line">hive&gt;set hive.cli.print.header=true; </span><br><span class="line"></span><br><span class="line">但是这样设置只对当前会话有效，重启hive会话后就失效，解决办法：</span><br><span class="line">在linux的当前用户目录中，编辑一个.hiverc文件，将参数写入其中：</span><br><span class="line">vi .hiverc</span><br><span class="line">set hive.cli.print.header=true;</span><br><span class="line">set hive.cli.print.current.db=true;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">启动hive服务使用</span><br><span class="line">启动hive的服务：</span><br><span class="line">[root@hdp20-04 hive-1.2.1]# bin/hiveserver2 -hiveconf hive.root.logger=DEBUG,console</span><br><span class="line"></span><br><span class="line">上述启动，会将这个服务启动在前台，如果要启动在后台，则命令如下：</span><br><span class="line">nohup bin/hiveserver2 1&gt;/dev/null 2&gt;&amp;1 &amp;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">启动成功后，可以在别的节点上用beeline去连接</span><br><span class="line">方式（1）</span><br><span class="line">[root@hdp20-04 hive-1.2.1]# bin/beeline  回车，进入beeline的命令界面</span><br><span class="line">输入命令连接hiveserver2</span><br><span class="line">beeline&gt; !connect jdbc:hive2//mini1:10000</span><br><span class="line">（hadoop01是hiveserver2所启动的那台主机名，端口默认是10000）</span><br><span class="line">方式（2）</span><br><span class="line">启动时直接连接：</span><br><span class="line">bin/beeline -u jdbc:hive2://mini1:10000 -n root</span><br><span class="line"></span><br><span class="line">接下来就可以做正常sql查询了</span><br></pre></td></tr></table></figure>
-<h6 id="脚本化运行"><a href="#脚本化运行" class="headerlink" title="脚本化运行"></a>脚本化运行</h6><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">大量的hive查询任务，如果用交互式shell来进行输入的话，显然效率及其低下，因此，生产中更多的是使用脚本化运行机制：</span><br><span class="line">该机制的核心点是：hive可以用一次性命令的方式来执行给定的hql语句</span><br><span class="line"></span><br><span class="line">[root@hdp20-04 ~]#  hive -e &quot;insert into table t_dest select * from t_src;&quot;</span><br><span class="line"></span><br><span class="line">然后，进一步，可以将上述命令写入shell脚本中，以便于脚本化运行hive任务，并控制、调度众多hive任务，示例如下：</span><br><span class="line">vi t_order_etl.sh</span><br><span class="line">#!/bin/bash</span><br><span class="line">hive -e &quot;select * from db_order.t_order&quot;</span><br><span class="line">hive -e &quot;select * from default.t_user&quot;</span><br><span class="line">hql=&quot;create table  default.t_bash as select * from db_order.t_order&quot;</span><br><span class="line">hive -e &quot;$hql&quot;</span><br><span class="line"></span><br><span class="line">如果要执行的hql语句特别复杂，那么，可以把hql语句写入一个文件：</span><br><span class="line">vi x.hql</span><br><span class="line">select * from db_order.t_order;</span><br><span class="line">select count(1) from db_order.t_user;</span><br><span class="line"></span><br><span class="line">然后，用hive -f /root/x.hql 来执行</span><br></pre></td></tr></table></figure>
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
   </section>
 
   
@@ -1844,7 +1851,7 @@
               
                 <a href="/archives/">
               
-                  <span class="site-state-item-count">65</span>
+                  <span class="site-state-item-count">66</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
@@ -1866,7 +1873,7 @@
               
               <div class="site-state-item site-state-tags">
                 <a href="/tags/index.html">
-                  <span class="site-state-item-count">88</span>
+                  <span class="site-state-item-count">89</span>
                   <span class="site-state-item-name">标签</span>
                 </a>
               </div>

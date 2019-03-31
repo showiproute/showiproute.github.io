@@ -252,6 +252,197 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://blogoflyt.cn/2018/05/15/多线程复习-线程的创建和启动/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Richard">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/gakki.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="积累技术之路">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2018/05/15/多线程复习-线程的创建和启动/" itemprop="url">多线程复习-----线程的创建和启动</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-05-15T16:18:00+08:00">
+                2018-05-15
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Java/" itemprop="url" rel="index">
+                    <span itemprop="name">Java</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h5 id="线程的创建和启动"><a href="#线程的创建和启动" class="headerlink" title="线程的创建和启动"></a>线程的创建和启动</h5><h6 id="创建线程的三种方式"><a href="#创建线程的三种方式" class="headerlink" title="创建线程的三种方式"></a>创建线程的三种方式</h6><p>通过继承Thread 类</p>
+<p>通过实现Runnable接口</p>
+<p>使用Callable 和 Futrue 创建线程</p>
+<h6 id="Thread-类"><a href="#Thread-类" class="headerlink" title="Thread 类"></a>Thread 类</h6><p>通过继承Thread类来创建并启动线程的步骤如下：</p>
+<p>1）定义Thread类的子类，并重写Thread类的run()方法，该run()方法的方法体就代表了线程需要完成的任务。因此把run()方法称为线程执行体。</p>
+<p>2）创建Thread子类的实例，及创建了线程对象。</p>
+<p>3）调用线程对象的start()方法来启动该线程。</p>
+<h6 id="Thread类常用方法"><a href="#Thread类常用方法" class="headerlink" title="Thread类常用方法"></a>Thread类常用方法</h6><p>Thread.currentThread():是Thread类的静态方法，该方法总是返回当前正在执行的线程对象。</p>
+<p>String getName()：该方法是Thread类的实例方法，是返回调用该方法的线程名字。<br>示例：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br></pre></td><td class="code"><pre><span class="line">package multithreading;</span><br><span class="line"></span><br><span class="line">public class ThreadTest &#123;</span><br><span class="line"></span><br><span class="line">//创建一个线程类，继承Thread类</span><br><span class="line">	public static class Thread1 extends Thread&#123;</span><br><span class="line">		//定义一个属性</span><br><span class="line">		private int i;</span><br><span class="line">		public Thread1() &#123;</span><br><span class="line">			</span><br><span class="line">		&#125;</span><br><span class="line">		</span><br><span class="line">		//创建带有线程名称的构造方法</span><br><span class="line">		public Thread1(String name) &#123;</span><br><span class="line">			//调用的是父类的构造方法</span><br><span class="line">			super(name);</span><br><span class="line">		&#125;</span><br><span class="line">		</span><br><span class="line">		//重写run()方法</span><br><span class="line">		@Override</span><br><span class="line">		public void run() &#123;</span><br><span class="line">			for(;i&lt;=10;i++) &#123;</span><br><span class="line">				//继承Thread类的线程类，可以用this.getName()方法获取当前线程名称</span><br><span class="line">				System.out.println(super.getName()+&quot;i=&quot;+i);</span><br><span class="line">			&#125;</span><br><span class="line">		&#125;</span><br><span class="line">		</span><br><span class="line">	&#125;</span><br><span class="line">	</span><br><span class="line">	public static void main(String[] args) &#123;</span><br><span class="line">		//main方法是主线程</span><br><span class="line">		System.out.println(Thread.currentThread().getName());</span><br><span class="line">		//创建线程对象，调用带有线程名称的构造方法</span><br><span class="line">		Thread1 t1= new Thread1(&quot;线程1&quot;);</span><br><span class="line">		Thread1 t2 = new Thread1(&quot;线程2&quot;);</span><br><span class="line">		//Thread t1=new Thread();</span><br><span class="line">		//创建Thread类的对象，调用Thread(t1)</span><br><span class="line">		Thread thread1 = new Thread(t1);</span><br><span class="line">		Thread thread2 = new Thread(t2);</span><br><span class="line">		</span><br><span class="line">		//调用start方法，执行线程</span><br><span class="line">		//继承Thread类的线程类，多个线程对象不共享类里面的属性</span><br><span class="line">		thread1.start();</span><br><span class="line">		thread2.start();</span><br><span class="line">	&#125;</span><br><span class="line">	</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<blockquote>
+<p>注意：使用Thread类的方法创建线程类时，多个线程之间无法共享线程类的实例变量。</p>
+</blockquote>
+<h6 id="Runnable-接口"><a href="#Runnable-接口" class="headerlink" title="Runnable 接口"></a>Runnable 接口</h6><p>实现Runnable接口来创建并启动多线程的步骤如下：</p>
+<p>1）定义Runnable接口的实现类，并重写该接口的run()方法，该run()方法同样是线程执行体。</p>
+<p>2）创建Runnable实现类的实例，并以此实例作为Thread的target来创建Thread对象，该Thread对象才是真正的线程对象。</p>
+<p>3）调用线程对象的start()方法来启动该线程。<br>示例：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br></pre></td><td class="code"><pre><span class="line">package multithreading;</span><br><span class="line"></span><br><span class="line">public class RunnableTest &#123;</span><br><span class="line"></span><br><span class="line">	//创建Runnable实现类</span><br><span class="line">	public static class Runnable1 implements Runnable&#123;</span><br><span class="line">		private int i;</span><br><span class="line">		//重写run方法</span><br><span class="line">		@Override</span><br><span class="line">		public void run() &#123;</span><br><span class="line">			for(;i&lt;=10;i++) &#123;</span><br><span class="line">				//只能用Thread.currentThread()获取当前运行的线程对象</span><br><span class="line">				System.out.println(Thread.currentThread().getName()+&quot;i=&quot;+i);</span><br><span class="line">				</span><br><span class="line">			&#125;</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">	</span><br><span class="line"></span><br><span class="line">	public static void main(String[] args) &#123;</span><br><span class="line">		//创建Runnable 实现类对象</span><br><span class="line">		Runnable1 n1=new Runnable1();</span><br><span class="line">		//将实现类的对象包装成Thread类对象</span><br><span class="line">		Thread thread1=new Thread(n1,&quot;线程1&quot;);</span><br><span class="line">		Thread thread2=new Thread(n1,&quot;线程2&quot;);</span><br><span class="line">		//调用start()执行</span><br><span class="line">		thread1.start();</span><br><span class="line">		thread2.start();</span><br><span class="line">		</span><br><span class="line">		</span><br><span class="line">	&#125;</span><br><span class="line">	</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>匿名类写法：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br></pre></td><td class="code"><pre><span class="line">package multithreading;</span><br><span class="line"></span><br><span class="line">public class RunnableTest2 &#123;</span><br><span class="line"></span><br><span class="line">	public static void main(String[] args) &#123;</span><br><span class="line">		</span><br><span class="line">		//创建Runnable匿名类</span><br><span class="line">		Runnable n1=new Runnable() &#123;</span><br><span class="line">			private int i;</span><br><span class="line">			</span><br><span class="line">			//重写run方法</span><br><span class="line">			@Override</span><br><span class="line">			public void run() &#123;</span><br><span class="line">				// TODO Auto-generated method stub</span><br><span class="line">				for(;i&lt;=10;i++) &#123;</span><br><span class="line">					//只能用Thread.currentThread()获取当前运行的线程对象</span><br><span class="line">					System.out.println(Thread.currentThread().getName()+&quot;i=&quot;+i);</span><br><span class="line">				&#125;</span><br><span class="line">			&#125;</span><br><span class="line">		&#125;;</span><br><span class="line">		</span><br><span class="line">		//将实现类包装成Thread类对象</span><br><span class="line">		Thread thread1 = new Thread(n1,&quot;线程1&quot;);</span><br><span class="line">		Thread thread2=new Thread(n1, &quot;线程2&quot;);</span><br><span class="line">		</span><br><span class="line">		thread1.start();</span><br><span class="line">		thread2.start();</span><br><span class="line">	</span><br><span class="line">	&#125;</span><br><span class="line">	</span><br><span class="line">	</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<blockquote>
+<p>注意：采用Runnable接口的方式创建的多个线程可以共享线程类的实例属性。</p>
+</blockquote>
+<h6 id="使用Callable-和-Future-创建线程"><a href="#使用Callable-和-Future-创建线程" class="headerlink" title="使用Callable 和 Future 创建线程"></a>使用Callable 和 Future 创建线程</h6><p>前两种方式都有一个缺陷就是：在执行完任务之后无法获取执行结果。</p>
+<p>自从Java 1.5开始，就提供了Callable和Future，通过它们可以在任务执行完毕之后得到任务执行结果。</p>
+<h6 id="Callable"><a href="#Callable" class="headerlink" title="Callable"></a>Callable</h6><p>Callable位于java.util.concurrent包下，是个接口，它提供了一个call() 方法可以作为线程执行体。</p>
+<p>call() 方法可以有返回值。</p>
+<p>call() 方法可以声明抛出异常。</p>
+<p>可以看到，这是一个泛型接口，call()函数返回的类型就是传递进来的V类型</p>
+<h6 id="Future"><a href="#Future" class="headerlink" title="Future"></a>Future</h6><p>Future就是对于具体的 Runnable 或者 Callable 任务的执行结果进行取消、查询是否完成、获取结果。必要时可以通过 get 方法获取执行结果，该方法会阻塞直到任务返回结果。</p>
+<p>在Future 接口中声明了5个方法，下面依次解释每个方法的作用：</p>
+<p>boolean cancel(boolean mayInterruptIfRunning)<br>试图取消对此任务的执行。如果取消任务成功则返回true，如果取消任务失败则返回false。<br>参数mayInterruptIfRunning表示是否允许取消正在执行却没有执行完毕的任务，如果设置true，则表示可以取消正在执行过程中的任务。如果取消已经完成的任务会返回false；如果任务正在执行，若mayInterruptIfRunning设置为true，则返回true；若mayInterruptIfRunning设置为false，则返回false；如果任务还没有执行，则无论mayInterruptIfRunning为true还是false，肯定返回true。</p>
+<p>V get()<br>方法用来获取执行结果，这个方法会产生阻塞，会一直等到任务执行完毕才返回；</p>
+<p>V get(long timeout, TimeUnit unit)<br>用来获取执行结果，如果在指定时间内，还没获取到结果，就直接返回null。</p>
+<p>boolean isCancelled()<br>如果在任务正常完成前将其取消，则返回 true。</p>
+<p>boolean isDone()<br>如果任务已完成，则返回 true。</p>
+<p>Future 接口的实现类是 FutureTask，FutrueTask 实现类提供了两个构造方法：</p>
+<p>FutureTask(Callable callable)<br>创建一个 FutureTask，一旦运行就执行给定的 Callable。</p>
+<p>FutureTask(Runnable runnable, V result)<br>创建一个 FutureTask，一旦运行就执行给定的 Runnable，并安排成功完成时<br>get 返回给定的结果 。</p>
+<p>创建并启动有返回值的线程的步骤：</p>
+<p>1）创建Callable 接口的实现类，并实现 call() 方法，该 call() 方法将作为线程执行体，且该 call() 方法有返回值 。</p>
+<p>2）创建Callable 实现类的实例，使用 FutureTask 类来包装 Callable 对象， 该 FutrueTask 对象封装了该 Callable 对象的 call() 方法的返回值。</p>
+<p>3）使用 FutureTask 对象作为 Thread 对象的 target 创建并启动新线程。</p>
+<p>4）调用FutureTask 对象的 get() 方法来获得子线程执行结束后的返回值。</p>
+<p><a href="https://imgchr.com/i/AAslzd" target="_blank" rel="noopener"><img src="https://s2.ax1x.com/2019/03/14/AAslzd.png" alt="AAslzd.png"></a></p>
+<p>代码示例：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br></pre></td><td class="code"><pre><span class="line">package multithreading;</span><br><span class="line"></span><br><span class="line">import java.util.concurrent.Callable;</span><br><span class="line">import java.util.concurrent.FutureTask;</span><br><span class="line"></span><br><span class="line">public class CallableAndFutureTaskTest &#123;</span><br><span class="line"></span><br><span class="line">	public static class Callable1 implements Callable&lt;Integer&gt;&#123;</span><br><span class="line">		private int i;</span><br><span class="line">		@Override</span><br><span class="line">		public Integer call() throws Exception&#123;</span><br><span class="line">			Thread.sleep(3000);</span><br><span class="line">			System.out.println(Thread.currentThread().isAlive());</span><br><span class="line">			for(;i&lt;=10;i++) &#123;</span><br><span class="line">				System.out.println(Thread.currentThread().getName()+&quot;i=&quot;+i);</span><br><span class="line">			&#125;</span><br><span class="line">			return i;</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">	</span><br><span class="line">	public static void main(String[] args) &#123;</span><br><span class="line">		//创建Callable实现类对象实例</span><br><span class="line">		Callable1 callable1 = new Callable1();</span><br><span class="line">		//用FutureTask类来包装Callable实现类对象</span><br><span class="line">		FutureTask&lt;Integer&gt; future = new FutureTask&lt;&gt;(callable1);</span><br><span class="line">		//用Thread类包装FutureTask类对象</span><br><span class="line">		Thread t1 = new Thread(future,&quot;线程1&quot;);</span><br><span class="line">		System.out.println(&quot;Start前：&quot;+t1.isAlive());</span><br><span class="line">		System.out.println(System.currentTimeMillis());</span><br><span class="line">		t1.start();</span><br><span class="line">		try &#123;</span><br><span class="line">			</span><br><span class="line">			//等待t1线程执行结束后返回结果</span><br><span class="line">			Integer integer = future.get();</span><br><span class="line">			System.out.println(integer.toString());</span><br><span class="line">			System.out.println(System.currentTimeMillis());</span><br><span class="line">			System.out.println(&quot;子线程结束后:&quot;+t1.isAlive());</span><br><span class="line">		&#125;catch (Exception e) &#123;</span><br><span class="line">			// TODO: handle exception</span><br><span class="line">			e.printStackTrace();</span><br><span class="line">		&#125;</span><br><span class="line">		</span><br><span class="line">		</span><br><span class="line">	&#125;</span><br><span class="line">	</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<h6 id="创建线程方式对比"><a href="#创建线程方式对比" class="headerlink" title="创建线程方式对比"></a>创建线程方式对比</h6><p>采用实现Runnable接口、Callable 接口方式</p>
+<p>线程类只实现了Runnable接口或 Callable 接口，还可以继承其他类。</p>
+<p>多线程可以共享同一个target对象，所以非常适合多个相同线程来处理同一份资源情况。</p>
+<p>编程稍复杂，如果需要访问当前线程，则必须使用Thread.currentThread()方法。</p>
+<h6 id="采用继承Thread类方式"><a href="#采用继承Thread类方式" class="headerlink" title="采用继承Thread类方式"></a>采用继承Thread类方式</h6><p>线程类已经继承了Thread类，不能再继承其他父类。</p>
+<p>编程简单，如果需要访问当前线程，直接使用this即可获得当前线程。</p>
+<h6 id="实现Runnable接口和实现Callable接口的区别"><a href="#实现Runnable接口和实现Callable接口的区别" class="headerlink" title="实现Runnable接口和实现Callable接口的区别:"></a>实现Runnable接口和实现Callable接口的区别:</h6><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">Runnable是自从java1.1就有了，而Callable是1.5之后才加上去的</span><br><span class="line">Callable规定的方法是call()，Runnable 规定的方法是run()</span><br><span class="line">Callable的任务执行后可返回值，而Runnable的任务是不能返回值(是void)</span><br><span class="line">call方法可以抛出异常，run方法不可以</span><br><span class="line">运行Callable任务可以拿到一个Future对象，表示异步计算的结果。它提供了检查计算是否完成的方法，以等待计算的完成，并检索计算的结果。通过Future对象可以了解任务执行情况，可取消任务的执行，还可获取执行结果。</span><br><span class="line">推荐采用实现 Runnable 接口、Callable 接口的方式创建多线程。</span><br></pre></td></tr></table></figure>
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="http://blogoflyt.cn/2018/05/14/多线程复习1/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -1602,160 +1793,6 @@
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://blogoflyt.cn/2018/03/16/接口与解耦和/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Richard">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/gakki.jpg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="积累技术之路">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2018/03/16/接口与解耦和/" itemprop="url">接口与解耦和</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-03-16T16:46:00+08:00">
-                2018-03-16
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Java/" itemprop="url" rel="index">
-                    <span itemprop="name">Java</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p><a href="https://imgchr.com/i/ACDwKU" target="_blank" rel="noopener"><img src="https://s2.ax1x.com/2019/03/11/ACDwKU.png" alt="ACDwKU.png"></a></p>
-<blockquote>
-<p>除了实现多继承之外，接口最重要的作用就是解耦合。 什么叫解耦合呢？我们看下面这段代码的例子。<br><a href="https://imgchr.com/i/ACD0rF" target="_blank" rel="noopener"><img src="https://s2.ax1x.com/2019/03/11/ACD0rF.png" alt="ACD0rF.png"></a><br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">在上面的代码中， lamp 的 on 方法，调用了 bulb 的 shine 方法。 也就是说，当我们调用台灯对象的“开”方法时，台灯对象会去调用灯泡对象的发光方法。</span><br><span class="line">但是，问题来了：现在的这个台灯，装的是红灯泡。如果现在想要把红灯泡换成绿灯泡，应当如何操作呢？</span><br><span class="line">由于 Lamp 类中的 bulb 属性是 RedBulb 类型，因此，一旦要修改，则必须要把 Lamp类中的属性类型进行修改，并且修改 setBulb 方法的相应参数和实现。 也就是说，当我们希望把 bulb 属性由 RedBulb 替换为 GreenBulb 的时候，必须修改 Lamp 类的代码。</span><br><span class="line">也就是说，如果要想更换不同种类的灯泡，就要修改台灯的内部结构！这无疑是跟现实生活不相符合的。之所以产生这样的矛盾，原因在于 Lamp 类与 RedBulb 类型紧密联系在一起，形成了强耦合的关系，如下图：</span><br></pre></td></tr></table></figure></p>
-</blockquote>
-<p><a href="https://imgchr.com/i/ACDoad" target="_blank" rel="noopener"><img src="https://s2.ax1x.com/2019/03/11/ACDoad.png" alt="ACDoad.png"></a></p>
-<p><a href="https://imgchr.com/i/ACDqRP" target="_blank" rel="noopener"><img src="https://s2.ax1x.com/2019/03/11/ACDqRP.png" alt="ACDqRP.png"></a></p>
-<p><a href="https://imgchr.com/i/ACrSaj" target="_blank" rel="noopener"><img src="https://s2.ax1x.com/2019/03/11/ACrSaj.png" alt="ACrSaj.png"></a></p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Lamp 类的 bulb 属性被改为接口类型 Bulb，从而， Lamp 类与具体的实现类之间用 Bulb接口分离开了。 当 Lamp 类希望把 bulb 属性由 RedBulb 对象变更为 GreenBulb 对象时，不需要修改任何自身代码。只需要调用 setBulb 方法，接受不同的 Bulb 接口的实现类就可以了，从而， Lamp 类通过 Bulb 接口，实现了与 Bulb 实现类的弱耦合。如下图所示：</span><br></pre></td></tr></table></figure>
-<p><a href="https://imgchr.com/i/ACrMJ1" target="_blank" rel="noopener"><img src="https://s2.ax1x.com/2019/03/11/ACrMJ1.png" alt="ACrMJ1.png"></a></p>
-<blockquote>
-<p>把原来强耦合的关系，变为了弱耦合的关系。这就是接口最重要的作用：解耦合。</p>
-</blockquote>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">由于接口中所有的方法都是抽象方法，因此，定义一个接口，可以看作是定义了一个标准。它只定义了，一个对象应该具有哪些方法，而丝毫没有定义对象如何实现这些方法。方法的实现统统交给接口的实现类来完成。</span><br><span class="line">这样，接口的出现，就阻隔了接口使用者和接口实现者之间的耦合关系。当接口实现者变化的时候，对接口使用者不产生任何影响。</span><br></pre></td></tr></table></figure>
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
   </section>
 
   
@@ -1810,7 +1847,7 @@
               
                 <a href="/archives/">
               
-                  <span class="site-state-item-count">65</span>
+                  <span class="site-state-item-count">66</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
@@ -1832,7 +1869,7 @@
               
               <div class="site-state-item site-state-tags">
                 <a href="/tags/index.html">
-                  <span class="site-state-item-count">88</span>
+                  <span class="site-state-item-count">89</span>
                   <span class="site-state-item-name">标签</span>
                 </a>
               </div>
