@@ -252,6 +252,176 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://blogoflyt.cn/2019/04/01/Sql语法复习-牛客网数据库Sql实战21-30/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Richard">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/gakki.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="积累技术之路">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2019/04/01/Sql语法复习-牛客网数据库Sql实战21-30/" itemprop="url">Sql语法复习(牛客网数据库Sql实战21-30)</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-04-01T22:00:00+08:00">
+                2019-04-01
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/数据库/" itemprop="url" rel="index">
+                    <span itemprop="name">数据库</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>21.嵌套SQL select查询语句</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">select de.dept_no,dp.dept_name,de.sum as sum from  (select de.dept_no as dept_no,count(s.salary) as sum from dept_emp as de inner join salaries as s on de.emp_no=s.emp_no group by de.dept_no) as de inner join departments as dp on dp.dept_no = de.dept_no;</span><br></pre></td></tr></table></figure>
+<p>22.两张相同的表进行查询匹配</p>
+<p>对所有员工的当前(to_date=’9999-01-01’)薪水按照salary进行按照1-N的排名，相同salary并列且按照emp_no升序排列</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">select s1.emp_no,s1.salary,count(distinct s2.salary) as rank from salaries as s1,salaries as s2 where s1.salary&lt;=s2.salary and s1.to_date=&quot;9999-01-01&quot; and s2.to_date=&quot;9999-01-01&quot;  group by s1.emp_no order by s1.salary desc ,s1.emp_no asc;</span><br></pre></td></tr></table></figure>
+<p>23.多表嵌套sql语句查询</p>
+<p>获取所有非manager员工当前的薪水情况，给出dept_no、emp_no以及salary ，当前表示to_date=’9999-01-01’</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">select de.dept_no,de.emp_no,tmp.salary from dept_emp as de inner join  ( select emp.dept_no,emp.emp_no,s.salary from salaries as s inner join dept_emp as emp on s.emp_no=emp.emp_no  where s.to_date=&quot;9999-01-01&quot;) as tmp  on de.emp_no=tmp.emp_no  where de.emp_no not in  ( select emp_no from dept_manager where to_date=&quot;9999-01-01&quot;);</span><br></pre></td></tr></table></figure>
+<p>24.多表嵌套sql语句查询</p>
+<p>获取员工其当前的薪水比其manager当前薪水还高的相关信息，当前表示to_date=’9999-01-01’,</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">select second.emp_no,first.emp_no,second.salary,first.salary  from  ( select m.emp_no,m.dept_no,s.salary from dept_manager as m inner join salaries as s on m.emp_no=s.emp_no where s.to_date=m.to_date and s.to_date=&quot;9999-01-01&quot;) as first  inner join  (select e.emp_no,e.dept_no,s.salary from dept_emp as e inner join salaries as s on s.emp_no=e.emp_no and s.to_date=e.to_date and s.to_date=&quot;9999-01-01&quot; ) as second  on first.dept_no=second.dept_no and first.salary &lt; second.salary</span><br></pre></td></tr></table></figure>
+<p> 25.又是多表嵌套sql语句查询</p>
+<p>汇总各个部门当前员工的title类型的分配数目，结果给出部门编号dept_no、dept_name、其当前员工所有的title以及该类型title对应的数目count</p>
+ <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">select de.dept_no,de.dept_name,first.title,first.result from departments as de inner join  ( select e.dept_no,t.title,count(t.title) as result from  dept_emp as e inner join titles as t on t.emp_no=e.emp_no and t.to_date=e.to_date and t.to_date=&quot;9999-01-01&quot; group by e.dept_no,t.title ) as first on first.dept_no=de.dept_no;</span><br></pre></td></tr></table></figure>
+<p> 26.strftime(“%Y”,s1.to_date) 截取时间（年份）</p>
+<p> 给出每个员工每年薪水涨幅超过5000的员工编号emp_no、薪水变更开始日期from_date以及薪水涨幅值salary_growth，并按照salary_growth逆序排列。</p>
+ <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">select s2.emp_no,s2.from_date,(s2.salary - s1.salary) as salary_growth  from salaries as s1 inner join salaries as s2 on s1.emp_no=s2.emp_no  and salary_growth&gt;5000 and (strftime(&quot;%Y&quot;,s2.to_date)-strftime(&quot;%Y&quot;,s1.to_date)=1 OR strftime(&quot;%Y&quot;,s2.from_date)-strftime(&quot;%Y&quot;,s1.from_date)=1) order by salary_growth desc</span><br></pre></td></tr></table></figure>
+<p> 27.like “%robot%”</p>
+<p> 查找描述信息中包括robot的电影对应的分类名称以及电影数目，而且还需要该分类对应电影数量&gt;=5部</p>
+ <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">select c.name,count(fc.film_id) from  ( select category_id,count(film_id) as category_num from film_category group by category_id having count(film_id)&gt;=5) as cc, film as f,film_category as fc,category as c where f.description like &quot;%robot%&quot; and f.film_id = fc.film_id and c.category_id = fc.category_id and c.category_id= cc.category_id</span><br></pre></td></tr></table></figure>
+<p> 28.left join</p>
+<p> 使用join查询方式找出没有分类的电影id以及名称</p>
+ <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">select f.film_id,f.title from film as f left join film_category as fc  on f.film_id=fc.film_id where fc.category_id is null</span><br></pre></td></tr></table></figure>
+<p> 29.嵌套select查询</p>
+<p> 使用子查询的方式找出属于Action分类的所有电影对应的title,description</p>
+ <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">select f.title,f.description from film as f inner join (select fc.film_id from film_category as fc  inner join category as c  on fc.category_id=c.category_id where c.name=&quot;Action&quot;) as first on f.film_id=first.film_id</span><br></pre></td></tr></table></figure>
+<p> 30.explain</p>
+<p> 获取select * from employees对应的执行计划</p>
+ <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">EXPLAIN SELECT * FROM employees</span><br></pre></td></tr></table></figure>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="http://blogoflyt.cn/2019/04/01/Sql语法复习-牛客网数据库Sql实战11-20/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -1749,149 +1919,6 @@
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://blogoflyt.cn/2019/03/17/ZooKeeper客户端编程/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Richard">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/gakki.jpg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="积累技术之路">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2019/03/17/ZooKeeper客户端编程/" itemprop="url">ZooKeeper客户端编程</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-03-17T19:14:00+08:00">
-                2019-03-17
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/ZooKeeper/" itemprop="url" rel="index">
-                    <span itemprop="name">ZooKeeper</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h5 id="zookeeper客户端api"><a href="#zookeeper客户端api" class="headerlink" title="zookeeper客户端api"></a>zookeeper客户端api</h5><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br></pre></td><td class="code"><pre><span class="line">package ZookeeperClientDemo;</span><br><span class="line"></span><br><span class="line">import org.apache.zookeeper.ZooKeeper;</span><br><span class="line"></span><br><span class="line">import java.util.List;</span><br><span class="line"></span><br><span class="line">import org.apache.zookeeper.CreateMode;</span><br><span class="line">import org.apache.zookeeper.ZooDefs.Ids;</span><br><span class="line">import org.junit.Before;</span><br><span class="line">import org.junit.Test;</span><br><span class="line"></span><br><span class="line">public class ZooKeeperClientDemo &#123;</span><br><span class="line"></span><br><span class="line">	ZooKeeper zk=null;</span><br><span class="line">	</span><br><span class="line">	@Before</span><br><span class="line">	public void init() throws Exception&#123;</span><br><span class="line">		zk = new ZooKeeper(&quot;datanode1:2181,datanode2:2181,datanode3:2181&quot;,</span><br><span class="line">				2000,null);</span><br><span class="line">	&#125;</span><br><span class="line">	</span><br><span class="line">	</span><br><span class="line">	@Test</span><br><span class="line">	public void testCreate() throws Exception&#123;</span><br><span class="line">		</span><br><span class="line"></span><br><span class="line">		//参数1： 要创建的节点路径 2：数据 3：权限 4：节点类型</span><br><span class="line">		String create = zk.create(&quot;/eclipse&quot;, &quot;hello eclipse&quot;.getBytes(), Ids.OPEN_ACL_UNSAFE, CreateMode.PERSISTENT);</span><br><span class="line">	</span><br><span class="line">		System.out.println(create);</span><br><span class="line">		</span><br><span class="line">		zk.close();</span><br><span class="line">		</span><br><span class="line">	&#125;</span><br><span class="line">	</span><br><span class="line">	@Test</span><br><span class="line">	public void testUpdate() throws Exception&#123;</span><br><span class="line">	</span><br><span class="line">		//参数3： 所要修改的版本，-1代表任何版本</span><br><span class="line">		zk.setData(&quot;/eclipse&quot;, &quot;你好&quot;.getBytes(&quot;UTF-8&quot;), -1);</span><br><span class="line">	</span><br><span class="line">		zk.close();</span><br><span class="line">	&#125;</span><br><span class="line">	</span><br><span class="line">	@Test</span><br><span class="line">	public void testGet() throws Exception&#123;</span><br><span class="line">	</span><br><span class="line">		</span><br><span class="line">		//参数2 ： 是否要监听 watch 3：null表示最新版本</span><br><span class="line">		byte[] data = zk.getData(&quot;/eclipse&quot;, false,null);</span><br><span class="line">		</span><br><span class="line">		System.out.println(new String(data,&quot;UTF-8&quot;));</span><br><span class="line">	</span><br><span class="line">		zk.close();</span><br><span class="line">	&#125;</span><br><span class="line">	</span><br><span class="line">	@Test</span><br><span class="line">	public void testListChildren() throws Exception&#123;</span><br><span class="line">		List&lt;String&gt; children = zk.getChildren(&quot;/eclipse&quot;, false,null);</span><br><span class="line">		</span><br><span class="line">		for (String child : children) &#123;</span><br><span class="line">			System.out.println(child);</span><br><span class="line">		&#125;</span><br><span class="line">	</span><br><span class="line">		zk.close();</span><br><span class="line">	&#125;</span><br><span class="line">	</span><br><span class="line">	@Test</span><br><span class="line">	public void rmDir() throws Exception&#123;</span><br><span class="line">		</span><br><span class="line">		zk.delete(&quot;/eclipse&quot;, -1);</span><br><span class="line">		zk.close();</span><br><span class="line">	&#125;</span><br><span class="line">	</span><br><span class="line">	</span><br><span class="line">	</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<h5 id="ZooKeeper监听数据目录"><a href="#ZooKeeper监听数据目录" class="headerlink" title="ZooKeeper监听数据目录"></a>ZooKeeper监听数据目录</h5><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br></pre></td><td class="code"><pre><span class="line">package ZookeeperClientDemo;</span><br><span class="line"></span><br><span class="line">import org.apache.zookeeper.KeeperException;</span><br><span class="line">import org.apache.zookeeper.WatchedEvent;</span><br><span class="line">import org.apache.zookeeper.Watcher;</span><br><span class="line">import org.apache.zookeeper.ZooKeeper;</span><br><span class="line">import org.apache.zookeeper.Watcher.Event.EventType;</span><br><span class="line">import org.apache.zookeeper.Watcher.Event.KeeperState;</span><br><span class="line">import org.junit.Before;</span><br><span class="line">import org.junit.Test;</span><br><span class="line"></span><br><span class="line">public class ZooKeeperWatchDemo &#123;</span><br><span class="line"></span><br><span class="line">	ZooKeeper zk=null;</span><br><span class="line">	</span><br><span class="line">	@Before</span><br><span class="line">	public void init() throws Exception &#123;</span><br><span class="line">		</span><br><span class="line">		zk = new ZooKeeper(&quot;datanode1:2181,datanode2:2181,datanode3:2181&quot;,</span><br><span class="line">				2000, new Watcher() &#123;</span><br><span class="line">					@Override</span><br><span class="line">					public void process(WatchedEvent event) &#123;</span><br><span class="line">						// TODO Auto-generated method stub</span><br><span class="line">						if(event.getState() == KeeperState.SyncConnected &amp;&amp; </span><br><span class="line">								event.getType() == EventType.NodeDataChanged) &#123;</span><br><span class="line">							System.out.println(event.getPath());//收到的事件所发生的节点路径</span><br><span class="line">							System.out.println(event.getType());//收到事件的类型</span><br><span class="line">							System.out.println(&quot;change it....&quot;);//收到事件后，具体处理逻辑</span><br><span class="line">							</span><br><span class="line">							try &#123;</span><br><span class="line">								zk.getData(&quot;/mygirls&quot;, true, null);</span><br><span class="line">							&#125; catch (KeeperException e) &#123;</span><br><span class="line">								// TODO Auto-generated catch block</span><br><span class="line">								e.printStackTrace();</span><br><span class="line">							&#125; catch (InterruptedException e) &#123;</span><br><span class="line">								// TODO Auto-generated catch block</span><br><span class="line">								e.printStackTrace();</span><br><span class="line">							&#125;</span><br><span class="line">						&#125;else if(event.getState() == KeeperState.SyncConnected &amp;&amp;</span><br><span class="line">								event.getType() == EventType.NodeChildrenChanged) &#123;</span><br><span class="line">							System.out.println(&quot;NodeChild change&quot;);</span><br><span class="line">						&#125;</span><br><span class="line">					&#125;</span><br><span class="line">				&#125;);</span><br><span class="line">	&#125;</span><br><span class="line">	</span><br><span class="line">	@Test</span><br><span class="line">	public void testGetWatch() throws Exception&#123;		</span><br><span class="line">		byte[] data = zk.getData(&quot;/mygirls&quot;,true, null);</span><br><span class="line">		System.out.println(new String(data,&quot;UTF-8&quot;));</span><br><span class="line">		Thread.sleep(Long.MAX_VALUE);</span><br><span class="line">		</span><br><span class="line">	&#125;</span><br><span class="line">	</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
   </section>
 
   
@@ -1946,7 +1973,7 @@
               
                 <a href="/archives/">
               
-                  <span class="site-state-item-count">67</span>
+                  <span class="site-state-item-count">68</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
