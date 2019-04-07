@@ -252,6 +252,163 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://blogoflyt.cn/2019/04/07/Sql语法复习-牛客网数据库Sql实战31-40/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Richard">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/gakki.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="积累技术之路">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2019/04/07/Sql语法复习-牛客网数据库Sql实战31-40/" itemprop="url">Sql语法复习(牛客网数据库Sql实战31-40)</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-04-07T15:11:00+08:00">
+                2019-04-07
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/数据库/" itemprop="url" rel="index">
+                    <span itemprop="name">数据库</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>31.Concat字符串连接<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">MySQL、SQL Server、Oracle等数据库支持CONCAT方法，</span><br><span class="line">而本题所用的SQLite数据库只支持用连接符号&quot;||&quot;来连接字符串</span><br><span class="line"> </span><br><span class="line">CONCAT方法：</span><br><span class="line">select CONCAT(CONCAT(last_name,&quot; &quot;),first_name) as name  from employees</span><br><span class="line">或者</span><br><span class="line">select CONCAT(last_name,&quot; &quot;，first_name) as name  from employees</span><br><span class="line"> </span><br><span class="line">本题中使用：</span><br><span class="line">select last_name||&quot; &quot;||first_name as name  from employees</span><br></pre></td></tr></table></figure></p>
+<p>32.insert or ignore into</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">insert or ignore into actor</span><br><span class="line">values(3,&apos;ED&apos;,&apos;CHASE&apos;,&apos;2006-02-15 12:34:33&apos;);</span><br></pre></td></tr></table></figure>
+<p>33.create table table_name as select …<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">create table actor_name as select first_name,last_name from actor;</span><br></pre></td></tr></table></figure></p>
+<p>34.index</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">CREATE UNIQUE INDEX uniq_idx_firstname on actor(first_name);</span><br><span class="line"></span><br><span class="line">CREATE INDEX idx_lastname on actor(last_name);</span><br></pre></td></tr></table></figure>
+<p>35.create view</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">create view actor_name_view as </span><br><span class="line">select first_name as first_name_v,last_name as last_name_v from actor;</span><br></pre></td></tr></table></figure>
+<p>36.INDEXED BY<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">SELECT * FROM salaries INDEXED BY idx_emp_no WHERE emp_no = 10005</span><br></pre></td></tr></table></figure></p>
+<p>37.alter table add column</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ALTER TABLE actor ADD COLUMN create_date datetime NOT NULL DEFAULT &apos;0000-00-00 00:00:00&apos;;</span><br></pre></td></tr></table></figure>
+<p>38.TRIGGER</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">CREATE TRIGGER audit_log AFTER INSERT ON employees_test</span><br><span class="line">BEGIN</span><br><span class="line">    INSERT INTO audit VALUES (NEW.ID, NEW.NAME);</span><br><span class="line">END;</span><br></pre></td></tr></table></figure>
+<p>39.delete from</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">delete from titles_test where id not in  (select min(id) from titles_test group by emp_no);</span><br></pre></td></tr></table></figure>
+<p>40.update set</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">update titles_test set to_date=null,from_date=&quot;2001-01-01&quot; where to_date=&quot;9999-01-01&quot;;</span><br></pre></td></tr></table></figure>
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="http://blogoflyt.cn/2019/04/01/Sql语法复习-牛客网数据库Sql实战21-30/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -1727,198 +1884,6 @@
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://blogoflyt.cn/2019/03/18/Docker容器简介/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Richard">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/gakki.jpg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="积累技术之路">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2019/03/18/Docker容器简介/" itemprop="url">Docker容器简介</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-03-18T13:22:00+08:00">
-                2019-03-18
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Linux/" itemprop="url" rel="index">
-                    <span itemprop="name">Linux</span>
-                  </a>
-                </span>
-
-                
-                
-                  ， 
-                
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Linux/虚拟化/" itemprop="url" rel="index">
-                    <span itemprop="name">虚拟化</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h5 id="Docker容器简介"><a href="#Docker容器简介" class="headerlink" title="Docker容器简介"></a>Docker容器简介</h5><p>Docker 是世界领先的软件容器平台。</p>
-<p>Docker 使用 Google 公司推出的 Go 语言 进行开发实现，基于 Linux 内核 的cgroup，namespace，以及AUFS类的UnionFS等技术，对进程进行封装隔离，属于操作系统层面的虚拟化技术。 由于隔离的进程独立于宿主和其它的隔离的进 程，因此也称其为容器。Docke最初实现是基于 LXC.</p>
-<p>Docker 能够自动执行重复性任务，例如搭建和配置开发环境，从而解放了开发人员以便他们专注在真正重要的事情上：构建杰出的软件。</p>
-<p>用户可以方便地创建和使用容器，把自己的应用放入容器。容器还可以进行版本管理、复制、分享、修改，就像管理普通的代码一样。</p>
-<p>比较Docker 和传统虚拟化方式的不同之处，可见容器是在操作系统层面上实现虚拟化，直接复用本地主机的操作系统，而传统方式则是在硬件层面实现。</p>
-<p><a href="https://imgchr.com/i/AVHl4g" target="_blank" rel="noopener"><img src="https://s2.ax1x.com/2019/03/16/AVHl4g.png" alt="AVHl4g.png"></a></p>
-<h6 id="为什么使用Docker"><a href="#为什么使用Docker" class="headerlink" title="为什么使用Docker"></a>为什么使用Docker</h6><ol>
-<li>更快的交付和部署</li>
-</ol>
-<p>Docker在整个开发周期都可以完美的辅助实现快速交付，允许开发者在装有应用和服务本地容器做开发，可直接集成到可持续开发流程中</p>
-<ol start="2">
-<li>高效的部署和扩容</li>
-</ol>
-<p>Docker 容器几乎可以在任意的平台上运行， 这种兼容性可以让用户把一个应用程序从一个平台直接迁移到另外一个。Docker的兼容性和轻量特性可以很轻松的实现负载的动态管理。你可以快速扩容或方便的下线的你的应用和服务，这种速度趋近实时。</p>
-<ol start="3">
-<li>更高的资源利用率</li>
-</ol>
-<p>Docker 对系统资源的利用率很高，一台主机上可以同时运行数千个 Docker 容器。容器除了运行其中应用外，基本不消耗额外的系统资源，使得应用的性能很高，同时系统的开销尽量小。</p>
-<ol start="4">
-<li>更简单的管理</li>
-</ol>
-<p>使用 Docker，只需要小小的修改，就可以替代以往大量的更新工作。所有的修改都以增量的方式被分发和更新，从而实现自动化并且高效的管理。</p>
-<p>轻量：</p>
-<p>在一台机器上运行的多个 Docker 容器可以共享这台机器的操作系统内核；它们能够迅速启动，只需占用很少的计算和内存资源。镜像是通过文件系统层进行构造的，并共享一些公共文件。这样就能尽量降低磁盘用量，并能更快地下载镜像。</p>
-<p>标准：</p>
-<p>Docker 容器基于开放式标准，能够在所有主流 Linux 版本、Microsoft Windows 以及包括 VM、裸机服务器和云在内的任何基础设施上运行。</p>
-<p>安全：</p>
-<p>Docker 赋予应用的隔离性不仅限于彼此隔离，还独立于底层的基础设施。Docker 默认提供最强的隔离，因此应用出现问题，也只是单个容器的问题，而不会波及到整台机器。</p>
-<h6 id="Docker工作模式"><a href="#Docker工作模式" class="headerlink" title="Docker工作模式"></a>Docker工作模式</h6><p><a href="https://imgchr.com/i/AVH3CQ" target="_blank" rel="noopener"><img src="https://s2.ax1x.com/2019/03/16/AVH3CQ.jpg" alt="AVH3CQ.jpg"></a></p>
-<p>Docker使用C/S架构，Client 通过接口与Server进程通信实现容器的构建，运行和发布。client和server可以运行在同一台集群，也可以通过跨主机实现远程通信。</p>
-<h6 id="Docker核心概念"><a href="#Docker核心概念" class="headerlink" title="Docker核心概念"></a>Docker核心概念</h6><p>镜像（Image）</p>
-<p>Docker 镜像是一个特殊的文件系统，除了提供容器运行时所需的程序、库、资源、配置等文件外，还包含了一些为运行时准备的一些配置参数（如匿名卷、环境变量、用户等）。 </p>
-<p>容器（Container）</p>
-<p>镜像（Image）和容器（Container）的关系，就像是面向对象程序设计中的 类 和 实例 一样，镜像是静态的定义，容器是镜像运行时的实体。容器可以被创建、启动、停止、删除、暂停等 。容器的实质是进程，但与直接在宿主执行的进程不同，容器进程运行于属于自己的独立的 命名空间。前面讲过镜像使用的是分层存储，容器也是如此。</p>
-<p>仓库（Repository）</p>
-<p>镜像构建完成后，可以很容易的在当前宿主上运行，但是， 如果需要在其它服务器上使用这个镜像，我们就需要一个集中的存储、分发镜像的服务，Docker Registry就是这样的服务。<br>镜像仓库是Docker用来集中存放镜像文件的地方类似于我们之前常用的代码仓库。</p>
-<h6 id="Docker镜像"><a href="#Docker镜像" class="headerlink" title="Docker镜像"></a>Docker镜像</h6><p>Docker镜像是一个特殊的文件系统，提供容器运行时所需的程序、库、资源、配置等文件外，还包含了一些为运行时准备的一些配置参数（如匿名卷、环境变量、用户等）。</p>
-<p><a href="https://imgchr.com/i/AVHtuq" target="_blank" rel="noopener"><img src="https://s2.ax1x.com/2019/03/16/AVHtuq.png" alt="AVHtuq.png"></a></p>
-<h6 id="定制Docker镜像"><a href="#定制Docker镜像" class="headerlink" title="定制Docker镜像"></a>定制Docker镜像</h6><p>镜像的定制实际上就是定制每一层所添加的配置、文件。如果我们可以把每一层修改、安装、构建、操作的命令都写入一个脚本，用这个脚本来构建、定制镜像，那么无法重复的问题、镜像构建透明性的问题、体积的问题就都会解决。这个脚本就是 Dockerfile。</p>
-<p><a href="https://imgchr.com/i/AVHdET" target="_blank" rel="noopener"><img src="https://s2.ax1x.com/2019/03/16/AVHdET.png" alt="AVHdET.png"></a></p>
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
   </section>
 
   
@@ -1973,7 +1938,7 @@
               
                 <a href="/archives/">
               
-                  <span class="site-state-item-count">68</span>
+                  <span class="site-state-item-count">69</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>

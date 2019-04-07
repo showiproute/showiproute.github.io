@@ -252,6 +252,170 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://blogoflyt.cn/2019/02/04/Hive学习笔记-函数使用/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Richard">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/gakki.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="积累技术之路">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2019/02/04/Hive学习笔记-函数使用/" itemprop="url">Hive学习笔记-----函数使用</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-02-04T14:00:00+08:00">
+                2019-02-04
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Hive/" itemprop="url" rel="index">
+                    <span itemprop="name">Hive</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h5 id="常用内置函数"><a href="#常用内置函数" class="headerlink" title="常用内置函数"></a>常用内置函数</h5><h6 id="类型转换函数"><a href="#类型转换函数" class="headerlink" title="类型转换函数"></a>类型转换函数</h6><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">select cast(&quot;5&quot; as int) from dual;</span><br><span class="line">select cast(&quot;2017-08-03&quot; as date) ;</span><br><span class="line">select cast(current_timestamp as date);</span><br><span class="line"></span><br><span class="line">示例：</span><br><span class="line">1	1995-05-05 13:30:59	1200.3</span><br><span class="line">2	1994-04-05 13:30:59	2200</span><br><span class="line">3	1996-06-01 12:20:30	80000.5</span><br><span class="line">create table t_fun(id string,birthday string,salary string)</span><br><span class="line">row format delimited fields terminated by &apos;,&apos;;</span><br><span class="line"></span><br><span class="line">select id,cast(birthday as date) as bir,cast(salary as float) from t_fun;</span><br></pre></td></tr></table></figure>
+<h6 id="数学运算函数"><a href="#数学运算函数" class="headerlink" title="数学运算函数"></a>数学运算函数</h6><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">select round(5.4) from dual;   ## 5</span><br><span class="line">select round(5.1345,3) from dual;  ##5.135</span><br><span class="line">select ceil(5.4) from dual; // select ceiling(5.4) from dual;   ## 6</span><br><span class="line">select floor(5.4) from dual;  ## 5</span><br><span class="line">select abs(-5.4) from dual;  ## 5.4</span><br><span class="line">select greatest(3,5,6) from dual;  ## 6 </span><br><span class="line">select least(3,5,6) from dual;</span><br><span class="line"></span><br><span class="line">示例：</span><br><span class="line">有表如下：</span><br></pre></td></tr></table></figure>
+<p><a href="https://imgchr.com/i/kxFKXV" target="_blank" rel="noopener"><img src="https://s2.ax1x.com/2019/03/07/kxFKXV.png" alt="kxFKXV.png"></a></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">select greatest(cast(s1 as double),cast(s2 as double),cast(s3 as double)) from t_fun2;</span><br><span class="line">结果：</span><br><span class="line">+---------+--+</span><br><span class="line">|   _c0   |</span><br><span class="line">+---------+--+</span><br><span class="line">| 2000.0  |</span><br><span class="line">| 9800.0  |</span><br><span class="line">+---------+--+</span><br><span class="line"></span><br><span class="line">select max(age) from t_person;    聚合函数</span><br><span class="line">select min(age) from t_person;    聚合函数</span><br></pre></td></tr></table></figure>
+<h6 id="字符串函数"><a href="#字符串函数" class="headerlink" title="字符串函数"></a>字符串函数</h6><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line">substr(string, int start)   ## 截取子串</span><br><span class="line">substring(string, int start)</span><br><span class="line">示例：select substr(&quot;abcdefg&quot;,2) from dual;</span><br><span class="line"></span><br><span class="line">substr(string, int start, int len) </span><br><span class="line">substring(string, int start, int len)</span><br><span class="line">示例：select substr(&quot;abcdefg&quot;,2,3) from dual;</span><br><span class="line"></span><br><span class="line">concat(string A, string B...)  ## 拼接字符串</span><br><span class="line">concat_ws(string SEP, string A, string B...)</span><br><span class="line">示例：select concat(&quot;ab&quot;,&quot;xy&quot;) from dual;</span><br><span class="line">select concat_ws(&quot;.&quot;,&quot;192&quot;,&quot;168&quot;,&quot;33&quot;,&quot;44&quot;) from dual;</span><br><span class="line"></span><br><span class="line">length(string A)</span><br><span class="line">示例：select length(&quot;192.168.33.44&quot;) from dual;</span><br><span class="line"></span><br><span class="line">split(string str, string pat)</span><br><span class="line">示例：select split(&quot;192.168.33.44&quot;,&quot;.&quot;) from dual; 错误的，因为.号是正则语法中的特定字符</span><br><span class="line">select split(&quot;192.168.33.44&quot;,&quot;\\.&quot;) from dual;</span><br><span class="line"></span><br><span class="line">upper(string str) ##转大写</span><br></pre></td></tr></table></figure>
+<h6 id="时间函数"><a href="#时间函数" class="headerlink" title="时间函数"></a>时间函数</h6><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">select current_timestamp; </span><br><span class="line">select current_date;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">## 取当前时间的毫秒数时间戳 </span><br><span class="line">select unix_timestamp();</span><br><span class="line"></span><br><span class="line">## unix时间戳转字符串</span><br><span class="line">from_unixtime(bigint unixtime[, string format])</span><br><span class="line">示例：select from_unixtime(unix_timestamp());</span><br><span class="line">select from_unixtime(unix_timestamp(),&quot;yyyy/MM/dd HH:mm:ss&quot;);</span><br><span class="line"></span><br><span class="line">## 字符串转unix时间戳</span><br><span class="line">unix_timestamp(string date, string pattern)</span><br><span class="line">示例： select unix_timestamp(&quot;2017-08-10 17:50:30&quot;);</span><br><span class="line">select unix_timestamp(&quot;2017/08/10 17:50:30&quot;,&quot;yyyy/MM/dd HH:mm:ss&quot;);</span><br><span class="line">## 将字符串转成日期date</span><br><span class="line">select to_date(&quot;2017-09-17 16:58:32&quot;);</span><br></pre></td></tr></table></figure>
+<h6 id="表生成函数"><a href="#表生成函数" class="headerlink" title="表生成函数"></a>表生成函数</h6><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">行转列函数：explode()</span><br><span class="line">假如有以下数据：</span><br><span class="line">1,zhangsan,化学:物理:数学:语文</span><br><span class="line">2,lisi,化学:数学:生物:生理:卫生</span><br><span class="line">3,wangwu,化学:语文:英语:体育:生物</span><br><span class="line">映射成一张表：</span><br><span class="line">create table t_stu_subject(id int,name string,subjects array&lt;string&gt;)</span><br><span class="line">row format delimited fields terminated by &apos;,&apos;</span><br><span class="line">collection items terminated by &apos;:&apos;;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">使用explode()对数组字段“炸裂”</span><br></pre></td></tr></table></figure>
+<p><a href="https://imgchr.com/i/kxFc9A" target="_blank" rel="noopener"><img src="https://s2.ax1x.com/2019/03/07/kxFc9A.png" alt="kxFc9A.png"></a><br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">然后，我们利用这个explode的结果，来求去重的课程：</span><br><span class="line">select distinct tmp.sub</span><br><span class="line">from </span><br><span class="line">(select explode(subjects) as sub from t_stu_subject) tmp;</span><br></pre></td></tr></table></figure></p>
+<h6 id="表生成函数lateral-view"><a href="#表生成函数lateral-view" class="headerlink" title="表生成函数lateral view"></a>表生成函数lateral view</h6><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">select id,name,tmp.sub </span><br><span class="line">from t_stu_subject lateral view explode(subjects) tmp as sub;</span><br></pre></td></tr></table></figure>
+<p><a href="https://imgchr.com/i/kxFRjP" target="_blank" rel="noopener"><img src="https://s2.ax1x.com/2019/03/07/kxFRjP.png" alt="kxFRjP.png"></a><br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">理解： lateral view 相当于两个表在join</span><br><span class="line">左表：是原表</span><br><span class="line">右表：是explode(某个集合字段)之后产生的表</span><br><span class="line">而且：这个join只在同一行的数据间进行</span><br><span class="line"></span><br><span class="line">那样，可以方便做更多的查询：</span><br><span class="line">比如，查询选修了生物课的同学</span><br><span class="line">select a.id,a.name,a.sub from </span><br><span class="line">(select id,name,tmp.sub as sub from t_stu_subject lateral view explode(subjects) tmp as sub) a</span><br><span class="line">where sub=&apos;生物&apos;;</span><br></pre></td></tr></table></figure></p>
+<h6 id="集合函数"><a href="#集合函数" class="headerlink" title="集合函数"></a>集合函数</h6><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line">array_contains(Array&lt;T&gt;, value)  返回boolean值</span><br><span class="line"></span><br><span class="line">示例：</span><br><span class="line">select moive_name,array_contains(actors,&apos;吴刚&apos;) from t_movie;</span><br><span class="line">select array_contains(array(&apos;a&apos;,&apos;b&apos;,&apos;c&apos;),&apos;c&apos;) from dual;</span><br><span class="line"></span><br><span class="line">sort_array(Array&lt;T&gt;) 返回排序后的数组</span><br><span class="line"></span><br><span class="line">示例：</span><br><span class="line">select sort_array(array(&apos;c&apos;,&apos;b&apos;,&apos;a&apos;)) from dual;</span><br><span class="line">select &apos;haha&apos;,sort_array(array(&apos;c&apos;,&apos;b&apos;,&apos;a&apos;)) as xx from (select 0) tmp;</span><br><span class="line"></span><br><span class="line">size(Array&lt;T&gt;)  返回一个int值</span><br><span class="line"></span><br><span class="line">示例：</span><br><span class="line">select moive_name,size(actors) as actor_number from t_movie;</span><br><span class="line"></span><br><span class="line">size(Map&lt;K.V&gt;)  返回一个int值</span><br><span class="line">map_keys(Map&lt;K.V&gt;)  返回一个数组</span><br><span class="line">map_values(Map&lt;K.V&gt;) 返回一个数组</span><br></pre></td></tr></table></figure>
+<h6 id="条件控制函数"><a href="#条件控制函数" class="headerlink" title="条件控制函数"></a>条件控制函数</h6><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line">case when </span><br><span class="line">语法：</span><br><span class="line">CASE   [ expression ]</span><br><span class="line">       WHEN condition1 THEN result1</span><br><span class="line">       WHEN condition2 THEN result2</span><br><span class="line">       ...</span><br><span class="line">       WHEN conditionn THEN resultn</span><br><span class="line">       ELSE result</span><br><span class="line">END</span><br><span class="line"></span><br><span class="line">示例：</span><br><span class="line">select id,name,</span><br><span class="line">case</span><br><span class="line">when age&lt;28 then &apos;youngth&apos;</span><br><span class="line">when age&gt;27 and age&lt;40 then &apos;zhongnian&apos;</span><br><span class="line">else &apos;old&apos;</span><br><span class="line">end</span><br><span class="line">from t_user;</span><br><span class="line"></span><br><span class="line">IF</span><br><span class="line">select id,if(age&gt;25,&apos;working&apos;,&apos;worked&apos;) from t_user;</span><br><span class="line"></span><br><span class="line"> select movie_name,if(array_contains(actors,&apos;wugang&apos;),&apos;goodmovie&apos;,&apos;badmovie&apos;) from t_movie;</span><br></pre></td></tr></table></figure>
+<h6 id="json解析函数：表生成函数"><a href="#json解析函数：表生成函数" class="headerlink" title="json解析函数：表生成函数"></a>json解析函数：表生成函数</h6><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">json_tuple函数</span><br><span class="line">示例：</span><br><span class="line">select json_tuple(json,&apos;movie&apos;,&apos;rate&apos;,&apos;timeStamp&apos;,&apos;uid&apos;) as(movie,rate,ts,uid) from t_rating_json;</span><br><span class="line">产生结果：</span><br></pre></td></tr></table></figure>
+<p><a href="https://imgchr.com/i/kxFb3n" target="_blank" rel="noopener"><img src="https://s2.ax1x.com/2019/03/07/kxFb3n.png" alt="kxFb3n.png"></a><br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">利用json_tuple从原始json数据表中，etl出一个详细信息表：</span><br><span class="line">create table t_rate </span><br><span class="line">as </span><br><span class="line">select </span><br><span class="line">uid,</span><br><span class="line">movie,</span><br><span class="line">rate,</span><br><span class="line">year(from_unixtime(cast(ts as bigint))) as year,</span><br><span class="line">month(from_unixtime(cast(ts as bigint))) as month,</span><br><span class="line">day(from_unixtime(cast(ts as bigint))) as day,</span><br><span class="line">hour(from_unixtime(cast(ts as bigint))) as hour,</span><br><span class="line">minute(from_unixtime(cast(ts as bigint))) as minute,</span><br><span class="line">from_unixtime(cast(ts as bigint)) as ts</span><br><span class="line">from </span><br><span class="line">(select </span><br><span class="line">json_tuple(rateinfo,&apos;movie&apos;,&apos;rate&apos;,&apos;timeStamp&apos;,&apos;uid&apos;) as(movie,rate,ts,uid)</span><br><span class="line">from t_json) tmp</span><br><span class="line">;</span><br></pre></td></tr></table></figure></p>
+<h6 id="分析函数：row-number-over-——分组TOPN"><a href="#分析函数：row-number-over-——分组TOPN" class="headerlink" title="分析函数：row_number() over()——分组TOPN"></a>分析函数：row_number() over()——分组TOPN</h6><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line">需求</span><br><span class="line">有如下数据：</span><br><span class="line">1,18,a,male</span><br><span class="line">2,19,b,male</span><br><span class="line">3,22,c,female</span><br><span class="line">4,16,d,female</span><br><span class="line">5,30,e,male</span><br><span class="line">6,26,f,female</span><br><span class="line"></span><br><span class="line">需要查询出每种性别中年龄最大的2条数据</span><br><span class="line"></span><br><span class="line">实现：</span><br><span class="line">使用row_number函数，对表中的数据按照性别分组，按照年龄倒序排序并进行标记</span><br><span class="line"></span><br><span class="line">hql代码：</span><br><span class="line">select id,age,name,sex,</span><br><span class="line">row_number() over(partition by sex order by age desc) as rank</span><br><span class="line">from t_rownumber</span><br><span class="line"></span><br><span class="line">产生结果：</span><br></pre></td></tr></table></figure>
+<p><a href="https://imgchr.com/i/kxFqcq" target="_blank" rel="noopener"><img src="https://s2.ax1x.com/2019/03/07/kxFqcq.png" alt="kxFqcq.png"></a><br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">然后，利用上面的结果，查询出rank&lt;=2的即为最终需求</span><br><span class="line">select id,age,name,sex</span><br><span class="line">from </span><br><span class="line">(select id,age,name,sex,</span><br><span class="line">row_number() over(partition by sex order by age desc) as rank</span><br><span class="line">from t_rownumber) tmp</span><br><span class="line">where rank&lt;=2;</span><br></pre></td></tr></table></figure></p>
+<h6 id="自定义函数"><a href="#自定义函数" class="headerlink" title="自定义函数"></a>自定义函数</h6><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">需求：</span><br><span class="line">需要对json数据表中的json数据写一个自定义函数，用于传入一个json，返回一个数据值的数组</span><br><span class="line"></span><br><span class="line">json原始数据表：</span><br></pre></td></tr></table></figure>
+<p><a href="https://imgchr.com/i/kxFjBT" target="_blank" rel="noopener"><img src="https://s2.ax1x.com/2019/03/07/kxFjBT.png" alt="kxFjBT.png"></a></p>
+<blockquote>
+<p>需要做ETL操作，将json数据变成普通表数据，插入另一个表中：<br><a href="https://imgchr.com/i/kxFzEF" target="_blank" rel="noopener"><img src="https://s2.ax1x.com/2019/03/07/kxFzEF.png" alt="kxFzEF.png"></a></p>
+</blockquote>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">实现步骤：</span><br><span class="line">1、开发JAVA的UDF类</span><br><span class="line">public class ParseJson extends UDF&#123;</span><br><span class="line">	</span><br><span class="line">	// 重载 ：返回值类型 和参数类型及个数，完全由用户自己决定</span><br><span class="line">	// 本处需求是：给一个字符串，返回一个数组</span><br><span class="line">	public String[] evaluate(String json) &#123;</span><br><span class="line">		</span><br><span class="line">		String[] split = json.split(&quot;\&quot;&quot;);</span><br><span class="line">		String[] res = new String[]&#123;split[3],split[7],split[11],split[15]&#125;;</span><br><span class="line">		return res;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br></pre></td><td class="code"><pre><span class="line">2、打jar包</span><br><span class="line"></span><br><span class="line">在eclipse中使用export即可</span><br><span class="line"></span><br><span class="line">3、上传jar包到运行hive所在的linux机器</span><br><span class="line"></span><br><span class="line">4、在hive中创建临时函数：</span><br><span class="line">在hive的提示符中：</span><br><span class="line">hive&gt; add jar /root/jsonparse.jar;</span><br><span class="line">然后，在hive的提示符中，创建一个临时函数：</span><br><span class="line">hive&gt;CREATE  TEMPORARY  FUNCTION  jsonp  AS  &apos;cn.edu360.hdp.hive.ParseJson&apos;;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">5、开发hql语句，利用自定义函数，从原始表中抽取数据插入新表</span><br><span class="line">insert into table t_rate</span><br><span class="line">select </span><br><span class="line">split(jsonp(json),&apos;,&apos;)[0],</span><br><span class="line">cast(split(jsonp(json),&apos;,&apos;)[1] as int),</span><br><span class="line">cast(split(jsonp(json),&apos;,&apos;)[2] as bigint),</span><br><span class="line">cast(split(jsonp(json),&apos;,&apos;)[3] as int)</span><br><span class="line">from </span><br><span class="line">t_rating_json;</span><br><span class="line"></span><br><span class="line">注：临时函数只在一次hive会话中有效，重启会话后就无效</span><br><span class="line"></span><br><span class="line">如果需要经常使用该自定义函数，可以考虑创建永久函数：</span><br><span class="line">拷贝jar包到hive的类路径中：</span><br><span class="line">cp wc.jar apps/hive-1.2.1/lib/</span><br><span class="line">创建了：</span><br><span class="line">create function pfuncx as &apos;com.doit.hive.udf.UserInfoParser&apos;;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">删除函数：</span><br><span class="line">DROP  TEMPORARY  FUNCTION  [IF  EXISTS] function_name  </span><br><span class="line">DROP FUNCTION[IF EXISTS] function_name</span><br></pre></td></tr></table></figure>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="http://blogoflyt.cn/2019/02/03/Hive学习笔记-DQL/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -1647,189 +1811,6 @@
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://blogoflyt.cn/2018/05/25/多线程复习-控制线程通信/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Richard">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/gakki.jpg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="积累技术之路">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2018/05/25/多线程复习-控制线程通信/" itemprop="url">多线程复习-----控制线程通信</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-05-25T00:24:00+08:00">
-                2018-05-25
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Java/" itemprop="url" rel="index">
-                    <span itemprop="name">Java</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h5 id="控制线程通信"><a href="#控制线程通信" class="headerlink" title="控制线程通信"></a>控制线程通信</h5><h6 id="控制线程通信——wait-、notify-和notifyAll"><a href="#控制线程通信——wait-、notify-和notifyAll" class="headerlink" title="控制线程通信——wait() 、notify() 和notifyAll()"></a>控制线程通信——wait() 、notify() 和notifyAll()</h6><p>wait()</p>
-<p>Object类中的final方法。它的作用是导致当前的线程等待，直到其它线程调用此对象的notify方法或者notifyAll方法，wait还有一些重用方法，传参数，比如说时间长度。<br>当前的线程必须拥有此对象监视器，然后该线程发布对此监视器的所有权并且开始等待，直到其它线程通过调用notify方法或者notifyAll方法，通知在此对象的监视器上等待的线程醒来，然后该线程将等到重新获得对监视器的所有权后才能开始执行。<br>调用wait() 方法的当前线程会释放对该同步监视器的锁定。</p>
-<p>notify()</p>
-<p>是Object类中的方法，用于唤醒在此对象上等待着的某一个线程，如果有很多线程挂起的话，就随机地决定哪一个。<br>只有当前线程放弃对该监视器锁定后（使用wait() 方法），才可以执行被唤醒的线程。</p>
-<p>notifyAll()</p>
-<p>是Object类中的方法，用于唤醒在此对象上等待着的所有线程。<br>只有当前线程放弃对该监视器锁定后（使用wait() 方法），才可以执行被唤醒的线程。</p>
-<h6 id="这三个方法必须由同步监视器对象来调用，分为以下两种情况："><a href="#这三个方法必须由同步监视器对象来调用，分为以下两种情况：" class="headerlink" title="这三个方法必须由同步监视器对象来调用，分为以下两种情况："></a>这三个方法必须由同步监视器对象来调用，分为以下两种情况：</h6><p>对于使用synchronized 修饰的同步方法，因为该类的默认实例是同步监视器，所以可以在类的同步方法中直接调用这三个方法。</p>
-<p>对于使用 synchronized 修饰的同步代码块，同步监视器是 synchronized 后括号里的对象，所以必须使用该对象调用这三个方法。</p>
-<h6 id="代码示例："><a href="#代码示例：" class="headerlink" title="代码示例："></a>代码示例：</h6><p>启动两个waiter对象，并对两个都调用wait() 方法，如果只调用一个notify()方法，线程则不会结束。只有调用notifyAll() 方法线程才结束。</p>
-<p>创建Message 类，类里有同步方法doWait() 和 doNotify()</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br></pre></td><td class="code"><pre><span class="line">package multithreading;</span><br><span class="line"></span><br><span class="line">/*</span><br><span class="line"> * 类里有同步方法doWait()和doNotify()</span><br><span class="line"> */</span><br><span class="line">public class Message &#123;</span><br><span class="line"></span><br><span class="line">	public synchronized void doWait(String threadName) &#123;</span><br><span class="line">		System.out.println(threadName+&quot;wait开始&quot;);</span><br><span class="line">		//调用wait方法后，使得等待调用notify或notifyAll方法取消等待，并且释放同步锁</span><br><span class="line">		try &#123;</span><br><span class="line">			this.wait();</span><br><span class="line">		&#125;catch (Exception e) &#123;</span><br><span class="line">			// TODO: handle exception</span><br><span class="line">			e.printStackTrace();</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">	</span><br><span class="line">	public synchronized void doNotify(String threadName) &#123;</span><br><span class="line">		System.out.println(threadName+&quot;notify开始&quot;);</span><br><span class="line">		try &#123;</span><br><span class="line">			//随机唤醒一个被wait的线程</span><br><span class="line">			this.notify();</span><br><span class="line">			//唤醒所有被wait的线程</span><br><span class="line">//			this.notifyAll();</span><br><span class="line">		&#125;catch (Exception e) &#123;</span><br><span class="line">			// TODO: handle exception</span><br><span class="line">			e.printStackTrace();</span><br><span class="line">		&#125;</span><br><span class="line">		System.out.println(threadName+&quot;notify结束&quot;);</span><br><span class="line">	&#125;</span><br><span class="line">	</span><br><span class="line">	</span><br><span class="line">	</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>创建Waiter 线程，调用Message对象的doWait() 同步方法<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">package multithreading;</span><br><span class="line"></span><br><span class="line">public class Waiter implements Runnable&#123;</span><br><span class="line"></span><br><span class="line">	private Message message;</span><br><span class="line">	public Waiter(Message message) &#123;</span><br><span class="line">		this.message=message;</span><br><span class="line">	&#125;</span><br><span class="line">	</span><br><span class="line">	@Override</span><br><span class="line">	public void run() &#123;</span><br><span class="line">		// TODO Auto-generated method stub</span><br><span class="line">	//调用message对象的同步方法</span><br><span class="line">		message.doWait(Thread.currentThread().getName());</span><br><span class="line">	&#125;</span><br><span class="line">	</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
-<p>创建Notify 线程，调用Message 对象的doNotify() 同步方法</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line">package multithreading;</span><br><span class="line"></span><br><span class="line">public class Notify implements Runnable&#123;</span><br><span class="line">	private Message message;</span><br><span class="line">	</span><br><span class="line">	public Notify(Message message) &#123;</span><br><span class="line">		this.message=message;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	@Override</span><br><span class="line">	public void run() &#123;</span><br><span class="line">		// TODO Auto-generated method stub</span><br><span class="line">	//先睡眠3000ms</span><br><span class="line">		try &#123;</span><br><span class="line">			Thread.sleep(3000);</span><br><span class="line">		&#125;catch (Exception e) &#123;</span><br><span class="line">			// TODO: handle exception</span><br><span class="line">			e.printStackTrace();</span><br><span class="line">		&#125;</span><br><span class="line">		System.out.println(&quot;3000ms 后&quot;);</span><br><span class="line">		//调用message对象的同步方法</span><br><span class="line">		message.doNotify(Thread.currentThread().getName());</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>测试类</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">package multithreading;</span><br><span class="line"></span><br><span class="line">public class WaitAndNotifyTest &#123;</span><br><span class="line"></span><br><span class="line">	public static void main(String[] args) &#123;</span><br><span class="line">		//创建Message对象</span><br><span class="line">		Message message=new Message();</span><br><span class="line">		//创建两个Waiter线程</span><br><span class="line">		new Thread(new Waiter(message),&quot;wait线程1&quot;).start();</span><br><span class="line">		new Thread(new Waiter(message),&quot;wait线程2&quot;).start();</span><br><span class="line"></span><br><span class="line">		//创建一个notify线程</span><br><span class="line">		new Thread(new Notify(message),&quot;Notify线程1&quot;).start();</span><br><span class="line">	</span><br><span class="line">	&#125;</span><br><span class="line">	</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<h6 id="控制线程——Condition"><a href="#控制线程——Condition" class="headerlink" title="控制线程——Condition"></a>控制线程——Condition</h6><p>当使用Lock 对象来保证同步时，Java 提供了一个 Condition 类来保持协调，使用 Condition 可以让那些已经得到Lock 对象却无法继续执行的线程释放Lock对象，</p>
-<p>Condition 对象也可以唤醒其他处于等待的线程。</p>
-<p>Condition 实例实质上被绑定到一个锁上。要为特定 Lock 实例获得 Condition 实例，请使用其 newCondition() 方法。</p>
-<p>void await()<br>造成当前线程在接到信号或被中断之前一直处于等待状态。 直到线程调用此 Condition 的 signal() 方法或 signalAll() 方法来唤醒该线程。</p>
-<p>void signal()<br>唤醒在此Lock 对象上等待的单个线程。</p>
-<p>void signalAll()<br>唤醒在此Lock 对象上等待的所有线程。</p>
-<p>代码示例：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br></pre></td><td class="code"><pre><span class="line">package multithreading;</span><br><span class="line"></span><br><span class="line">import java.util.concurrent.locks.Condition;</span><br><span class="line">import java.util.concurrent.locks.ReentrantLock;</span><br><span class="line"></span><br><span class="line">public class ConditionTest &#123;</span><br><span class="line"></span><br><span class="line">	public static class Message&#123;</span><br><span class="line">		private ReentrantLock lock=new ReentrantLock();</span><br><span class="line">		</span><br><span class="line">		private Condition cond=lock.newCondition();</span><br><span class="line">		</span><br><span class="line">		public void doWaitttt(String threadName) &#123;</span><br><span class="line">			lock.lock();</span><br><span class="line">			try &#123;</span><br><span class="line">				System.out.println(threadName+&quot;wait开始&quot;);</span><br><span class="line">				//调用await方法后，使其等待，并且释放锁</span><br><span class="line">				try &#123;</span><br><span class="line">					cond.await();</span><br><span class="line">				&#125;catch (Exception e) &#123;</span><br><span class="line">					// TODO: handle exception</span><br><span class="line">					e.printStackTrace();</span><br><span class="line">				&#125;</span><br><span class="line">				System.out.println(threadName+&quot;wait结束&quot;);</span><br><span class="line">			&#125;finally &#123;</span><br><span class="line">				lock.unlock();</span><br><span class="line">			&#125;</span><br><span class="line">			</span><br><span class="line">		&#125;</span><br><span class="line">		</span><br><span class="line">		public void doNotifyyyy(String threadName) &#123;</span><br><span class="line">			lock.lock();</span><br><span class="line">			try &#123;</span><br><span class="line">				System.out.println(threadName+&quot;notify开始&quot;);</span><br><span class="line">				try &#123;</span><br><span class="line">					//随机唤醒一个被await的线程</span><br><span class="line">					//cond.singal()</span><br><span class="line">					//唤醒所有被await的线程</span><br><span class="line">					cond.signalAll();</span><br><span class="line">				&#125;catch (Exception e) &#123;</span><br><span class="line">					// TODO: handle exception</span><br><span class="line">					e.printStackTrace();</span><br><span class="line">				&#125;</span><br><span class="line">				System.out.println(threadName+&quot;notify结束&quot;);</span><br><span class="line">			&#125;finally &#123;</span><br><span class="line">				lock.unlock();</span><br><span class="line">			&#125;</span><br><span class="line">		&#125;	</span><br><span class="line">	&#125;</span><br><span class="line">	</span><br><span class="line">	public static class Waiter implements Runnable&#123;</span><br><span class="line">		private Message mss;</span><br><span class="line">		</span><br><span class="line">		public Waiter(Message mss) &#123;</span><br><span class="line">			// TODO Auto-generated constructor stub</span><br><span class="line">			this.mss=mss;</span><br><span class="line">		&#125;</span><br><span class="line">		</span><br><span class="line">		@Override</span><br><span class="line">		public void run() &#123;</span><br><span class="line">			// TODO Auto-generated method stub</span><br><span class="line">			mss.doWaitttt(Thread.currentThread().getName());</span><br><span class="line">			</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">	</span><br><span class="line">	public static class Notify implements Runnable&#123;</span><br><span class="line">		private Message mss;</span><br><span class="line">		</span><br><span class="line">		public Notify(Message mss) &#123;</span><br><span class="line">			this.mss=mss;</span><br><span class="line">		&#125;</span><br><span class="line">		</span><br><span class="line">		@Override</span><br><span class="line">		public void run() &#123;</span><br><span class="line">			// TODO Auto-generated method stub</span><br><span class="line">			mss.doNotifyyyy(Thread.currentThread().getName());</span><br><span class="line">		&#125;</span><br><span class="line">		</span><br><span class="line">		</span><br><span class="line">	&#125;</span><br><span class="line">	</span><br><span class="line">	public static void main(String[] args) &#123;</span><br><span class="line">		</span><br><span class="line">		Message message = new Message();</span><br><span class="line">		Waiter waiter = new Waiter(message);</span><br><span class="line">		Waiter waiter2 = new Waiter(message);</span><br><span class="line">		</span><br><span class="line">		Thread thread = new Thread(waiter,&quot;thread1&quot;);</span><br><span class="line">		Thread thread2 = new Thread(waiter2,&quot;thread2&quot;);</span><br><span class="line">		</span><br><span class="line">		thread.start();</span><br><span class="line">		thread2.start();</span><br><span class="line">		</span><br><span class="line">		Notify notify = new Notify(message);</span><br><span class="line">		Thread thread3 = new Thread(notify,&quot;notify&quot;);</span><br><span class="line">		thread3.start();</span><br><span class="line">		</span><br><span class="line">	&#125;</span><br><span class="line">	</span><br><span class="line">	</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
-<h6 id="控制线程——阻塞队列（BlockingQueue）"><a href="#控制线程——阻塞队列（BlockingQueue）" class="headerlink" title="控制线程——阻塞队列（BlockingQueue）"></a>控制线程——阻塞队列（BlockingQueue）</h6><p>队列：<br><a href="https://imgchr.com/i/AEPsjU" target="_blank" rel="noopener"><img src="https://s2.ax1x.com/2019/03/15/AEPsjU.png" alt="AEPsjU.png"></a></p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">Java5提供了阻塞队列的接口BlockingQueue，阻塞队列的概念是，一个指定长度的队列，如果队列满了，添加新元素的操作会被阻塞等待，直到有空位为止。同样，当队列为空时候，请求队列元素的操作同样会阻塞等待，直到有可用元素为止。</span><br><span class="line"></span><br><span class="line">Java阻塞队列应用于生产者消费者模式、消息传递、并行任务执行和相关并发设计的大多数常见使用上下文。</span><br><span class="line"></span><br><span class="line">程序的两个线程通过交替向BlockingQueue 中放入元素、取出元素，即可很好地控制线程的通信。</span><br></pre></td></tr></table></figure>
-<h6 id="BlockingQueue-提供了两个支持阻塞的方法："><a href="#BlockingQueue-提供了两个支持阻塞的方法：" class="headerlink" title="BlockingQueue 提供了两个支持阻塞的方法："></a>BlockingQueue 提供了两个支持阻塞的方法：</h6><p>1）put(E e)</p>
-<p>尝试把E元素放入BlockingQueue 中，如果该队列的元素已满，则阻塞该线程。</p>
-<p>2）take()</p>
-<p>尝试从BlockingQueue 的头部取出元素，如果该队列的元素已空，则阻塞该线程。</p>
-<h6 id="BlockingQueue定义的常用方法如下"><a href="#BlockingQueue定义的常用方法如下" class="headerlink" title="BlockingQueue定义的常用方法如下:"></a>BlockingQueue定义的常用方法如下:</h6><p>1）add(anObject)：把anObject加到BlockingQueue里，即如果BlockingQueue可以容纳，则返回true，否则招聘异常</p>
-<p>2）offer(anObject)：表示如果可能的话，将anObject加到BlockingQueue里，即如果BlockingQueue可以容纳，则返回true，否则返回false。</p>
-<p>3）put(anObject)：把anObject加到BlockingQueue里，如果BlockQueue没有空间，则调用此方法的线程被阻断直到BlockingQueue里面有空间再继续.</p>
-<p>4）poll(time)：取走BlockingQueue里排在首位的对象，若不能立即取出，则可以等time参数规定的时间,取不到时返回null</p>
-<p>5）take()：取走BlockingQueue里排在首位的对象，若BlockingQueue为空，阻断进入等待状态直到Blocking有新的对象被加入为止</p>
-<h6 id="BlockingQueue-包含的方法之间的对应关系"><a href="#BlockingQueue-包含的方法之间的对应关系" class="headerlink" title="BlockingQueue 包含的方法之间的对应关系"></a>BlockingQueue 包含的方法之间的对应关系</h6><p><a href="https://imgchr.com/i/AEPcB4" target="_blank" rel="noopener"><img src="https://s2.ax1x.com/2019/03/15/AEPcB4.png" alt="AEPcB4.png"></a></p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br></pre></td><td class="code"><pre><span class="line">package multithreading;</span><br><span class="line"></span><br><span class="line">import java.util.concurrent.ArrayBlockingQueue;</span><br><span class="line"></span><br><span class="line">public class QueneTest &#123;</span><br><span class="line"></span><br><span class="line">	public static void main(String[] args) &#123;</span><br><span class="line">		</span><br><span class="line">		ArrayBlockingQueue&lt;String&gt; q = new ArrayBlockingQueue&lt;&gt;(2);</span><br><span class="line">		//-------从队列里出-------</span><br><span class="line">		//System.out.println(q.add(&quot;111&quot;));</span><br><span class="line">		//remove方法，如果队列为空，抛出异常</span><br><span class="line">//		System.out.println(q.remove());</span><br><span class="line">		//poll方法，如果队列为空，取不到，返回null</span><br><span class="line">//		System.out.println(q.poll());</span><br><span class="line">		</span><br><span class="line">		//take方法，如果队列为空，则阻塞该线程</span><br><span class="line">		try &#123;</span><br><span class="line">			q.take();</span><br><span class="line">		&#125;catch (Exception e) &#123;</span><br><span class="line">			// TODO: handle exception</span><br><span class="line">			e.printStackTrace();</span><br><span class="line">		&#125;</span><br><span class="line">		</span><br><span class="line">		//-----往队列里放-------</span><br><span class="line">		System.out.println(q.add(&quot;111&quot;));</span><br><span class="line">		System.out.println(q.offer(&quot;222&quot;));</span><br><span class="line">		//add方法如果队列满了，抛出异常</span><br><span class="line">//		System.out.println(q.add(&quot;333&quot;));</span><br><span class="line">		</span><br><span class="line">		//put方法，方法如果队列满了，就阻塞</span><br><span class="line">		try &#123;</span><br><span class="line">			q.put(&quot;333&quot;);</span><br><span class="line">		&#125;catch (Exception e) &#123;</span><br><span class="line">			// TODO: handle exception</span><br><span class="line">			e.printStackTrace();</span><br><span class="line">		&#125;</span><br><span class="line">		</span><br><span class="line">		//offer方法，如果队列满了，返回false，否则返回true</span><br><span class="line">		System.out.println(q.offer(&quot;333&quot;));</span><br><span class="line">	&#125;</span><br><span class="line">	</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<h6 id="BlockingQueue有四个具体的实现类，根据不同需求，选择不同的实现类"><a href="#BlockingQueue有四个具体的实现类，根据不同需求，选择不同的实现类" class="headerlink" title="BlockingQueue有四个具体的实现类，根据不同需求，选择不同的实现类"></a>BlockingQueue有四个具体的实现类，根据不同需求，选择不同的实现类</h6><p>1）ArrayBlockingQueue：规定大小的BlockingQueue，其构造函数必须带一个int参数来指明其大小.其所含的对象是以FIFO(先入先出）顺序排序的.</p>
-<p>2）LinkedBlockingQueue：大小不定的BlockingQueue，若其构造函数带一个规定大小的参数，生成的BlockingQueue有大小限制，若不带大小参数，所生成的BlockingQueue的大小由Integer.MAX_VALUE来决定.其所含的对象是以FIFO(先入先出）顺序排序的</p>
-<p>3）PriorityBlockingQueue：类似于LinkedBlockQueue，但其所含对象的排序不是FIFO，而是依据对象的自然排序顺序或者是构造函数的Comparator决定的顺序.</p>
-<p>4）SynchronousQueue：特殊的BlockingQueue，对其的操作必须是放和取交替完成的。</p>
-<h6 id="代码示例：-1"><a href="#代码示例：-1" class="headerlink" title="代码示例："></a>代码示例：</h6><p>生产者线程每300ms 生产一个苹果（往队列里放）， 消费者线程每 1000ms 消费一个苹果（从队列里取出），设定生产消费10个后，自动停止生产、消费线程。</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br></pre></td><td class="code"><pre><span class="line">package multithreading;</span><br><span class="line"></span><br><span class="line">import java.util.concurrent.ArrayBlockingQueue;</span><br><span class="line"></span><br><span class="line">public class TheModeOfProduceAndCustomer &#123;</span><br><span class="line"></span><br><span class="line">	</span><br><span class="line">	public static class Producer implements Runnable&#123;</span><br><span class="line">		</span><br><span class="line">		private String threadName;</span><br><span class="line">		private ArrayBlockingQueue&lt;String&gt; queue;</span><br><span class="line">		int i=1;</span><br><span class="line">		</span><br><span class="line">		public Producer(ArrayBlockingQueue&lt;String&gt; queue) &#123;</span><br><span class="line">			// TODO Auto-generated constructor stub</span><br><span class="line">			this.queue=queue;</span><br><span class="line">		&#125;</span><br><span class="line">		</span><br><span class="line">		</span><br><span class="line">		@Override</span><br><span class="line">		public void run() &#123;</span><br><span class="line">			// TODO Auto-generated method stub</span><br><span class="line">			this.threadName=Thread.currentThread().getName();</span><br><span class="line">			for(;i&lt;=10;i++) &#123;</span><br><span class="line">				try &#123;</span><br><span class="line">					Thread.sleep(300);</span><br><span class="line">					System.out.println(threadName+&quot;开始生产第&quot;+i+&quot;个苹果&quot;);</span><br><span class="line">					queue.put(&quot;apple&quot;);</span><br><span class="line">				&#125; catch (InterruptedException e) &#123;</span><br><span class="line">					// TODO Auto-generated catch block</span><br><span class="line">					e.printStackTrace();</span><br><span class="line">				&#125;</span><br><span class="line">			&#125;</span><br><span class="line">			System.out.println(&quot;生产者生产完了10个苹果&quot;);</span><br><span class="line">			</span><br><span class="line">		&#125;	</span><br><span class="line">	&#125;</span><br><span class="line">	</span><br><span class="line">	public static class Consumer implements Runnable&#123;</span><br><span class="line">		</span><br><span class="line">		private String threadName;</span><br><span class="line">		private ArrayBlockingQueue&lt;String&gt; queue;</span><br><span class="line">		int i=1;</span><br><span class="line">		</span><br><span class="line">		public Consumer(ArrayBlockingQueue&lt;String&gt; queue) &#123;</span><br><span class="line">			// TODO Auto-generated constructor stub</span><br><span class="line">			this.queue=queue;</span><br><span class="line">		&#125;</span><br><span class="line">		</span><br><span class="line">		@Override</span><br><span class="line">		public void run() &#123;</span><br><span class="line">			// TODO Auto-generated method stub</span><br><span class="line">			this.threadName=Thread.currentThread().getName();</span><br><span class="line">			for(;i&lt;=10;i++) &#123;</span><br><span class="line">				try &#123;</span><br><span class="line">					Thread.sleep(1000);</span><br><span class="line">					System.out.println(threadName+&quot;开始消费第&quot;+i+&quot;个苹果&quot;);</span><br><span class="line">					queue.take();</span><br><span class="line">				&#125; catch (InterruptedException e) &#123;</span><br><span class="line">					// TODO Auto-generated catch block</span><br><span class="line">					e.printStackTrace();</span><br><span class="line">				&#125;</span><br><span class="line">			&#125;</span><br><span class="line">			System.out.println(&quot;消费者线程执行完毕&quot;);</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">	</span><br><span class="line">	public static void main(String[] args) &#123;</span><br><span class="line">		</span><br><span class="line">		ArrayBlockingQueue&lt;String&gt; arrayBlockingQueue = new ArrayBlockingQueue&lt;&gt;(5);</span><br><span class="line">		Producer producer = new Producer(arrayBlockingQueue);</span><br><span class="line">		Consumer consumer = new Consumer(arrayBlockingQueue);</span><br><span class="line">		</span><br><span class="line">		Thread thread = new Thread(producer,&quot;producer&quot;);</span><br><span class="line">		Thread thread2 = new Thread(consumer,&quot;consumer&quot;);</span><br><span class="line">		thread.start();</span><br><span class="line">		thread2.start();</span><br><span class="line">		</span><br><span class="line">		</span><br><span class="line">		</span><br><span class="line">	&#125;</span><br><span class="line">	</span><br><span class="line">	</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
   </section>
 
   
@@ -1884,7 +1865,7 @@
               
                 <a href="/archives/">
               
-                  <span class="site-state-item-count">68</span>
+                  <span class="site-state-item-count">69</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
