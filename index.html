@@ -252,6 +252,149 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://blogoflyt.cn/2019/04/14/算法设计与分析作业-求二叉树最小深度/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Richard">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/gakki.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="积累技术之路">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2019/04/14/算法设计与分析作业-求二叉树最小深度/" itemprop="url">算法设计与分析作业-----求二叉树最小深度</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-04-14T19:29:00+08:00">
+                2019-04-14
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/算法/" itemprop="url" rel="index">
+                    <span itemprop="name">算法</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p><a href="https://imgchr.com/i/AXp99H" target="_blank" rel="noopener"><img src="https://s2.ax1x.com/2019/04/14/AXp99H.png" alt="AXp99H.png"></a></p>
+<h6 id="BFS"><a href="#BFS" class="headerlink" title="BFS"></a>BFS</h6><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br></pre></td><td class="code"><pre><span class="line">package AlogrithmCourse;</span><br><span class="line"></span><br><span class="line">import java.util.LinkedList;</span><br><span class="line">import java.util.Queue;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">public class MinDepth_BFS &#123;</span><br><span class="line">	public  static class TreeNode &#123;</span><br><span class="line">	    int val = 0;</span><br><span class="line">	    TreeNode left = null;</span><br><span class="line">	    TreeNode right = null;</span><br><span class="line"></span><br><span class="line">	    public TreeNode(int val) &#123;</span><br><span class="line">	        this.val = val;</span><br><span class="line">	    &#125;</span><br><span class="line">	&#125;</span><br><span class="line">	</span><br><span class="line">	public static int getMinDepth(TreeNode root) &#123;</span><br><span class="line">		if(root==null) return 0;</span><br><span class="line">		int res=0;</span><br><span class="line">		Queue&lt;TreeNode&gt; queue = new LinkedList&lt;&gt;();</span><br><span class="line">		queue.offer(root);</span><br><span class="line">		</span><br><span class="line">		while(!queue.isEmpty()) &#123;</span><br><span class="line">			res+=1;</span><br><span class="line">			int counts=queue.size();</span><br><span class="line">			for(int i=0;i&lt;counts;i++) &#123;</span><br><span class="line">				TreeNode node = queue.poll();</span><br><span class="line">				if(node.left==null &amp;&amp; node.right==null) return res;</span><br><span class="line">				if(node.left!=null) queue.offer(node.left);</span><br><span class="line">				if(node.right!=null) queue.offer(node.right);</span><br><span class="line">			&#125;</span><br><span class="line">		&#125;</span><br><span class="line">		</span><br><span class="line">		return -1;</span><br><span class="line">	&#125;</span><br><span class="line">	</span><br><span class="line">	public static void main(String[] args) &#123;</span><br><span class="line">		TreeNode root=new TreeNode(3);</span><br><span class="line">		TreeNode node=new TreeNode(9);</span><br><span class="line">		TreeNode node2=new TreeNode(20);</span><br><span class="line">		TreeNode node3=new TreeNode(15);</span><br><span class="line">		TreeNode node4=new TreeNode(7);</span><br><span class="line">		root.left=node;</span><br><span class="line">		root.right=node2;</span><br><span class="line">		node2.left=node3;</span><br><span class="line">		node2.right=node4;</span><br><span class="line">		</span><br><span class="line">		System.out.println(getMinDepth(root));</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h6 id="DFS"><a href="#DFS" class="headerlink" title="DFS"></a>DFS</h6><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br></pre></td><td class="code"><pre><span class="line">package AlogrithmCourse;</span><br><span class="line"></span><br><span class="line">public class MinDepth_DFS &#123;</span><br><span class="line">	public  static class TreeNode &#123;</span><br><span class="line">	    int val = 0;</span><br><span class="line">	    TreeNode left = null;</span><br><span class="line">	    TreeNode right = null;</span><br><span class="line"></span><br><span class="line">	    public TreeNode(int val) &#123;</span><br><span class="line">	        this.val = val;</span><br><span class="line">	    &#125;</span><br><span class="line">	&#125;</span><br><span class="line">	</span><br><span class="line">	public static int getMinDepth(TreeNode root) &#123;</span><br><span class="line">		if(root==null) return 0;</span><br><span class="line">		if(root.left==null) return 1+getMinDepth(root.right);</span><br><span class="line">		if(root.right==null) return 1+getMinDepth(root.left);</span><br><span class="line">		return 1+Math.min(getMinDepth(root.left), getMinDepth(root.right));</span><br><span class="line">	&#125;</span><br><span class="line">	</span><br><span class="line">	public static void main(String[] args) &#123;</span><br><span class="line">		</span><br><span class="line">		TreeNode root=new TreeNode(3);</span><br><span class="line">		TreeNode node=new TreeNode(9);</span><br><span class="line">		TreeNode node2=new TreeNode(20);</span><br><span class="line">		TreeNode node3=new TreeNode(15);</span><br><span class="line">		TreeNode node4=new TreeNode(7);</span><br><span class="line">		root.left=node;</span><br><span class="line">		root.right=node2;</span><br><span class="line">		node2.left=node3;</span><br><span class="line">		node2.right=node4;</span><br><span class="line">		</span><br><span class="line">		System.out.println(getMinDepth(root));</span><br><span class="line">		</span><br><span class="line">		</span><br><span class="line">	&#125;</span><br><span class="line">	</span><br><span class="line">	</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="http://blogoflyt.cn/2019/04/08/算法设计与分析作业-求排序二叉树根节点之差最小值/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -1671,195 +1814,11 @@
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://blogoflyt.cn/2019/03/18/LXC容器简介/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Richard">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/gakki.jpg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="积累技术之路">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2019/03/18/LXC容器简介/" itemprop="url">LXC容器简介</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-03-18T13:35:00+08:00">
-                2019-03-18
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Linux/" itemprop="url" rel="index">
-                    <span itemprop="name">Linux</span>
-                  </a>
-                </span>
-
-                
-                
-                  ， 
-                
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Linux/虚拟化/" itemprop="url" rel="index">
-                    <span itemprop="name">虚拟化</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h6 id="LCX与Docker结构关系"><a href="#LCX与Docker结构关系" class="headerlink" title="LCX与Docker结构关系"></a>LCX与Docker结构关系</h6><p>LXC负责资源管理；AUFS负责镜像管理；而LXC包括cgroup、namespace、chroot等组件，并通过cgroup进行资源管理<br><a href="https://imgchr.com/i/AVHbrt" target="_blank" rel="noopener"><img src="https://s2.ax1x.com/2019/03/16/AVHbrt.png" alt="AVHbrt.png"></a></p>
-<h6 id="LXC组成"><a href="#LXC组成" class="headerlink" title="LXC组成"></a>LXC组成</h6><p>文件系统的隔离（chroot/rootfs）</p>
-<p>rootfs是Linux系统中的根文件系统,是Linux系统的基本结构，能让操作系统正常运行的文件、文件夹的集合</p>
-<p>chroot更改root目录，通过chroot这种技术，可以指定任意路径为根目录。虚拟化技术，首要前提是要实现磁盘的虚拟化</p>
-<p>资源限制（cgroup）</p>
-<p>cgroup是linux内核的一个功能，用来限制、记录、隔离进程组所使用的物理资源(cpu、memory、io等)的机制</p>
-<p>资源隔离（namespace）</p>
-<p>在linux系统中，每个namespace下的资源对于其他namespace下的资源都是透明的。在操作系统层面上看，就会出现多个相同pid的进程，多个相同的uid等。由于属于不同的namespace,所以它们之间并不冲突，而在用户层面上只能看到属于用户自己namespace的资源</p>
-<h6 id="LXC常用使用命令"><a href="#LXC常用使用命令" class="headerlink" title="LXC常用使用命令"></a>LXC常用使用命令</h6><p>lxc-create：用于创建一个容器，后面跟参数-n代表要创建容器的名字，-f代表容器的配置文件路径    </p>
-<p>lxc-start：用于启动一个容器，后面参数-n，-f和之前的lxc-create相同，-d代表用守护进程的方式来运行容器    </p>
-<p>lxc-info：用于查看容器的状态，STARTING代表容器运行，STOP代表着容器没有启动    </p>
-<p>lxc-cgroup：用于与cgroup有关的参数，用于对容器进行动态的资源控制。</p>
-<p><a href="https://imgchr.com/i/AVHXa8" target="_blank" rel="noopener"><img src="https://s2.ax1x.com/2019/03/16/AVHXa8.jpg" alt="AVHXa8.jpg"></a></p>
-<h6 id="LXC创建容器"><a href="#LXC创建容器" class="headerlink" title="LXC创建容器"></a>LXC创建容器</h6><p>为了在指定环境下创建 LXC 容器，需要相应的 LXC 模板。LXC 提供的工具集成了一整套现成的 LXC 模板，可以在 /usr/share/lxc/templates 目录下找到它们</p>
-<p>常用的模板有：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">├── lxc-busybox	</span><br><span class="line">├── lxc-debian</span><br><span class="line">├── lxc-fedora</span><br><span class="line">├── lxc-opensuse</span><br><span class="line">├── lxc-sshd</span><br><span class="line">├── lxc-ubuntu</span><br><span class="line">└── lxc-ubuntu-cloud</span><br></pre></td></tr></table></figure></p>
-<p>我们要创建ubuntu容器，我们可以直接使用LXC为我们提供的模板<br>sudo lxc-create -n py-lxc -t ubuntu</p>
-<p>在执行命令过程，LXC会下载所需的基础rootfs，和帮助我们完成一些基本的配置</p>
-<h6 id="LXC容器启动"><a href="#LXC容器启动" class="headerlink" title="LXC容器启动"></a>LXC容器启动</h6><p>lxc-start  -n  py-lxc 启动并进入容器</p>
-<p>容器的启动只要是由lxc-start执行，lxc-start主要分成两个步骤，第一步通过解析命令行参数，加载容器的配置文件。第二步创建进程，生成新的命名空间，启动容器。</p>
-<p>sudo apt-get install python2.7  在容器中安装程序依赖</p>
-<h6 id="嵌入式lxc的虚拟化方案"><a href="#嵌入式lxc的虚拟化方案" class="headerlink" title="嵌入式lxc的虚拟化方案"></a>嵌入式lxc的虚拟化方案</h6><p>嵌入式平台下LXC移植安装</p>
-<p>嵌入式系统的资源与服务器相比相差甚远，在同一个硬件平台要运行多个操作系统，如果使用服务器的虚拟化方案会有很大的系统消耗，所以轻量级的虚拟化方案才是解决问题的关键。</p>
-<p>在嵌入式平台下LXC的移植安装步骤如下：</p>
-<p>1.使嵌入式linux内核支持lxc功能包</p>
-<p>2.使嵌入式根文件系统rootfs包含lxc基本的运行依赖库</p>
-<p>3.LXC移植安装</p>
-<h6 id="嵌入式linux的LXC移植"><a href="#嵌入式linux的LXC移植" class="headerlink" title="嵌入式linux的LXC移植"></a>嵌入式linux的LXC移植</h6><p>1.安装我们裁剪过的内核和文件系统（内核和文件系统满足前面所述）</p>
-<p>2.交叉编译安装LXC</p>
-<p>3.使用debootstrap工具创建文件系统</p>
-<p>4.在LXC配置文件中lxc.rootfs字段使用debootstrap工具创建文件系统</p>
-<p>5.运行LXC容器，启动虚拟操作系统</p>
-<p>6.在LXC虚拟操作系统中安装程序依赖，运行我们的程序</p>
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
   </section>
 
   
   <nav class="pagination">
-    <span class="page-number current">1</span><a class="page-number" href="/page/2/">2</a><span class="space">&hellip;</span><a class="page-number" href="/page/7/">7</a><a class="extend next" rel="next" href="/page/2/"><i class="fa fa-angle-right"></i></a>
+    <span class="page-number current">1</span><a class="page-number" href="/page/2/">2</a><span class="space">&hellip;</span><a class="page-number" href="/page/8/">8</a><a class="extend next" rel="next" href="/page/2/"><i class="fa fa-angle-right"></i></a>
   </nav>
 
 
@@ -1909,7 +1868,7 @@
               
                 <a href="/archives/">
               
-                  <span class="site-state-item-count">70</span>
+                  <span class="site-state-item-count">71</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
@@ -1931,7 +1890,7 @@
               
               <div class="site-state-item site-state-tags">
                 <a href="/tags/index.html">
-                  <span class="site-state-item-count">91</span>
+                  <span class="site-state-item-count">92</span>
                   <span class="site-state-item-name">标签</span>
                 </a>
               </div>

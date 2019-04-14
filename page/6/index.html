@@ -252,6 +252,175 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://blogoflyt.cn/2018/06/12/Linux操作系统启动流程/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Richard">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/gakki.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="积累技术之路">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2018/06/12/Linux操作系统启动流程/" itemprop="url">Linux操作系统启动流程</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-06-12T18:24:00+08:00">
+                2018-06-12
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Linux/" itemprop="url" rel="index">
+                    <span itemprop="name">Linux</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <blockquote>
+<p>转载<a href="https://www.cnblogs.com/kevingrace/p/6244584.html" target="_blank" rel="noopener">https://www.cnblogs.com/kevingrace/p/6244584.html</a></p>
+</blockquote>
+<p><a href="https://imgchr.com/i/AkNRNn" target="_blank" rel="noopener"><img src="https://s2.ax1x.com/2019/03/13/AkNRNn.png" alt="AkNRNn.png"></a></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">总的来说，linux系统启动流程可以简单总结为以下几步：</span><br><span class="line">1）开机BIOS自检，加载硬盘。</span><br><span class="line">2）读取MBR,进行MBR引导。</span><br><span class="line">3）grub引导菜单(Boot Loader)。</span><br><span class="line">4）加载内核kernel。</span><br><span class="line">5）启动init进程，依据inittab文件设定运行级别</span><br><span class="line">6）init进程，执行rc.sysinit文件。</span><br><span class="line">7）启动内核模块，执行不同级别的脚本程序。</span><br><span class="line">8）执行/etc/rc.d/rc.local</span><br><span class="line">9）启动mingetty，进入系统登陆界面。</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>linux系统安装时，如果要想设置开启启动项，可以：<br>开机到BIOS提醒界面，按键F11（Dell服务器的做法）进入BIOS设置BOOT MENU，继而设置启动项：硬盘HD启动，光盘CD/DVD启动，还是U盘USB启动。</p>
+</blockquote>
+<h5 id="下面就linux操作系统的启动过程做一详细解析记录："><a href="#下面就linux操作系统的启动过程做一详细解析记录：" class="headerlink" title="下面就linux操作系统的启动过程做一详细解析记录："></a>下面就linux操作系统的启动过程做一详细解析记录：</h5><h6 id="加载内核"><a href="#加载内核" class="headerlink" title="加载内核"></a>加载内核</h6><p>操作系统接管硬件以后，首先读入 /boot 目录下的内核文件。</p>
+<p><a href="https://imgchr.com/i/AkNTuF" target="_blank" rel="noopener"><img src="https://s2.ax1x.com/2019/03/13/AkNTuF.png" alt="AkNTuF.png"></a><br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">[root@bastion-IDC ~]# ll /boot/</span><br><span class="line">total 21668</span><br><span class="line">-rw-r--r--. 1 root root   105195 Nov 22  2013 config-2.6.32-431.el6.x86_64</span><br><span class="line">drwxr-xr-x. 3 root root     1024 Aug 22 16:31 efi</span><br><span class="line">drwxr-xr-x. 2 root root     1024 Aug 22 16:32 grub</span><br><span class="line">-rw-------. 1 root root 15217153 Aug 22 16:32 initramfs-2.6.32-431.el6.x86_64.img</span><br><span class="line">drwx------. 2 root root    12288 Aug 22 16:24 lost+found</span><br><span class="line">-rw-r--r--. 1 root root   193758 Nov 22  2013 symvers-2.6.32-431.el6.x86_64.gz</span><br><span class="line">-rw-r--r--. 1 root root  2518236 Nov 22  2013 System.map-2.6.32-431.el6.x86_64</span><br><span class="line">-rwxr-xr-x. 1 root root  4128368 Nov 22  2013 vmlinuz-2.6.32-431.el6.x86_64</span><br></pre></td></tr></table></figure></p>
+<h6 id="启动初始化进程"><a href="#启动初始化进程" class="headerlink" title="启动初始化进程"></a>启动初始化进程</h6><p>内核文件加载以后，就开始运行第一个程序 /sbin/init，它的作用是初始化系统环境。</p>
+<p><a href="https://imgchr.com/i/AkN7B4" target="_blank" rel="noopener"><img src="https://s2.ax1x.com/2019/03/13/AkN7B4.png" alt="AkN7B4.png"></a></p>
+<p>由于init是第一个运行的程序，它的进程编号（pid）就是1。其他所有进程都从它衍生，都是它的子进程。</p>
+<h6 id="确定运行级别"><a href="#确定运行级别" class="headerlink" title="确定运行级别"></a>确定运行级别</h6><p>许多程序需要开机启动。它们在Windows叫做”服务”（service），在Linux就叫做”守护进程”（daemon）。<br>init进程的一大任务，就是去运行这些开机启动的程序。但是，不同的场合需要启动不同的程序，比如用作服务器时，需要启动Apache，用作桌面就不需要。Linux允许为不同的场合，分配不同的开机启动程序，这就叫做”运行级别”（runlevel）。也就是说，启动时根据”运行级别”，确定要运行哪些程序。<br><a href="https://imgchr.com/i/AkNt7d" target="_blank" rel="noopener"><img src="https://s2.ax1x.com/2019/03/13/AkNt7d.png" alt="AkNt7d.png"></a></p>
+<h6 id="Linux预置七种init运行级别（0-6）："><a href="#Linux预置七种init运行级别（0-6）：" class="headerlink" title="Linux预置七种init运行级别（0-6）："></a>Linux预置七种init运行级别（0-6）：</h6><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line">0：关机模式    （相当于poweroff）</span><br><span class="line">1：单用户模式（破解root密码的方法：linux系统root密码遗忘的情况下的解决办法）</span><br><span class="line">2：无网络支持的多用户模式</span><br><span class="line">3：有网络支持的多用户模式（也就是文本模式，工作中最常用的模式）</span><br><span class="line">4：保留，未使用</span><br><span class="line">5：有网络支持的X-windows支持多用户模式（也就是桌面图形模式）</span><br><span class="line">6: 重新引导系统，即重启    （相当于reboot）</span><br><span class="line">init进程首先读取文件 /etc/inittab，它是运行级别的设置文件。</span><br><span class="line">如果打开它，可以看到第一行是这样的：</span><br><span class="line">[root@bastion-IDC ~]# cat /etc/inittab </span><br><span class="line">....</span><br><span class="line">id:3:initdefault:</span><br><span class="line"></span><br><span class="line">initdefault的值是3，表明系统启动时的运行级别为3。如果需要指定其他级别，可以手动修改这个值。</span><br><span class="line">那么，运行级别3有哪些什么程序呢，系统怎么知道每个级别应该加载哪些程序呢？</span><br><span class="line">答案是每个运行级别在/etc目录下面，都有一个对应的子目录，指定要加载的程序。</span><br><span class="line"></span><br><span class="line">　　/etc/rc0.d</span><br><span class="line">　　/etc/rc1.d</span><br><span class="line">　　/etc/rc2.d</span><br><span class="line">　　/etc/rc3.d</span><br><span class="line">　　/etc/rc4.d</span><br><span class="line">　　/etc/rc5.d</span><br><span class="line">　　/etc/rc6.d</span><br><span class="line"></span><br><span class="line">上面目录名中的&quot;rc&quot;，表示run command（运行程序），最后的d表示directory（目录）。下面让我们看看 /etc/rc3.d 目录中到底指定了哪些程序。</span><br></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br></pre></td><td class="code"><pre><span class="line">[root@bastion-IDC ~]# ll /etc/rc3.d/</span><br><span class="line">total 0</span><br><span class="line">lrwxrwxrwx. 1 root root 19 Aug 22 16:30 K10saslauthd -&gt; ../init.d/saslauthd</span><br><span class="line">lrwxrwxrwx. 1 root root 18 Aug 22 16:47 K15svnserve -&gt; ../init.d/svnserve</span><br><span class="line">lrwxrwxrwx. 1 root root 15 Aug 23 16:21 K25squid -&gt; ../init.d/squid</span><br><span class="line">lrwxrwxrwx. 1 root root 19 Dec 23 13:14 K45memcached -&gt; ../init.d/memcached</span><br><span class="line">lrwxrwxrwx. 1 root root 20 Aug 22 16:30 K50netconsole -&gt; ../init.d/netconsole</span><br><span class="line">lrwxrwxrwx. 1 root root 13 Dec 21 17:45 K60nfs -&gt; ../init.d/nfs</span><br><span class="line">lrwxrwxrwx. 1 root root 20 Dec 21 17:45 K69rpcsvcgssd -&gt; ../init.d/rpcsvcgssd</span><br><span class="line">lrwxrwxrwx. 1 root root 17 Nov 24 14:45 K75ntpdate -&gt; ../init.d/ntpdate</span><br><span class="line">lrwxrwxrwx. 1 root root 20 Aug 22 16:31 K87multipathd -&gt; ../init.d/multipathd</span><br><span class="line">lrwxrwxrwx. 1 root root 21 Aug 22 16:30 K87restorecond -&gt; ../init.d/restorecond</span><br><span class="line">lrwxrwxrwx. 1 root root 15 Aug 22 16:30 K89rdisc -&gt; ../init.d/rdisc</span><br><span class="line">lrwxrwxrwx. 1 root root 22 Aug 22 16:31 S02lvm2-monitor -&gt; ../init.d/lvm2-monitor</span><br><span class="line">lrwxrwxrwx. 1 root root 16 Aug 22 16:31 S07iscsid -&gt; ../init.d/iscsid</span><br><span class="line">lrwxrwxrwx. 1 root root 19 Aug 22 16:30 S08ip6tables -&gt; ../init.d/ip6tables</span><br><span class="line">lrwxrwxrwx. 1 root root 18 Aug 22 16:30 S08iptables -&gt; ../init.d/iptables</span><br><span class="line">lrwxrwxrwx. 1 root root 17 Aug 22 16:30 S10network -&gt; ../init.d/network</span><br><span class="line">lrwxrwxrwx. 1 root root 16 Aug 22 16:31 S11auditd -&gt; ../init.d/auditd</span><br><span class="line">lrwxrwxrwx. 1 root root 17 Aug 22 16:30 S12rsyslog -&gt; ../init.d/rsyslog</span><br><span class="line">lrwxrwxrwx. 1 root root 15 Dec 21 17:45 S13iscsi -&gt; ../init.d/iscsi</span><br><span class="line">lrwxrwxrwx. 1 root root 17 Dec 21 17:45 S13rpcbind -&gt; ../init.d/rpcbind</span><br><span class="line">lrwxrwxrwx. 1 root root 17 Dec 21 17:45 S14nfslock -&gt; ../init.d/nfslock</span><br><span class="line">lrwxrwxrwx. 1 root root 19 Aug 22 16:31 S15mdmonitor -&gt; ../init.d/mdmonitor</span><br><span class="line">lrwxrwxrwx. 1 root root 17 Dec 21 17:45 S19rpcgssd -&gt; ../init.d/rpcgssd</span><br><span class="line">lrwxrwxrwx. 1 root root 26 Aug 22 16:31 S25blk-availability -&gt; ../init.d/blk-availability</span><br><span class="line">lrwxrwxrwx. 1 root root 15 Aug 22 16:30 S25netfs -&gt; ../init.d/netfs</span><br><span class="line">lrwxrwxrwx. 1 root root 19 Aug 22 16:30 S26udev-post -&gt; ../init.d/udev-post</span><br><span class="line">lrwxrwxrwx. 1 root root 18 Oct 25 11:49 S50onealert -&gt; ../init.d/onealert</span><br><span class="line">lrwxrwxrwx. 1 root root 14 Aug 22 16:31 S55sshd -&gt; ../init.d/sshd</span><br><span class="line">lrwxrwxrwx. 1 root root 16 Oct 26 09:47 S56xinetd -&gt; ../init.d/xinetd</span><br><span class="line">lrwxrwxrwx. 1 root root 17 Aug 22 16:30 S80postfix -&gt; ../init.d/postfix</span><br><span class="line">lrwxrwxrwx. 1 root root 15 Aug 22 16:30 S90crond -&gt; ../init.d/crond</span><br><span class="line">lrwxrwxrwx. 1 root root 11 Aug 22 16:30 S99local -&gt; ../rc.local</span><br></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">可以看到：</span><br><span class="line">字母S表示Start，也就是启动的意思（启动脚本的运行参数为start）</span><br><span class="line">如果这个位置是字母K，就代表Kill（关闭），即如果从其他运行级别切换过来，需要关闭的程序（启动脚本的运行参数为stop）。</span><br><span class="line">后面的两位数字表示处理顺序，数字越小越早处理，所以第一个启动的程序是motd，然后是rpcbing、nfs......数字相同时，则按照程序名的字母顺序启动，所以rsyslog会先于sudo启动。</span><br><span class="line">这个目录里的所有文件（除了README），就是启动时要加载的程序。如果想增加或删除某些程序，不建议手动修改 /etc/rcN.d 目录，最好是用一些专门命令进行管理（参考这里和这里）。</span><br></pre></td></tr></table></figure>
+<h6 id="加载开机启动程序"><a href="#加载开机启动程序" class="headerlink" title="加载开机启动程序"></a>加载开机启动程序</h6><p>前面提到，七种预设的”运行级别”各自有一个目录，存放需要开机启动的程序。不难想到，如果多个”运行级别”需要启动同一个程序，那么这个程序的启动脚本，就会在每一个目录里都有一个拷贝。这样会造成管理上的困扰：如果要修改启动脚本，岂不是每个目录都要改一遍？</p>
+<p>Linux的解决办法，就是七个 /etc/rcN.d 目录里列出的程序，都设为链接文件，指向另外一个目录 /etc/init.d ，真正的启动脚本都统一放在这个目录中。init进程逐一加载开机启动程序，其实就是运行这个目录里的启动脚本。</p>
+<p><a href="https://imgchr.com/i/AkUpuD" target="_blank" rel="noopener"><img src="https://s2.ax1x.com/2019/03/13/AkUpuD.png" alt="AkUpuD.png"></a></p>
+<p>下面就是链接文件真正的指向</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">[root@bastion-IDC ~]# ls -l /etc/rc3.d</span><br><span class="line">lrwxrwxrwx. 1 root root 10 Aug 22 16:30 /etc/rc3.d -&gt; rc.d/rc3.d</span><br></pre></td></tr></table></figure>
+<p>这样做的另一个好处，就是如果你要手动关闭或重启某个进程，直接到目录 /etc/init.d 中寻找启动脚本即可。<br>比如，我要重启iptables服务器，就运行下面的命令：<br>[root@bastion-IDC ~]# /etc/init.d/iptables restart</p>
+<p>/etc/init.d 这个目录名最后一个字母d，是directory的意思，表示这是一个目录，用来与程序 /etc/init 区分。</p>
+<h6 id="用户登录"><a href="#用户登录" class="headerlink" title="用户登录"></a>用户登录</h6><p>开机启动程序加载完毕以后，就要让用户登录了。<br><a href="https://imgchr.com/i/AkUFUA" target="_blank" rel="noopener"><img src="https://s2.ax1x.com/2019/03/13/AkUFUA.png" alt="AkUFUA.png"></a><br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">一般来说，用户的登录方式有三种：命令行登录、ssh登录、图形界面登录。这三种情况，都有自己的方式对用户进行认证。</span><br><span class="line">1）命令行登录：init进程调用getty程序（意为get teletype），让用户输入用户名和密码。输入完成后，再调用login程序，核对密码（Debian还会再多运行一个身份核对程序/etc/pam.d/login）。如果密码正确，就从文件 /etc/passwd 读取该用户指定的shell，然后启动这个shell。</span><br><span class="line">2）ssh登录：这时系统调用sshd程序（Debian还会再运行/etc/pam.d/ssh ），取代getty和login，然后启动shell。</span><br><span class="line">3）图形界面登录：init进程调用显示管理器，Gnome图形界面对应的显示管理器为gdm（GNOME Display Manager），然后用户输入用户名和密码。如果密码正确，就读取/etc/gdm3/Xsession，启动用户的会话。</span><br></pre></td></tr></table></figure></p>
+<h6 id="进入-login-shell"><a href="#进入-login-shell" class="headerlink" title="进入 login shell"></a>进入 login shell</h6><p>所谓shell，简单说就是命令行界面，让用户可以直接与操作系统对话。用户登录时打开的shell，就叫做login shell。<br><a href="https://imgchr.com/i/AkUev8" target="_blank" rel="noopener"><img src="https://s2.ax1x.com/2019/03/13/AkUev8.png" alt="AkUev8.png"></a><br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">Linuix默认的shell是Bash，它会读入一系列的配置文件。上一步的三种情况，在这一步的处理，也存在差异。</span><br><span class="line">1）命令行登录：首先读入 /etc/profile，这是对所有用户都有效的配置；然后依次寻找下面三个文件，这是针对当前用户的配置。</span><br><span class="line">　　~/.bash_profile</span><br><span class="line">　　~/.bash_login</span><br><span class="line">　　~/.profile</span><br><span class="line">需要注意的是，这三个文件只要有一个存在，就不再读入后面的文件了。比如，要是 ~/.bash_profile 存在，就不会再读入后面两个文件了。</span><br><span class="line">2）ssh登录：与第一种情况完全相同。</span><br><span class="line">3）图形界面登录：只加载 /etc/profile 和 ~/.profile。也就是说，~/.bash_profile 不管有没有，都不会运行。</span><br></pre></td></tr></table></figure></p>
+<h6 id="打开-non-login-shell"><a href="#打开-non-login-shell" class="headerlink" title="打开 non-login shell"></a>打开 non-login shell</h6><p>老实说，上一步完成以后，Linux的启动过程就算结束了，用户已经可以看到命令行提示符或者图形界面了。但是，为了内容的完整，必须再介绍一下这一步。<br>用户进入操作系统以后，常常会再手动开启一个shell。这个shell就叫做 non-login shell，意思是它不同于登录时出现的那个shell，不读取/etc/profile和.profile等配置文件。</p>
+<p><a href="https://imgchr.com/i/AkUlUs" target="_blank" rel="noopener"><img src="https://s2.ax1x.com/2019/03/13/AkUlUs.png" alt="AkUlUs.png"></a></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">non-login shell的重要性，不仅在于它是用户最常接触的那个shell，还在于它会读入用户自己的bash配置文件 ~/.bashrc。大多数时候，我们对于bash的定制，都是写在这个文件里面的。</span><br><span class="line">你也许会问，要是不进入 non-login shell，岂不是.bashrc就不会运行了，因此bash 也就不能完成定制了？事实上，Debian已经考虑到这个问题了，请打开文件 ~/.profile，可以看到下面的代码：</span><br><span class="line">　　if [ -n &quot;$BASH_VERSION&quot; ]; then</span><br><span class="line">　　　　if [ -f &quot;$HOME/.bashrc&quot; ]; then</span><br><span class="line">　　　　　　. &quot;$HOME/.bashrc&quot;</span><br><span class="line">　　　　fi</span><br><span class="line">　　fi</span><br><span class="line">　　</span><br><span class="line">上面代码先判断变量 $BASH_VERSION 是否有值，然后判断主目录下是否存在 .bashrc 文件，如果存在就运行该文件。第三行开头的那个点，是source命令的简写形式，表示运行某个文件，写成&quot;source ~/.bashrc&quot;也是可以的。</span><br><span class="line">因此，只要运行～/.profile文件，～/.bashrc文件就会连带运行。但是上一节的第一种情况提到过，如果存在～/.bash_profile文件，那么有可能不会运行～/.profile文件。解决这个问题很简单，把下面代码写入.bash_profile就行了。</span><br><span class="line">　　if [ -f ~/.profile ]; then</span><br><span class="line">　　　　. ~/.profile</span><br><span class="line">　　fi</span><br><span class="line">　</span><br><span class="line">这样一来，不管是哪种情况，.bashrc都会执行，用户的设置可以放心地都写入这个文件了。</span><br><span class="line">Bash的设置之所以如此繁琐，是由于历史原因造成的。早期的时候，计算机运行速度很慢，载入配置文件需要很长时间，Bash的作者只好把配置文件分成了几个部分，阶段性载入。系统的通用设置放在 /etc/profile，用户个人的、需要被所有子进程继承的设置放在.profile，不需要被继承的设置放在.bashrc。</span><br><span class="line">顺便提一下，除了Linux以外， Mac OS X 使用的shell也是Bash。但是，它只加载.bash_profile，然后在.bash_profile里面调用.bashrc。而且，不管是ssh登录，还是在图形界面里启动shell窗口，都是如此。</span><br></pre></td></tr></table></figure>
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="http://blogoflyt.cn/2018/05/28/多线程复习-线程池/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -1767,178 +1936,11 @@
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://blogoflyt.cn/2018/03/23/Java集合总结/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Richard">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/gakki.jpg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="积累技术之路">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2018/03/23/Java集合总结/" itemprop="url">Java集合总结</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-03-23T13:42:00+08:00">
-                2018-03-23
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Java/" itemprop="url" rel="index">
-                    <span itemprop="name">Java</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p><a href="https://imgchr.com/i/APoxb9" target="_blank" rel="noopener"><img src="https://s2.ax1x.com/2019/03/12/APoxb9.png" alt="APoxb9.png"></a></p>
-<p><a href="https://imgchr.com/i/APTSER" target="_blank" rel="noopener"><img src="https://s2.ax1x.com/2019/03/12/APTSER.png" alt="APTSER.png"></a></p>
-<p><a href="https://imgchr.com/i/APTPC6" target="_blank" rel="noopener"><img src="https://s2.ax1x.com/2019/03/12/APTPC6.png" alt="APTPC6.png"></a></p>
-<p><a href="https://imgchr.com/i/APTi8K" target="_blank" rel="noopener"><img src="https://s2.ax1x.com/2019/03/12/APTi8K.png" alt="APTi8K.png"></a></p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br></pre></td><td class="code"><pre><span class="line">package CollectionReview;</span><br><span class="line"></span><br><span class="line">import java.util.ArrayList;</span><br><span class="line">import java.util.Collection;</span><br><span class="line">import java.util.Iterator;</span><br><span class="line"></span><br><span class="line">public class ArrayListTest &#123;</span><br><span class="line"></span><br><span class="line">	public static void main(String[] args) &#123;</span><br><span class="line">		</span><br><span class="line">		Collection c = new ArrayList();</span><br><span class="line">		</span><br><span class="line">		//isEmpty判断空，size为0返回true</span><br><span class="line">		System.out.println(&quot;c.isEmpty():&quot;+c.isEmpty());</span><br><span class="line">		//集合长度</span><br><span class="line">		System.out.println(&quot;c.size():&quot;+c.size());</span><br><span class="line">		//add添加集合元素</span><br><span class="line">		c.add(111);</span><br><span class="line">		c.add(&quot;aaa&quot;);</span><br><span class="line">		System.out.println(&quot;c.isEmpty():&quot;+c.isEmpty());</span><br><span class="line">		//集合长度</span><br><span class="line">		System.out.println(&quot;c.size():&quot;+c.size());</span><br><span class="line">		//删除指定集合元素</span><br><span class="line">		c.remove(&quot;aaa&quot;);</span><br><span class="line">		System.out.println(&quot;c.isEmpty():&quot;+c.isEmpty());</span><br><span class="line">		//集合长度</span><br><span class="line">		System.out.println(&quot;c.size():&quot;+c.size());</span><br><span class="line">		System.out.println(&quot;c.contains(111):&quot;+c.contains(111));</span><br><span class="line">		//清空集合元素</span><br><span class="line">		c.clear();</span><br><span class="line">		System.out.println(&quot;c.isEmpty():&quot;+c.isEmpty());</span><br><span class="line">		c.add(222);</span><br><span class="line">		c.add(&quot;bbb&quot;);</span><br><span class="line">		</span><br><span class="line">		//调用集合的实现类方法，创建Iterator</span><br><span class="line">		Iterator it = c.iterator();</span><br><span class="line">		//通过iterator变量进行迭代遍历</span><br><span class="line">		while(it.hasNext()) &#123;</span><br><span class="line">			Object obj = it.next();</span><br><span class="line">//			System.out.println(obj);</span><br><span class="line">			//因为集合里面含有不同类型的元素，所以想要获取集合中真正的元素类型，需要判断类型再强转</span><br><span class="line">			if(obj.getClass()==String.class) &#123;</span><br><span class="line">				System.out.println((String)obj);</span><br><span class="line">			&#125;</span><br><span class="line">			if(obj.getClass()==Integer.class) &#123;</span><br><span class="line">				System.out.println((Integer)obj);</span><br><span class="line">			&#125;</span><br><span class="line">		&#125;</span><br><span class="line">		</span><br><span class="line">		//规定集合泛型为String，说明集合里元素只能是String类型</span><br><span class="line">		ArrayList&lt;String&gt; c1 = new ArrayList&lt;String&gt;();</span><br><span class="line">		//如果添加的不是String，则编译器报错</span><br><span class="line">		//c1.add(111);</span><br><span class="line">		c1.add(&quot;haha&quot;);</span><br><span class="line">		c1.add(&quot;ddd&quot;);</span><br><span class="line">		c1.add(&quot;asdasd&quot;);</span><br><span class="line">		Iterator it1 = c1.iterator();</span><br><span class="line">		while (it1.hasNext()) &#123;</span><br><span class="line">			String str = (String)it1.next();</span><br><span class="line">			System.out.print(str+&quot; &quot;);</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;	</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p><a href="https://imgchr.com/i/APTu5t" target="_blank" rel="noopener"><img src="https://s2.ax1x.com/2019/03/12/APTu5t.png" alt="APTu5t.png"></a></p>
-<p><a href="https://imgchr.com/i/APTQ8f" target="_blank" rel="noopener"><img src="https://s2.ax1x.com/2019/03/12/APTQ8f.png" alt="APTQ8f.png"></a></p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br></pre></td><td class="code"><pre><span class="line">package CollectionReview;</span><br><span class="line"></span><br><span class="line">import java.util.ArrayList;</span><br><span class="line">import java.util.Iterator;</span><br><span class="line">import java.util.List;</span><br><span class="line"></span><br><span class="line">public class ListTest &#123;</span><br><span class="line"></span><br><span class="line">	public static void main(String[] args) &#123;</span><br><span class="line">		</span><br><span class="line">		List list = new ArrayList();</span><br><span class="line">		//isEmpty判断空，size为0返回true</span><br><span class="line">		System.out.println(&quot;list.isEmpty():&quot;+list.isEmpty());</span><br><span class="line">		//List长度</span><br><span class="line">		System.out.println(&quot;list.size():&quot;+list.size());</span><br><span class="line">		//add添加List元素</span><br><span class="line">		list.add(111);</span><br><span class="line">		list.add(&quot;aaa&quot;);</span><br><span class="line">		System.out.println(&quot;list.isEmpty():&quot;+list.isEmpty());</span><br><span class="line">		//List长度</span><br><span class="line">		System.out.println(&quot;list.size():&quot;+list.size());</span><br><span class="line">		//删除指定List元素</span><br><span class="line">		list.remove(&quot;aaa&quot;);</span><br><span class="line">		System.out.println(&quot;list.isEmpty():&quot;+list.isEmpty());</span><br><span class="line">		//List长度</span><br><span class="line">		System.out.println(&quot;list.size():&quot;+list.size());</span><br><span class="line">		System.out.println(&quot;list.contains(111):&quot;+list.contains(111));</span><br><span class="line">		</span><br><span class="line">		//清空list元素</span><br><span class="line">		list.clear();</span><br><span class="line">		System.out.println(&quot;list.isEmpty():&quot;+list.isEmpty());</span><br><span class="line">		</span><br><span class="line">		ArrayList&lt;String&gt; list1 = new ArrayList&lt;String&gt;();</span><br><span class="line">		list1.add(&quot;aaa&quot;);</span><br><span class="line">		list1.add(&quot;bbb&quot;);</span><br><span class="line">		list1.add(&quot;ccc&quot;);</span><br><span class="line">		String str=&quot;ccc&quot;;</span><br><span class="line">		//str在List中的下标是多少，找到返回下标，找不到返回-1</span><br><span class="line">		int index = list1.indexOf(str);</span><br><span class="line">		System.out.println(&quot;str index:&quot;+index);</span><br><span class="line">		System.out.println(&quot;取List第0个下标的元素:&quot;+list1.get(0));</span><br><span class="line">		list1.add(1,&quot;ddd&quot;);</span><br><span class="line">		System.out.println(&quot;取List第1个下标的元素:&quot;+list1.get(1));</span><br><span class="line">		System.out.println(&quot;str index:&quot;+list1.indexOf(&quot;bbb&quot;));</span><br><span class="line">		</span><br><span class="line">		//List遍历方式for循环</span><br><span class="line">		for(int i=0;i&lt;list1.size();i++) &#123;</span><br><span class="line">			System.out.println(list1.get(i));</span><br><span class="line">		&#125;</span><br><span class="line">		System.out.println(&quot;\n-----------------------&quot;);</span><br><span class="line">		</span><br><span class="line">		//foreach循环遍历，前提List必须有泛型</span><br><span class="line">		for (String s : list1) &#123;</span><br><span class="line">			System.out.print(s+&quot; &quot;);</span><br><span class="line">		&#125;</span><br><span class="line">		System.out.println(&quot;\n-----------------------&quot;);</span><br><span class="line">		list1.remove(&quot;ddd&quot;);</span><br><span class="line">		list1.add(&quot;ddd&quot;);</span><br><span class="line">		for (String s : list1) &#123;</span><br><span class="line">			System.out.println(s+&quot; &quot;);</span><br><span class="line">		&#125;</span><br><span class="line">		</span><br><span class="line">		//Iterator迭代遍历</span><br><span class="line">		Iterator&lt;String&gt; it1 = list1.iterator();</span><br><span class="line">		while(it1.hasNext()) &#123;</span><br><span class="line">			String s = it1.next();</span><br><span class="line">			System.out.println(s+&quot; &quot;);</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">	</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p><a href="https://imgchr.com/i/APT1xS" target="_blank" rel="noopener"><img src="https://s2.ax1x.com/2019/03/12/APT1xS.png" alt="APT1xS.png"></a></p>
-<p><a href="https://imgchr.com/i/APT8Kg" target="_blank" rel="noopener"><img src="https://s2.ax1x.com/2019/03/12/APT8Kg.png" alt="APT8Kg.png"></a></p>
-<p><a href="https://imgchr.com/i/APTGrQ" target="_blank" rel="noopener"><img src="https://s2.ax1x.com/2019/03/12/APTGrQ.png" alt="APTGrQ.png"></a></p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line">package CollectionReview;</span><br><span class="line"></span><br><span class="line">import java.util.HashSet;</span><br><span class="line">import java.util.Iterator;</span><br><span class="line">import java.util.Set;</span><br><span class="line"></span><br><span class="line">public class SetTest &#123;</span><br><span class="line"></span><br><span class="line">	public static void main(String[] args) &#123;</span><br><span class="line">		Set set = new HashSet();</span><br><span class="line">		set.add(&quot;hello&quot;);</span><br><span class="line">		set.add(&quot;world&quot;);</span><br><span class="line">		set.add(&quot;java&quot;);</span><br><span class="line">		//加入重复元素时，add方法会返回false</span><br><span class="line">//		set.add(&quot;hello&quot;);</span><br><span class="line">		//迭代办理</span><br><span class="line">		Iterator iter = set.iterator();</span><br><span class="line">		while(iter.hasNext()) &#123;</span><br><span class="line">			Object value = iter.next();</span><br><span class="line">			System.out.println(value);</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p><a href="https://imgchr.com/i/APTtVs" target="_blank" rel="noopener"><img src="https://s2.ax1x.com/2019/03/12/APTtVs.png" alt="APTtVs.png"></a></p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br></pre></td><td class="code"><pre><span class="line">package CollectionReview;</span><br><span class="line"></span><br><span class="line">import java.util.HashSet;</span><br><span class="line"></span><br><span class="line">/*</span><br><span class="line"> * 实现类 HashSet</span><br><span class="line"> * 如果要正常使用HashSet存放对象，为了保证对象的内容不重复，则要求这个对象满足:</span><br><span class="line"> * 1.覆盖equals方法，要求相同的对象，调用equals方法返回true</span><br><span class="line"> * 2.覆盖hashcode方法，要求，相同对象的hashcode相同，不同对象的hashcode尽量不同</span><br><span class="line"> * HashSet存放字符串，因为字符串重写了Object的equals和hashcode方法，所以可以用HashSet给字符串去重</span><br><span class="line"> */</span><br><span class="line"></span><br><span class="line">public class HashCodeTest &#123;</span><br><span class="line"></span><br><span class="line">	private int n;</span><br><span class="line"></span><br><span class="line">	public HashCodeTest(int n) &#123;</span><br><span class="line">		this.n=n;</span><br><span class="line">	&#125;</span><br><span class="line">	</span><br><span class="line">	@Override</span><br><span class="line">	public boolean equals(Object obj) &#123;</span><br><span class="line">		System.out.println(&quot;do equals()&quot;);</span><br><span class="line">		return false;</span><br><span class="line">	&#125;</span><br><span class="line">	</span><br><span class="line">	@Override</span><br><span class="line">	public int hashCode() &#123;</span><br><span class="line">		System.out.println(&quot;do hashCode()&quot;);</span><br><span class="line">		return this.n;</span><br><span class="line">	&#125;</span><br><span class="line">	</span><br><span class="line">	public static void main(String[] args) &#123;</span><br><span class="line">		HashSet&lt;HashCodeTest&gt; set = new HashSet&lt;HashCodeTest&gt;();</span><br><span class="line">		HashCodeTest h1 = new HashCodeTest(1);</span><br><span class="line">		HashCodeTest h2= new HashCodeTest(2);</span><br><span class="line">		HashCodeTest h3 = new HashCodeTest(1);</span><br><span class="line">		</span><br><span class="line">		System.out.println(&quot;--------&quot;);</span><br><span class="line">		//先调hashCode()方法得到hash值，再和set集合里的其他hash值进行比对，如果不同，则添加进去</span><br><span class="line">		//如果有相同则调用equals()方法与hash值相同的对象进行判断，是否是同一对象</span><br><span class="line">		//如果是，则添加失败;否则添加成功</span><br><span class="line">		set.add(h1);</span><br><span class="line">		System.out.println(&quot;----------&quot;);</span><br><span class="line">	</span><br><span class="line">		if(!set.add(h2)) &#123;</span><br><span class="line">			System.out.println(&quot;添加失败&quot;);</span><br><span class="line">		&#125;else &#123;</span><br><span class="line">			System.out.println(&quot;添加成功&quot;);</span><br><span class="line">		&#125;</span><br><span class="line">		</span><br><span class="line">		if(!set.add(h3)) &#123;</span><br><span class="line">			System.out.println(&quot;添加失败&quot;);</span><br><span class="line">		&#125;else &#123;</span><br><span class="line">			System.out.println(&quot;添加成功&quot;);</span><br><span class="line">		&#125;</span><br><span class="line">	</span><br><span class="line">	&#125;</span><br><span class="line">	</span><br><span class="line">	/*</span><br><span class="line">	 * 结论：</span><br><span class="line">	 * 对于两个对象</span><br><span class="line">	 * 1)如果调用equals方法得到的结果为true，则两个对象的hashcode值必定相等</span><br><span class="line">	 * 2)如果equals方法得到的结果为false，则两个对象的hashcode值不一定不同</span><br><span class="line">	 * 3)如果两个对象的hashcode值不等，则equals方法得到的结果必定为false</span><br><span class="line">	 * 4)如果两个对象的hashcode值相等，则equals方法得到的结果未知</span><br><span class="line">	 */</span><br><span class="line">	</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p><a href="https://imgchr.com/i/APTBxU" target="_blank" rel="noopener"><img src="https://s2.ax1x.com/2019/03/12/APTBxU.png" alt="APTBxU.png"></a></p>
-<p><a href="https://imgchr.com/i/APTsr4" target="_blank" rel="noopener"><img src="https://s2.ax1x.com/2019/03/12/APTsr4.png" alt="APTsr4.png"></a></p>
-<p><a href="https://imgchr.com/i/APTyqJ" target="_blank" rel="noopener"><img src="https://s2.ax1x.com/2019/03/12/APTyqJ.png" alt="APTyqJ.png"></a></p>
-<p><a href="https://imgchr.com/i/APTcZ9" target="_blank" rel="noopener"><img src="https://s2.ax1x.com/2019/03/12/APTcZ9.png" alt="APTcZ9.png"></a></p>
-<p><a href="https://imgchr.com/i/APTgaR" target="_blank" rel="noopener"><img src="https://s2.ax1x.com/2019/03/12/APTgaR.png" alt="APTgaR.png"></a></p>
-<p><a href="https://imgchr.com/i/APT2I1" target="_blank" rel="noopener"><img src="https://s2.ax1x.com/2019/03/12/APT2I1.png" alt="APT2I1.png"></a></p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br></pre></td><td class="code"><pre><span class="line">package CollectionReview;</span><br><span class="line"></span><br><span class="line">import java.util.Collection;</span><br><span class="line">import java.util.HashMap;</span><br><span class="line">import java.util.Iterator;</span><br><span class="line">import java.util.Map.Entry;</span><br><span class="line">import java.util.Set;</span><br><span class="line"></span><br><span class="line">public class mapKeyValueReview &#123;</span><br><span class="line"></span><br><span class="line">	private static final String Integer = null;</span><br><span class="line"></span><br><span class="line">	public static void main(String[] args) &#123;</span><br><span class="line">		</span><br><span class="line">		HashMap&lt;Integer, String&gt; map = new HashMap&lt;Integer,String&gt;();</span><br><span class="line">		System.out.println(&quot;map.isEmpty():&quot;+map.isEmpty());</span><br><span class="line">		System.out.println(&quot;map.size():&quot;+map.size());</span><br><span class="line">		map.put(1, &quot;a&quot;);</span><br><span class="line">		map.put(5, &quot;a&quot;);</span><br><span class="line">		map.put(3, &quot;n&quot;);</span><br><span class="line">		map.put(9, &quot;m&quot;);</span><br><span class="line">		System.out.println(&quot;map.size():&quot;+map.size());</span><br><span class="line">		System.out.println(&quot;map.containsKey(5):&quot;+map.containsKey(5));</span><br><span class="line">		System.out.println(&quot;map.containsValue(n):&quot;+map.containsValue(&quot;n&quot;));</span><br><span class="line">		</span><br><span class="line">		System.out.println(&quot;------map.remove(3)后------&quot;);</span><br><span class="line">		map.remove(3);</span><br><span class="line">		System.out.println(&quot;map.size():&quot;+map.size());</span><br><span class="line">		</span><br><span class="line">		System.out.println(&quot;-------map.clear()后------&quot;);</span><br><span class="line">		map.clear();</span><br><span class="line">		System.out.println(&quot;map.isEmpty():&quot;+map.isEmpty());</span><br><span class="line">		System.out.println(&quot;-----------------------&quot;);</span><br><span class="line">		</span><br><span class="line">		map.put(1, &quot;a&quot;);</span><br><span class="line">		map.put(5, &quot;a&quot;);</span><br><span class="line">		map.put(3, &quot;n&quot;);</span><br><span class="line">		map.put(9, &quot;m&quot;);</span><br><span class="line">		/*</span><br><span class="line">		 * Map的遍历</span><br><span class="line">		 * 1、获取map中的set键</span><br><span class="line">		 * 2、遍历set</span><br><span class="line">		 * 3、根据map的key来获取value</span><br><span class="line">		 */</span><br><span class="line">		Set&lt;Integer&gt; set = map.keySet();</span><br><span class="line">		Iterator&lt;Integer&gt; it = set.iterator();</span><br><span class="line">		while(it.hasNext()) &#123;</span><br><span class="line">			Integer key =(Integer) it.next();</span><br><span class="line">			//map.get(key); 获取map的键对应的值</span><br><span class="line">			String value=map.get(key);</span><br><span class="line">			System.out.println(key+&quot;--&gt;&quot;+value);</span><br><span class="line">		&#125;</span><br><span class="line">		</span><br><span class="line">		System.out.println(&quot;--------------------&quot;);</span><br><span class="line">		/*</span><br><span class="line">		 * 用map.entrySet()获取Entry的set集合</span><br><span class="line">		 * 遍历Entry的set集合，获取每个Entry对象</span><br><span class="line">		 * 根据entry.getKey获取key值</span><br><span class="line">		 * 根据entry.getValue来获取value值</span><br><span class="line">		 * 注意：如果map中的key值有null，不要用此种方法遍历，小心空指针</span><br><span class="line">		 */</span><br><span class="line">		Set&lt;Entry&lt;Integer, String&gt;&gt; set1 = map.entrySet();</span><br><span class="line">		Iterator&lt;Entry&lt;Integer, String&gt;&gt; iterator = set1.iterator();</span><br><span class="line">		while(iterator.hasNext()) &#123;</span><br><span class="line">			Entry&lt;Integer, String&gt; entry =(Entry) iterator.next();</span><br><span class="line">			//获取键</span><br><span class="line">			int key =(Integer) entry.getKey();</span><br><span class="line">			//获取值</span><br><span class="line">			String value = entry.getValue();</span><br><span class="line">			System.out.println(key+&quot;--&gt;&quot;+value);</span><br><span class="line">		&#125;</span><br><span class="line">		</span><br><span class="line">		//获取所有值集合</span><br><span class="line">		Collection&lt;String&gt; c = map.values();</span><br><span class="line">		Iterator&lt;String&gt; iterator2 = c.iterator();</span><br><span class="line">		while(iterator2.hasNext()) &#123;</span><br><span class="line">			String s = (String)iterator2.next();</span><br><span class="line">			System.out.print(s+&quot; &quot;);</span><br><span class="line">		&#125;</span><br><span class="line">	</span><br><span class="line">	&#125;</span><br><span class="line">	</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p><a href="https://imgchr.com/i/APTTqH" target="_blank" rel="noopener"><img src="https://s2.ax1x.com/2019/03/12/APTTqH.png" alt="APTTqH.png"></a></p>
-<p><a href="https://imgchr.com/i/APTbdA" target="_blank" rel="noopener"><img src="https://s2.ax1x.com/2019/03/12/APTbdA.png" alt="APTbdA.png"></a></p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br></pre></td><td class="code"><pre><span class="line">package CollectionReview;</span><br><span class="line"></span><br><span class="line">import java.util.ArrayList;</span><br><span class="line">import java.util.Collections;</span><br><span class="line">import java.util.Iterator;</span><br><span class="line">import java.util.Map;</span><br><span class="line">import java.util.Map.Entry;</span><br><span class="line">import java.util.Set;</span><br><span class="line">import java.util.TreeMap;</span><br><span class="line">import java.util.TreeSet;</span><br><span class="line"></span><br><span class="line">/*</span><br><span class="line"> * Collections排序，需要list里面的元素，实现Comparable接口</span><br><span class="line"> */</span><br><span class="line"></span><br><span class="line">public class ListComparable &#123;</span><br><span class="line"></span><br><span class="line">	public static class Student implements Comparable&lt;Student&gt;&#123;</span><br><span class="line"></span><br><span class="line">		private String name;</span><br><span class="line">		</span><br><span class="line">		/*分数</span><br><span class="line">		 */</span><br><span class="line">		private int score;</span><br><span class="line">		</span><br><span class="line">		public Student(String name,int score) &#123;</span><br><span class="line">			this.name=name;</span><br><span class="line">			this.score=score;</span><br><span class="line">		&#125;</span><br><span class="line">		//实现compareTo方法，进行比较降序排序</span><br><span class="line">		@Override</span><br><span class="line">		public int compareTo(Student o) &#123;</span><br><span class="line">			// TODO Auto-generated method stub</span><br><span class="line">			if(this.score&lt;o.score) &#123;</span><br><span class="line">				return 1;</span><br><span class="line">			&#125;else if(this.score == o.score) &#123;</span><br><span class="line">				return 0;</span><br><span class="line">			&#125;else &#123;</span><br><span class="line">				return -1;</span><br><span class="line">			&#125;</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">	</span><br><span class="line">	public static void main(String[] args) &#123;</span><br><span class="line">		Student s1 = new Student(&quot;ming&quot;, 90);</span><br><span class="line">		Student s2 = new Student(&quot;aaa&quot;, 22);</span><br><span class="line">		Student s3 = new Student(&quot;ddd&quot;, 333);</span><br><span class="line">		ArrayList&lt;Student&gt; arrayList = new ArrayList&lt;&gt;();</span><br><span class="line">		arrayList.add(s1);</span><br><span class="line">		arrayList.add(s2);</span><br><span class="line">		arrayList.add(s3);</span><br><span class="line">		</span><br><span class="line">		for (Student s : arrayList) &#123;</span><br><span class="line">			System.out.println(s.name+&quot;\t&quot;+s.score);</span><br><span class="line">		&#125;</span><br><span class="line">		System.out.println(&quot;-----------------&quot;);</span><br><span class="line">		//对arraylist进行排序</span><br><span class="line">		Collections.sort(arrayList);</span><br><span class="line">		for (Student s : arrayList) &#123;</span><br><span class="line">			System.out.println(s.name+&quot;\t&quot;+s.score);</span><br><span class="line">		&#125;</span><br><span class="line">		System.out.println(&quot;-------------treeSet-------------&quot;);</span><br><span class="line">		//由于Student实现了Comparable类的compareTo方法，treeSet会根据Student类的排序算法进行排序</span><br><span class="line">		Set set=new TreeSet();</span><br><span class="line">		set.add(new Student(&quot;TOM&quot;, 90));</span><br><span class="line">		set.add(new Student(&quot;JIM&quot;, 60));</span><br><span class="line">		set.add(new Student(&quot;jerry&quot;, 80));</span><br><span class="line">		Iterator iter = set.iterator();</span><br><span class="line">		while(iter.hasNext()) &#123;</span><br><span class="line">			Student stu = (Student)iter.next();</span><br><span class="line">			System.out.println(stu.name+&quot; &quot;+stu.score);</span><br><span class="line">		&#125;</span><br><span class="line">		</span><br><span class="line">		//TreeMap已经实现了Comparable接口</span><br><span class="line">		Map&lt;String, String&gt; map = new TreeMap&lt;&gt;();</span><br><span class="line">		map.put(&quot;7&quot;, &quot;777&quot;);</span><br><span class="line">		map.put(&quot;5&quot;, &quot;555&quot;);</span><br><span class="line">		map.put(&quot;9&quot;, &quot;999&quot;);</span><br><span class="line">		//由于string已经实现了Comparable类的comapreTo方法</span><br><span class="line">		Set&lt;Entry&lt;String, String&gt;&gt; set2 = map.entrySet();</span><br><span class="line">		Iterator&lt;Entry&lt;String, String&gt;&gt; iterator = set2.iterator();</span><br><span class="line">		while(iterator.hasNext()) &#123;</span><br><span class="line">			Entry&lt;String, String&gt; next = iterator.next();</span><br><span class="line">			System.out.println(next.getKey()+&quot;--&gt;&quot;+next.getValue());</span><br><span class="line">		&#125;</span><br><span class="line">		</span><br><span class="line">	&#125;</span><br><span class="line">	</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p><a href="https://imgchr.com/i/AP7pLQ" target="_blank" rel="noopener"><img src="https://s2.ax1x.com/2019/03/12/AP7pLQ.png" alt="AP7pLQ.png"></a></p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br></pre></td><td class="code"><pre><span class="line">package CollectionReview;</span><br><span class="line"></span><br><span class="line">import java.util.ArrayList;</span><br><span class="line">import java.util.Collections;</span><br><span class="line">import java.util.Iterator;</span><br><span class="line">import java.util.Map;</span><br><span class="line">import java.util.Map.Entry;</span><br><span class="line">import java.util.Set;</span><br><span class="line">import java.util.TreeMap;</span><br><span class="line">import java.util.TreeSet;</span><br><span class="line"></span><br><span class="line">/*</span><br><span class="line"> * Collections排序，需要list里面的元素，实现Comparable接口</span><br><span class="line"> */</span><br><span class="line"></span><br><span class="line">public class ListComparable &#123;</span><br><span class="line"></span><br><span class="line">	public static class Student implements Comparable&lt;Student&gt;&#123;</span><br><span class="line"></span><br><span class="line">		private String name;</span><br><span class="line">		</span><br><span class="line">		/*分数</span><br><span class="line">		 */</span><br><span class="line">		private int score;</span><br><span class="line">		</span><br><span class="line">		public Student(String name,int score) &#123;</span><br><span class="line">			this.name=name;</span><br><span class="line">			this.score=score;</span><br><span class="line">		&#125;</span><br><span class="line">		//实现compareTo方法，进行比较降序排序</span><br><span class="line">		@Override</span><br><span class="line">		public int compareTo(Student o) &#123;</span><br><span class="line">			// TODO Auto-generated method stub</span><br><span class="line">			if(this.score&lt;o.score) &#123;</span><br><span class="line">				return 1;</span><br><span class="line">			&#125;else if(this.score == o.score) &#123;</span><br><span class="line">				return 0;</span><br><span class="line">			&#125;else &#123;</span><br><span class="line">				return -1;</span><br><span class="line">			&#125;</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">	</span><br><span class="line">	public static void main(String[] args) &#123;</span><br><span class="line">		Student s1 = new Student(&quot;ming&quot;, 90);</span><br><span class="line">		Student s2 = new Student(&quot;aaa&quot;, 22);</span><br><span class="line">		Student s3 = new Student(&quot;ddd&quot;, 333);</span><br><span class="line">		ArrayList&lt;Student&gt; arrayList = new ArrayList&lt;&gt;();</span><br><span class="line">		arrayList.add(s1);</span><br><span class="line">		arrayList.add(s2);</span><br><span class="line">		arrayList.add(s3);</span><br><span class="line">		</span><br><span class="line">		for (Student s : arrayList) &#123;</span><br><span class="line">			System.out.println(s.name+&quot;\t&quot;+s.score);</span><br><span class="line">		&#125;</span><br><span class="line">		System.out.println(&quot;-----------------&quot;);</span><br><span class="line">		//对arraylist进行排序</span><br><span class="line">		Collections.sort(arrayList);</span><br><span class="line">		for (Student s : arrayList) &#123;</span><br><span class="line">			System.out.println(s.name+&quot;\t&quot;+s.score);</span><br><span class="line">		&#125;</span><br><span class="line">		System.out.println(&quot;-------------treeSet-------------&quot;);</span><br><span class="line">		//由于Student实现了Comparable类的compareTo方法，treeSet会根据Student类的排序算法进行排序</span><br><span class="line">		Set set=new TreeSet();</span><br><span class="line">		set.add(new Student(&quot;TOM&quot;, 90));</span><br><span class="line">		set.add(new Student(&quot;JIM&quot;, 60));</span><br><span class="line">		set.add(new Student(&quot;jerry&quot;, 80));</span><br><span class="line">		Iterator iter = set.iterator();</span><br><span class="line">		while(iter.hasNext()) &#123;</span><br><span class="line">			Student stu = (Student)iter.next();</span><br><span class="line">			System.out.println(stu.name+&quot; &quot;+stu.score);</span><br><span class="line">		&#125;</span><br><span class="line">		</span><br><span class="line">		//TreeMap已经实现了Comparable接口</span><br><span class="line">		Map&lt;String, String&gt; map = new TreeMap&lt;&gt;();</span><br><span class="line">		map.put(&quot;7&quot;, &quot;777&quot;);</span><br><span class="line">		map.put(&quot;5&quot;, &quot;555&quot;);</span><br><span class="line">		map.put(&quot;9&quot;, &quot;999&quot;);</span><br><span class="line">		//由于string已经实现了Comparable类的comapreTo方法</span><br><span class="line">		Set&lt;Entry&lt;String, String&gt;&gt; set2 = map.entrySet();</span><br><span class="line">		Iterator&lt;Entry&lt;String, String&gt;&gt; iterator = set2.iterator();</span><br><span class="line">		while(iterator.hasNext()) &#123;</span><br><span class="line">			Entry&lt;String, String&gt; next = iterator.next();</span><br><span class="line">			System.out.println(next.getKey()+&quot;--&gt;&quot;+next.getValue());</span><br><span class="line">		&#125;</span><br><span class="line">		</span><br><span class="line">	&#125;</span><br><span class="line">	</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
   </section>
 
   
   <nav class="pagination">
-    <a class="extend prev" rel="prev" href="/page/5/"><i class="fa fa-angle-left"></i></a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/5/">5</a><span class="page-number current">6</span><a class="page-number" href="/page/7/">7</a><a class="extend next" rel="next" href="/page/7/"><i class="fa fa-angle-right"></i></a>
+    <a class="extend prev" rel="prev" href="/page/5/"><i class="fa fa-angle-left"></i></a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/5/">5</a><span class="page-number current">6</span><a class="page-number" href="/page/7/">7</a><a class="page-number" href="/page/8/">8</a><a class="extend next" rel="next" href="/page/7/"><i class="fa fa-angle-right"></i></a>
   </nav>
 
 
@@ -1988,7 +1990,7 @@
               
                 <a href="/archives/">
               
-                  <span class="site-state-item-count">70</span>
+                  <span class="site-state-item-count">71</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
@@ -2010,7 +2012,7 @@
               
               <div class="site-state-item site-state-tags">
                 <a href="/tags/index.html">
-                  <span class="site-state-item-count">91</span>
+                  <span class="site-state-item-count">92</span>
                   <span class="site-state-item-name">标签</span>
                 </a>
               </div>
