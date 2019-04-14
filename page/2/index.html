@@ -252,6 +252,151 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://blogoflyt.cn/2019/03/18/ZooKeeper应用案例-分布式系统服务器上下线感知/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Richard">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/gakki.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="积累技术之路">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2019/03/18/ZooKeeper应用案例-分布式系统服务器上下线感知/" itemprop="url">ZooKeeper应用案例--分布式系统服务器上下线感知</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-03-18T19:43:00+08:00">
+                2019-03-18
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/ZooKeeper/" itemprop="url" rel="index">
+                    <span itemprop="name">ZooKeeper</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p><a href="https://imgchr.com/i/kXSu8S" target="_blank" rel="noopener"><img src="https://s2.ax1x.com/2019/03/04/kXSu8S.png" alt="kXSu8S.png"></a></p>
+<h6 id="Service（打印时间日志）"><a href="#Service（打印时间日志）" class="headerlink" title="Service（打印时间日志）"></a>Service（打印时间日志）</h6><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br></pre></td><td class="code"><pre><span class="line">package DistributeSystem;</span><br><span class="line"></span><br><span class="line">import java.io.IOException;</span><br><span class="line">import java.io.InputStream;</span><br><span class="line">import java.io.OutputStream;</span><br><span class="line">import java.net.ServerSocket;</span><br><span class="line">import java.net.Socket;</span><br><span class="line">import java.util.Date;</span><br><span class="line"></span><br><span class="line">public class TimeQueryService extends Thread&#123;</span><br><span class="line">	</span><br><span class="line">	int port = 0;</span><br><span class="line">	public TimeQueryService(int port)&#123;</span><br><span class="line">		</span><br><span class="line">		this.port = port;</span><br><span class="line">	&#125;</span><br><span class="line">	</span><br><span class="line">	@Override</span><br><span class="line">	public void run() &#123;</span><br><span class="line">		</span><br><span class="line">		try &#123;</span><br><span class="line">			ServerSocket ss = new ServerSocket(port);</span><br><span class="line">			System.out.println(&quot;业务线程已绑定端口&quot;+port+&quot;准备接受消费端请求了.....&quot;);</span><br><span class="line">			while(true)&#123;</span><br><span class="line">				Socket sc = ss.accept();</span><br><span class="line">				InputStream inputStream = sc.getInputStream();</span><br><span class="line">				OutputStream outputStream = sc.getOutputStream();</span><br><span class="line">				outputStream.write(new Date().toString().getBytes());</span><br><span class="line">			&#125;</span><br><span class="line">			</span><br><span class="line">		&#125; catch (IOException e) &#123;</span><br><span class="line">			e.printStackTrace();</span><br><span class="line">		&#125;</span><br><span class="line">		</span><br><span class="line">		</span><br><span class="line">	&#125;</span><br><span class="line">	</span><br><span class="line">	</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h6 id="Server端-启动业务处理线程，开始接受请求进行业务处理"><a href="#Server端-启动业务处理线程，开始接受请求进行业务处理" class="headerlink" title="Server端 启动业务处理线程，开始接受请求进行业务处理"></a>Server端 启动业务处理线程，开始接受请求进行业务处理</h6><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br></pre></td><td class="code"><pre><span class="line">package DistributeSystem;</span><br><span class="line"></span><br><span class="line">import java.io.IOException;</span><br><span class="line"></span><br><span class="line">import org.apache.zookeeper.CreateMode;</span><br><span class="line">import org.apache.zookeeper.KeeperException;</span><br><span class="line">import org.apache.zookeeper.WatchedEvent;</span><br><span class="line">import org.apache.zookeeper.Watcher;</span><br><span class="line">import org.apache.zookeeper.ZooKeeper;</span><br><span class="line">import org.apache.zookeeper.data.Stat;</span><br><span class="line">import org.apache.zookeeper.ZooDefs.Ids;</span><br><span class="line"></span><br><span class="line">public class TimeQueryServer &#123;</span><br><span class="line"></span><br><span class="line">	ZooKeeper zk=null;</span><br><span class="line">	//构造zk客户端连接</span><br><span class="line">	public void connectZk() throws IOException &#123;</span><br><span class="line"></span><br><span class="line">		zk = new ZooKeeper(&quot;namenode:2181,datanode1:2181,datanode2:2181,datanode3:2181&quot;,</span><br><span class="line">				2000,null);	</span><br><span class="line">	&#125;</span><br><span class="line">	</span><br><span class="line">	//注册服务器信息</span><br><span class="line">	public void registerServerInfo(String hostname,String port) throws KeeperException, InterruptedException &#123;</span><br><span class="line">		</span><br><span class="line">		//先判断注册节点的父节点是否存在，如果不存在，则创建</span><br><span class="line">		</span><br><span class="line">		Stat stat = zk.exists(&quot;/servers&quot;, false);</span><br><span class="line">		if(stat==null) &#123;</span><br><span class="line">			zk.create(&quot;/servers/server&quot;,null, Ids.OPEN_ACL_UNSAFE, CreateMode.PERSISTENT);</span><br><span class="line">		&#125;</span><br><span class="line">		//注册服务器数据到zk的约定注册节点下</span><br><span class="line">//		String create=zk.create(&quot;/servers/server&quot;,(hostname+&quot;:&quot;+port).getBytes() , Ids.OPEN_ACL_UNSAFE, CreateMode.EPHEMERAL_SEQUENTIAL);</span><br><span class="line">		zk.setData(&quot;/servers/server&quot;, (hostname+&quot;:&quot;+port).getBytes(), -1);</span><br><span class="line">		</span><br><span class="line">		System.out.println(hostname+&quot;服务器向zk注册信息成功，注册的节点为:/servers/server&quot;);</span><br><span class="line">	&#125;</span><br><span class="line">	</span><br><span class="line"></span><br><span class="line">	public static void main(String[] args) throws IOException, KeeperException, InterruptedException &#123;</span><br><span class="line">		</span><br><span class="line">		TimeQueryServer timeQueryServer = new TimeQueryServer();</span><br><span class="line">		</span><br><span class="line">		//构造zk客户端连接</span><br><span class="line">		timeQueryServer.connectZk();</span><br><span class="line">		</span><br><span class="line">		//注册服务器信息</span><br><span class="line">		timeQueryServer.registerServerInfo(args[0], args[1]);</span><br><span class="line">		</span><br><span class="line">		//启动业务线程开始处理业务</span><br><span class="line">		new TimeQueryService(Integer.parseInt(args[1])).start();</span><br><span class="line">		</span><br><span class="line">		</span><br><span class="line">	&#125;</span><br><span class="line">	</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h6 id="Consumer-查询在线服务器，并注册监听"><a href="#Consumer-查询在线服务器，并注册监听" class="headerlink" title="Consumer 查询在线服务器，并注册监听"></a>Consumer 查询在线服务器，并注册监听</h6><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br></pre></td><td class="code"><pre><span class="line">package DistributeSystem;</span><br><span class="line"></span><br><span class="line">import java.io.IOException;</span><br><span class="line">import java.io.InputStream;</span><br><span class="line">import java.io.OutputStream;</span><br><span class="line">import java.net.Socket;</span><br><span class="line">import java.util.ArrayList;</span><br><span class="line">import java.util.List;</span><br><span class="line">import java.util.Random;</span><br><span class="line"></span><br><span class="line">import org.apache.zookeeper.WatchedEvent;</span><br><span class="line">import org.apache.zookeeper.Watcher;</span><br><span class="line">import org.apache.zookeeper.ZooKeeper;</span><br><span class="line">import org.apache.zookeeper.Watcher.Event.EventType;</span><br><span class="line">import org.apache.zookeeper.Watcher.Event.KeeperState;</span><br><span class="line"></span><br><span class="line">public class Consumer &#123;</span><br><span class="line">	</span><br><span class="line">	//定义一个list用于存放最新的在线服务器列表</span><br><span class="line">	private ArrayList&lt;String&gt; onlineSevers=new ArrayList&lt;&gt;();</span><br><span class="line">	</span><br><span class="line">	ZooKeeper zk=null;</span><br><span class="line">	//构造zk连接对象</span><br><span class="line">	public void connectZk() throws IOException &#123;</span><br><span class="line"></span><br><span class="line">		zk = new ZooKeeper(&quot;namenode:2181,datanode1:2181,datanode2:2181,datanode3:2181&quot;,</span><br><span class="line">				2000,new Watcher() &#123;</span><br><span class="line">			@Override</span><br><span class="line">			public void process(WatchedEvent event) &#123;</span><br><span class="line">				// TODO Auto-generated method stub</span><br><span class="line">				if(event.getState() == KeeperState.SyncConnected &amp;&amp;</span><br><span class="line">						event.getType() == EventType.NodeChildrenChanged) &#123;</span><br><span class="line">					try &#123;</span><br><span class="line">						//事件回调逻辑中，再次查询zk上的在线服务器节点即可，查询逻辑中再次注册子节点变化事件监听</span><br><span class="line">						getOnlineServers();</span><br><span class="line">					&#125; catch (Exception e) &#123;</span><br><span class="line">						// TODO Auto-generated catch block</span><br><span class="line">						e.printStackTrace();</span><br><span class="line">					&#125;</span><br><span class="line">				&#125;</span><br><span class="line">			&#125;</span><br><span class="line">		&#125;);	</span><br><span class="line">	&#125;</span><br><span class="line">	</span><br><span class="line">	//查询在线服务器列表</span><br><span class="line">	public void getOnlineServers() throws Exception&#123;</span><br><span class="line"></span><br><span class="line">		List&lt;String&gt; children = zk.getChildren(&quot;/servers&quot;, true);</span><br><span class="line">		ArrayList&lt;String&gt; servers = new ArrayList&lt;&gt;();</span><br><span class="line">		</span><br><span class="line">		for (String child : children) &#123;</span><br><span class="line">			byte[] data = zk.getData(&quot;/servers/&quot;+child, false, null);</span><br><span class="line">			String serverInfo = new String(data);</span><br><span class="line">						</span><br><span class="line">			servers.add(serverInfo);</span><br><span class="line">		&#125;</span><br><span class="line">		onlineSevers=servers;</span><br><span class="line">		</span><br><span class="line">		System.out.println(&quot;查询了一次zk,当前在线的服务器有:&quot;+servers);</span><br><span class="line">		</span><br><span class="line">	&#125;</span><br><span class="line">	</span><br><span class="line">	//处理业务(向一台服务器发送时间查询请求)</span><br><span class="line">	public void sendRequest() throws Exception&#123;</span><br><span class="line">//		System.out.println(&quot;消费者开始处理业务功能.....&quot;);	</span><br><span class="line"></span><br><span class="line">//		Thread.sleep(Long.MAX_VALUE);</span><br><span class="line">		</span><br><span class="line">		Random random = new Random();</span><br><span class="line">		//挑选一台当前在线的服务器</span><br><span class="line">		while(true) &#123;		</span><br><span class="line">			int nextInt = random.nextInt(onlineSevers.size());</span><br><span class="line">			String server=onlineSevers.get(nextInt);</span><br><span class="line">			String hostname=server.split(&quot;:&quot;)[0];</span><br><span class="line">			int port=Integer.parseInt(server.split(&quot;:&quot;)[1]);</span><br><span class="line">			</span><br><span class="line">			System.out.println(&quot;本次请求挑选的服务器为:&quot;+server);</span><br><span class="line"></span><br><span class="line">			Socket socket = new Socket(hostname,port);</span><br><span class="line">			OutputStream outputStream = socket.getOutputStream();</span><br><span class="line">			InputStream inputStream = socket.getInputStream();</span><br><span class="line">			outputStream.write(&quot;haha&quot;.getBytes());</span><br><span class="line">			outputStream.flush();</span><br><span class="line"></span><br><span class="line">			byte[] buf=new byte[256];</span><br><span class="line">			int read = inputStream.read(buf);</span><br><span class="line">			</span><br><span class="line">			System.out.println(&quot;服务器 响应的时间为：&quot;+new String(buf,0,read));</span><br><span class="line">			</span><br><span class="line">			outputStream.close();</span><br><span class="line">			inputStream.close();</span><br><span class="line">			socket.close();</span><br><span class="line">			</span><br><span class="line">			Thread.sleep(10000);</span><br><span class="line">			</span><br><span class="line">		&#125;</span><br><span class="line">		</span><br><span class="line">	&#125;</span><br><span class="line">	</span><br><span class="line">	</span><br><span class="line">	</span><br><span class="line">	public static void main(String[] args) throws Exception&#123;</span><br><span class="line">	</span><br><span class="line">		Consumer consumer = new Consumer();</span><br><span class="line"></span><br><span class="line">		//构造zk连接对象</span><br><span class="line">		consumer.connectZk();</span><br><span class="line">		</span><br><span class="line">		//查询在线服务器列表</span><br><span class="line">		consumer.getOnlineServers();</span><br><span class="line">		</span><br><span class="line">		//处理业务(向一台服务器发送时间查询请求)</span><br><span class="line">		consumer.sendRequest();</span><br><span class="line">		</span><br><span class="line">	&#125;</span><br><span class="line">	</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="http://blogoflyt.cn/2019/03/18/LXC容器简介/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -1661,153 +1806,6 @@
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://blogoflyt.cn/2019/03/11/MapReduce编程案例9-控制输入、输出格式/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Richard">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/gakki.jpg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="积累技术之路">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2019/03/11/MapReduce编程案例9-控制输入、输出格式/" itemprop="url">MapReduce编程案例9-----控制输入、输出格式</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-03-11T23:00:00+08:00">
-                2019-03-11
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/MapReduce/" itemprop="url" rel="index">
-                    <span itemprop="name">MapReduce</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h5 id="需求：还是对案例4中的流量数据进行汇总，然后求出汇总结果中的流量最大的TOPN条"><a href="#需求：还是对案例4中的流量数据进行汇总，然后求出汇总结果中的流量最大的TOPN条" class="headerlink" title="需求：还是对案例4中的流量数据进行汇总，然后求出汇总结果中的流量最大的TOPN条"></a>需求：还是对案例4中的流量数据进行汇总，然后求出汇总结果中的流量最大的TOPN条</h5><h6 id="步骤1"><a href="#步骤1" class="headerlink" title="步骤1:"></a>步骤1:</h6><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">思路：统计逻辑跟之前的流量统计一致：</span><br><span class="line">map：以手机号作为key，flowbean作为value</span><br><span class="line">注：步骤1输出的结果文件通过指定SequenceFileOutputFormat来产生SequenceFile文件；SequenceFile文件是hadoop定义的一种文件，里面存放的是大量key-value的对象序列化字节（文件头部还存放了key和value所属的类型名）；</span><br></pre></td></tr></table></figure>
-<h6 id="步骤2："><a href="#步骤2：" class="headerlink" title="步骤2："></a>步骤2：</h6><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">思路：读取步骤1的SequenceFile结果文件，需要指定inputformatclass为SequenceFileInputFormat组件</span><br><span class="line">既然使用了这种输入组件，那么我们的map方法中直接就接收一对KEY-VALUE数据</span><br><span class="line"></span><br><span class="line">如何实现topn呢？</span><br><span class="line">通过把所有汇总数据发给同一个reduce端的worker，并且通过定义一个GroupingComparator来让这个worker把所有手机号的flowbean对象看成一组，调用一次reduce方法，我们就只需要在reduce方法中输出前n个即可</span><br></pre></td></tr></table></figure>
-<h5 id="MapReduce编程实现"><a href="#MapReduce编程实现" class="headerlink" title="MapReduce编程实现"></a>MapReduce编程实现</h5><h6 id="Object"><a href="#Object" class="headerlink" title="Object"></a>Object</h6><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br></pre></td><td class="code"><pre><span class="line">package MRCodingNine_IOControl_haveprob;</span><br><span class="line"></span><br><span class="line">import java.io.DataInput;</span><br><span class="line">import java.io.DataOutput;</span><br><span class="line">import java.io.IOException;</span><br><span class="line"></span><br><span class="line">import org.apache.hadoop.io.WritableComparable;</span><br><span class="line"></span><br><span class="line">public class FlowObject implements WritableComparable&lt;FlowObject&gt;&#123;</span><br><span class="line"></span><br><span class="line">	/**</span><br><span class="line">	 * @return the phone</span><br><span class="line">	 */</span><br><span class="line">	public String getPhone() &#123;</span><br><span class="line">		return phone;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	/**</span><br><span class="line">	 * @param phone the phone to set</span><br><span class="line">	 */</span><br><span class="line">	public void setPhone(String phone) &#123;</span><br><span class="line">		this.phone = phone;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	/**</span><br><span class="line">	 * @return the uFlow</span><br><span class="line">	 */</span><br><span class="line">	public int getuFlow() &#123;</span><br><span class="line">		return uFlow;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	/**</span><br><span class="line">	 * @param uFlow the uFlow to set</span><br><span class="line">	 */</span><br><span class="line">	public void setuFlow(int uFlow) &#123;</span><br><span class="line">		this.uFlow = uFlow;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	/**</span><br><span class="line">	 * @return the dFlow</span><br><span class="line">	 */</span><br><span class="line">	public int getdFlow() &#123;</span><br><span class="line">		return dFlow;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	/**</span><br><span class="line">	 * @param dFlow the dFlow to set</span><br><span class="line">	 */</span><br><span class="line">	public void setdFlow(int dFlow) &#123;</span><br><span class="line">		this.dFlow = dFlow;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	/**</span><br><span class="line">	 * @return the amount</span><br><span class="line">	 */</span><br><span class="line">	public int getAmount() &#123;</span><br><span class="line">		return amount;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	/**</span><br><span class="line">	 * @param amount the amount to set</span><br><span class="line">	 */</span><br><span class="line">	public void setAmount(int amount) &#123;</span><br><span class="line">		this.amount = amount;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	public void set(String phone, int uFlow, int dFlow) &#123;</span><br><span class="line">		</span><br><span class="line">		this.phone = phone;</span><br><span class="line">		this.uFlow = uFlow;</span><br><span class="line">		this.dFlow = dFlow;</span><br><span class="line">		this.amount = this.uFlow+this.dFlow;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	/* (non-Javadoc)</span><br><span class="line">	 * @see java.lang.Object#toString()</span><br><span class="line">	 */</span><br><span class="line">	@Override</span><br><span class="line">	public String toString() &#123;</span><br><span class="line">		return &quot;FlowObject [phone=&quot; + phone + &quot;, uFlow=&quot; + uFlow + &quot;, dFlow=&quot; + dFlow + &quot;, amount=&quot; + amount + &quot;]&quot;;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	private String phone;</span><br><span class="line">	private int uFlow;</span><br><span class="line">	private int dFlow;</span><br><span class="line">	private int amount;</span><br><span class="line">	@Override</span><br><span class="line">	public void readFields(DataInput in) throws IOException &#123;</span><br><span class="line">		// TODO Auto-generated method stub</span><br><span class="line">		this.phone=in.readUTF();</span><br><span class="line">		this.uFlow=in.readInt();</span><br><span class="line">		this.dFlow=in.readInt();</span><br><span class="line">		this.amount=in.readInt();</span><br><span class="line">		</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	@Override</span><br><span class="line">	public void write(DataOutput out) throws IOException &#123;</span><br><span class="line">		// TODO Auto-generated method stub</span><br><span class="line">		out.writeUTF(this.phone);</span><br><span class="line">		out.writeInt(this.uFlow);</span><br><span class="line">		out.writeInt(this.dFlow);</span><br><span class="line">		out.writeInt(amount);</span><br><span class="line">		</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	@Override</span><br><span class="line">	public int compareTo(FlowObject o) &#123;</span><br><span class="line">		// TODO Auto-generated method stub</span><br><span class="line">		return o.getAmount()-this.getAmount()==0?</span><br><span class="line">				this.getPhone().compareTo(o.getPhone()):o.getAmount()-this.getAmount();</span><br><span class="line">	&#125;</span><br><span class="line">	</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<h6 id="Comparator"><a href="#Comparator" class="headerlink" title="Comparator"></a>Comparator</h6><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">package MRCodingNine_IOControl_haveprob;</span><br><span class="line"></span><br><span class="line">import org.apache.hadoop.io.WritableComparable;</span><br><span class="line">import org.apache.hadoop.io.WritableComparator;</span><br><span class="line"></span><br><span class="line">public class FlowObjectGroupingComparator extends WritableComparator&#123;</span><br><span class="line">	public FlowObjectGroupingComparator() &#123;</span><br><span class="line">		// TODO Auto-generated constructor stub</span><br><span class="line">		super(FlowObject.class,true);</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	@Override</span><br><span class="line">	public int compare(WritableComparable a, WritableComparable b) &#123;</span><br><span class="line">		// TODO Auto-generated method stub</span><br><span class="line">		return 0;</span><br><span class="line">	&#125;</span><br><span class="line">	</span><br><span class="line">	</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<h6 id="MR-StepOne"><a href="#MR-StepOne" class="headerlink" title="MR StepOne"></a>MR StepOne</h6><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br></pre></td><td class="code"><pre><span class="line">package MRCodingNine_IOControl_haveprob;</span><br><span class="line"></span><br><span class="line">import java.io.IOException;</span><br><span class="line"></span><br><span class="line">import org.apache.hadoop.conf.Configuration;</span><br><span class="line">import org.apache.hadoop.fs.Path;</span><br><span class="line">import org.apache.hadoop.io.LongWritable;</span><br><span class="line">import org.apache.hadoop.io.SequenceFile.CompressionType;</span><br><span class="line">import org.apache.hadoop.io.Text;</span><br><span class="line">import org.apache.hadoop.mapreduce.Job;</span><br><span class="line">import org.apache.hadoop.mapreduce.Mapper;</span><br><span class="line">import org.apache.hadoop.mapreduce.Reducer;</span><br><span class="line">import org.apache.hadoop.mapreduce.lib.input.FileInputFormat;</span><br><span class="line">import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat;</span><br><span class="line">import org.apache.hadoop.mapreduce.lib.output.SequenceFileOutputFormat;</span><br><span class="line"></span><br><span class="line">public class SelfDesinTypeStepOne &#123;</span><br><span class="line"></span><br><span class="line">	</span><br><span class="line">	public static class SelfDesinTypeMapper extends Mapper&lt;LongWritable, Text, Text,FlowObject &gt;&#123;</span><br><span class="line">		@Override</span><br><span class="line">		protected void map(LongWritable key, Text value, Mapper&lt;LongWritable, Text, Text, FlowObject&gt;.Context context)</span><br><span class="line">				throws IOException, InterruptedException &#123;</span><br><span class="line">			// TODO Auto-generated method stub</span><br><span class="line">			String[] fields = value.toString().split(&quot;\t&quot;);</span><br><span class="line">			String phone=fields[1];</span><br><span class="line">			FlowObject flowObject = new FlowObject();</span><br><span class="line">			flowObject.set(phone, Integer.parseInt(fields[fields.length-3]),Integer.parseInt(fields[fields.length-2]));</span><br><span class="line">		</span><br><span class="line">			context.write(new Text(phone), flowObject);</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">	</span><br><span class="line">	public static class SelfDesinTypeReducer extends Reducer&lt;Text, FlowObject, Text, FlowObject&gt;&#123;</span><br><span class="line">		@Override</span><br><span class="line">		protected void reduce(Text phone, Iterable&lt;FlowObject&gt; iter,</span><br><span class="line">				Reducer&lt;Text, FlowObject, Text, FlowObject&gt;.Context context) throws IOException, InterruptedException &#123;</span><br><span class="line">			// TODO Auto-generated method stub</span><br><span class="line">			</span><br><span class="line">			int uFlow=0;</span><br><span class="line">			int dFlow=0;</span><br><span class="line">			</span><br><span class="line">			for (FlowObject flowObject : iter) &#123;</span><br><span class="line">				uFlow+=flowObject.getuFlow();</span><br><span class="line">				dFlow+=flowObject.getdFlow();</span><br><span class="line">			&#125;</span><br><span class="line">			FlowObject flowObject = new FlowObject();</span><br><span class="line">			flowObject.set(phone.toString(),uFlow, dFlow);</span><br><span class="line">			context.write(phone, flowObject);</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">	</span><br><span class="line">	public static void main(String[] args) throws Exception &#123;</span><br><span class="line">		Configuration conf = new Configuration();</span><br><span class="line">		Job job = Job.getInstance(conf);</span><br><span class="line">		</span><br><span class="line">		job.setJarByClass(SelfDesinTypeStepOne.class);</span><br><span class="line">		job.setMapperClass(SelfDesinTypeMapper.class);</span><br><span class="line">		job.setReducerClass(SelfDesinTypeReducer.class);</span><br><span class="line">		</span><br><span class="line">		job.setMapOutputKeyClass(Text.class);</span><br><span class="line">		job.setMapOutputValueClass(FlowObject.class);</span><br><span class="line">//		job.setGroupingComparatorClass(FlowObjectGroupingComparator.class);</span><br><span class="line">		</span><br><span class="line">		job.setOutputKeyClass(Text.class);</span><br><span class="line">		job.setOutputValueClass(FlowObject.class);</span><br><span class="line">		</span><br><span class="line">		job.setOutputFormatClass(SequenceFileOutputFormat.class);</span><br><span class="line">		SequenceFileOutputFormat.setOutputCompressionType(job, CompressionType.NONE);</span><br><span class="line">		</span><br><span class="line">//		FileInputFormat.setInputPaths(job, new Path(&quot;f:/Linuxsource/mrdata/flow/input&quot;));</span><br><span class="line">//		FileOutputFormat.setOutputPath(job, new Path(&quot;f:/Linuxsource/mrdata/flow/output2&quot;));</span><br><span class="line">		</span><br><span class="line">		FileInputFormat.setInputPaths(job, new Path(&quot;f:/Linuxsource/mrdata/flow/input&quot;));</span><br><span class="line">		SequenceFileOutputFormat.setOutputPath(job,new Path(&quot;f:/Linuxsource/mrdata/flow/output5&quot;) );</span><br><span class="line">		</span><br><span class="line">		job.setNumReduceTasks(1);</span><br><span class="line">		</span><br><span class="line">		boolean res= job.waitForCompletion(true);</span><br><span class="line">		</span><br><span class="line">		System.exit(res?0:-1);</span><br><span class="line">	&#125;</span><br><span class="line">	</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<h6 id="MR-StepTwo"><a href="#MR-StepTwo" class="headerlink" title="MR StepTwo"></a>MR StepTwo</h6><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br></pre></td><td class="code"><pre><span class="line">package MRCodingNine_IOControl_haveprob;</span><br><span class="line"></span><br><span class="line">import java.io.IOException;</span><br><span class="line"></span><br><span class="line">import org.apache.hadoop.conf.Configuration;</span><br><span class="line">import org.apache.hadoop.fs.Path;</span><br><span class="line">import org.apache.hadoop.io.Text;</span><br><span class="line">import org.apache.hadoop.mapreduce.Job;</span><br><span class="line">import org.apache.hadoop.mapreduce.Mapper;</span><br><span class="line">import org.apache.hadoop.mapreduce.Reducer;</span><br><span class="line">import org.apache.hadoop.mapreduce.lib.input.SequenceFileInputFormat;</span><br><span class="line">import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat;</span><br><span class="line"></span><br><span class="line">public class SelfDesinTypeStepTwo &#123;</span><br><span class="line"></span><br><span class="line">	public static class SelfDesinTypeStepTwoMapper extends Mapper&lt;Text, FlowObject, Text, FlowObject&gt;&#123;</span><br><span class="line">		</span><br><span class="line">		@Override</span><br><span class="line">		protected void map(Text key, FlowObject value, Mapper&lt;Text, FlowObject, Text, FlowObject&gt;.Context context)</span><br><span class="line">				throws IOException, InterruptedException &#123;</span><br><span class="line">			// TODO Auto-generated method stub</span><br><span class="line">			context.write(key, value);</span><br><span class="line">			</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">	</span><br><span class="line">	public static class SelfDesinTypeStepTwoReducer extends Reducer&lt;Text, FlowObject, Text, FlowObject&gt;&#123;</span><br><span class="line">		@Override</span><br><span class="line">		protected void reduce(Text key, Iterable&lt;FlowObject&gt; values,</span><br><span class="line">				Reducer&lt;Text, FlowObject, Text, FlowObject&gt;.Context context) throws IOException, InterruptedException &#123;</span><br><span class="line">			// TODO Auto-generated method stub</span><br><span class="line">			</span><br><span class="line">			Configuration conf = context.getConfiguration();</span><br><span class="line">			int topn= conf.getInt(&quot;top.n.value&quot;, 3);</span><br><span class="line">			int i=0;</span><br><span class="line">			for (FlowObject value : values) &#123;</span><br><span class="line">				context.write(key,value);</span><br><span class="line">				i++;</span><br><span class="line">				if(i==topn) return;</span><br><span class="line">			&#125;</span><br><span class="line">		</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">	</span><br><span class="line">	public static void main(String[] args) throws Exception&#123;</span><br><span class="line">		</span><br><span class="line">		Configuration conf = new Configuration();</span><br><span class="line">		conf.setInt(&quot;top.n.value&quot;, 3);</span><br><span class="line">		</span><br><span class="line">		Job job = Job.getInstance(conf);		</span><br><span class="line">		</span><br><span class="line">		job.setJarByClass(SelfDesinTypeStepTwo.class);</span><br><span class="line">		job.setMapperClass(SelfDesinTypeStepTwoMapper.class);</span><br><span class="line">		job.setReducerClass(SelfDesinTypeStepTwoReducer.class);</span><br><span class="line">		</span><br><span class="line">//		job.setGroupingComparatorClass(FlowObjectGroupingComparator.class);</span><br><span class="line">		</span><br><span class="line">		job.setMapOutputKeyClass(Text.class);</span><br><span class="line">		job.setMapOutputValueClass(FlowObject.class);</span><br><span class="line">		</span><br><span class="line">		job.setOutputKeyClass(Text.class);</span><br><span class="line">		job.setOutputValueClass(FlowObject.class);</span><br><span class="line">		</span><br><span class="line">		job.setInputFormatClass(SequenceFileInputFormat.class);</span><br><span class="line"></span><br><span class="line">		SequenceFileInputFormat.setInputPaths(job, new Path(&quot;f:/Linuxsource/mrdata/flow/output5&quot;));</span><br><span class="line">		FileOutputFormat.setOutputPath(job, new Path(&quot;f:/Linuxsource/mrdata/flow/output6&quot;));</span><br><span class="line">		</span><br><span class="line"></span><br><span class="line">		job.setNumReduceTasks(1);</span><br><span class="line">		</span><br><span class="line">		boolean res= job.waitForCompletion(true);</span><br><span class="line">		</span><br><span class="line">		System.exit(res?0:-1);</span><br><span class="line">		</span><br><span class="line">	&#125;</span><br><span class="line">	</span><br><span class="line">	</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
   </section>
 
   
@@ -1862,7 +1860,7 @@
               
                 <a href="/archives/">
               
-                  <span class="site-state-item-count">71</span>
+                  <span class="site-state-item-count">72</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>

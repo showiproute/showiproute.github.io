@@ -252,6 +252,153 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://blogoflyt.cn/2019/03/11/MapReduce编程案例9-控制输入、输出格式/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Richard">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/gakki.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="积累技术之路">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2019/03/11/MapReduce编程案例9-控制输入、输出格式/" itemprop="url">MapReduce编程案例9-----控制输入、输出格式</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-03-11T23:00:00+08:00">
+                2019-03-11
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/MapReduce/" itemprop="url" rel="index">
+                    <span itemprop="name">MapReduce</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h5 id="需求：还是对案例4中的流量数据进行汇总，然后求出汇总结果中的流量最大的TOPN条"><a href="#需求：还是对案例4中的流量数据进行汇总，然后求出汇总结果中的流量最大的TOPN条" class="headerlink" title="需求：还是对案例4中的流量数据进行汇总，然后求出汇总结果中的流量最大的TOPN条"></a>需求：还是对案例4中的流量数据进行汇总，然后求出汇总结果中的流量最大的TOPN条</h5><h6 id="步骤1"><a href="#步骤1" class="headerlink" title="步骤1:"></a>步骤1:</h6><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">思路：统计逻辑跟之前的流量统计一致：</span><br><span class="line">map：以手机号作为key，flowbean作为value</span><br><span class="line">注：步骤1输出的结果文件通过指定SequenceFileOutputFormat来产生SequenceFile文件；SequenceFile文件是hadoop定义的一种文件，里面存放的是大量key-value的对象序列化字节（文件头部还存放了key和value所属的类型名）；</span><br></pre></td></tr></table></figure>
+<h6 id="步骤2："><a href="#步骤2：" class="headerlink" title="步骤2："></a>步骤2：</h6><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">思路：读取步骤1的SequenceFile结果文件，需要指定inputformatclass为SequenceFileInputFormat组件</span><br><span class="line">既然使用了这种输入组件，那么我们的map方法中直接就接收一对KEY-VALUE数据</span><br><span class="line"></span><br><span class="line">如何实现topn呢？</span><br><span class="line">通过把所有汇总数据发给同一个reduce端的worker，并且通过定义一个GroupingComparator来让这个worker把所有手机号的flowbean对象看成一组，调用一次reduce方法，我们就只需要在reduce方法中输出前n个即可</span><br></pre></td></tr></table></figure>
+<h5 id="MapReduce编程实现"><a href="#MapReduce编程实现" class="headerlink" title="MapReduce编程实现"></a>MapReduce编程实现</h5><h6 id="Object"><a href="#Object" class="headerlink" title="Object"></a>Object</h6><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br></pre></td><td class="code"><pre><span class="line">package MRCodingNine_IOControl_haveprob;</span><br><span class="line"></span><br><span class="line">import java.io.DataInput;</span><br><span class="line">import java.io.DataOutput;</span><br><span class="line">import java.io.IOException;</span><br><span class="line"></span><br><span class="line">import org.apache.hadoop.io.WritableComparable;</span><br><span class="line"></span><br><span class="line">public class FlowObject implements WritableComparable&lt;FlowObject&gt;&#123;</span><br><span class="line"></span><br><span class="line">	/**</span><br><span class="line">	 * @return the phone</span><br><span class="line">	 */</span><br><span class="line">	public String getPhone() &#123;</span><br><span class="line">		return phone;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	/**</span><br><span class="line">	 * @param phone the phone to set</span><br><span class="line">	 */</span><br><span class="line">	public void setPhone(String phone) &#123;</span><br><span class="line">		this.phone = phone;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	/**</span><br><span class="line">	 * @return the uFlow</span><br><span class="line">	 */</span><br><span class="line">	public int getuFlow() &#123;</span><br><span class="line">		return uFlow;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	/**</span><br><span class="line">	 * @param uFlow the uFlow to set</span><br><span class="line">	 */</span><br><span class="line">	public void setuFlow(int uFlow) &#123;</span><br><span class="line">		this.uFlow = uFlow;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	/**</span><br><span class="line">	 * @return the dFlow</span><br><span class="line">	 */</span><br><span class="line">	public int getdFlow() &#123;</span><br><span class="line">		return dFlow;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	/**</span><br><span class="line">	 * @param dFlow the dFlow to set</span><br><span class="line">	 */</span><br><span class="line">	public void setdFlow(int dFlow) &#123;</span><br><span class="line">		this.dFlow = dFlow;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	/**</span><br><span class="line">	 * @return the amount</span><br><span class="line">	 */</span><br><span class="line">	public int getAmount() &#123;</span><br><span class="line">		return amount;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	/**</span><br><span class="line">	 * @param amount the amount to set</span><br><span class="line">	 */</span><br><span class="line">	public void setAmount(int amount) &#123;</span><br><span class="line">		this.amount = amount;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	public void set(String phone, int uFlow, int dFlow) &#123;</span><br><span class="line">		</span><br><span class="line">		this.phone = phone;</span><br><span class="line">		this.uFlow = uFlow;</span><br><span class="line">		this.dFlow = dFlow;</span><br><span class="line">		this.amount = this.uFlow+this.dFlow;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	/* (non-Javadoc)</span><br><span class="line">	 * @see java.lang.Object#toString()</span><br><span class="line">	 */</span><br><span class="line">	@Override</span><br><span class="line">	public String toString() &#123;</span><br><span class="line">		return &quot;FlowObject [phone=&quot; + phone + &quot;, uFlow=&quot; + uFlow + &quot;, dFlow=&quot; + dFlow + &quot;, amount=&quot; + amount + &quot;]&quot;;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	private String phone;</span><br><span class="line">	private int uFlow;</span><br><span class="line">	private int dFlow;</span><br><span class="line">	private int amount;</span><br><span class="line">	@Override</span><br><span class="line">	public void readFields(DataInput in) throws IOException &#123;</span><br><span class="line">		// TODO Auto-generated method stub</span><br><span class="line">		this.phone=in.readUTF();</span><br><span class="line">		this.uFlow=in.readInt();</span><br><span class="line">		this.dFlow=in.readInt();</span><br><span class="line">		this.amount=in.readInt();</span><br><span class="line">		</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	@Override</span><br><span class="line">	public void write(DataOutput out) throws IOException &#123;</span><br><span class="line">		// TODO Auto-generated method stub</span><br><span class="line">		out.writeUTF(this.phone);</span><br><span class="line">		out.writeInt(this.uFlow);</span><br><span class="line">		out.writeInt(this.dFlow);</span><br><span class="line">		out.writeInt(amount);</span><br><span class="line">		</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	@Override</span><br><span class="line">	public int compareTo(FlowObject o) &#123;</span><br><span class="line">		// TODO Auto-generated method stub</span><br><span class="line">		return o.getAmount()-this.getAmount()==0?</span><br><span class="line">				this.getPhone().compareTo(o.getPhone()):o.getAmount()-this.getAmount();</span><br><span class="line">	&#125;</span><br><span class="line">	</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h6 id="Comparator"><a href="#Comparator" class="headerlink" title="Comparator"></a>Comparator</h6><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">package MRCodingNine_IOControl_haveprob;</span><br><span class="line"></span><br><span class="line">import org.apache.hadoop.io.WritableComparable;</span><br><span class="line">import org.apache.hadoop.io.WritableComparator;</span><br><span class="line"></span><br><span class="line">public class FlowObjectGroupingComparator extends WritableComparator&#123;</span><br><span class="line">	public FlowObjectGroupingComparator() &#123;</span><br><span class="line">		// TODO Auto-generated constructor stub</span><br><span class="line">		super(FlowObject.class,true);</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	@Override</span><br><span class="line">	public int compare(WritableComparable a, WritableComparable b) &#123;</span><br><span class="line">		// TODO Auto-generated method stub</span><br><span class="line">		return 0;</span><br><span class="line">	&#125;</span><br><span class="line">	</span><br><span class="line">	</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h6 id="MR-StepOne"><a href="#MR-StepOne" class="headerlink" title="MR StepOne"></a>MR StepOne</h6><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br></pre></td><td class="code"><pre><span class="line">package MRCodingNine_IOControl_haveprob;</span><br><span class="line"></span><br><span class="line">import java.io.IOException;</span><br><span class="line"></span><br><span class="line">import org.apache.hadoop.conf.Configuration;</span><br><span class="line">import org.apache.hadoop.fs.Path;</span><br><span class="line">import org.apache.hadoop.io.LongWritable;</span><br><span class="line">import org.apache.hadoop.io.SequenceFile.CompressionType;</span><br><span class="line">import org.apache.hadoop.io.Text;</span><br><span class="line">import org.apache.hadoop.mapreduce.Job;</span><br><span class="line">import org.apache.hadoop.mapreduce.Mapper;</span><br><span class="line">import org.apache.hadoop.mapreduce.Reducer;</span><br><span class="line">import org.apache.hadoop.mapreduce.lib.input.FileInputFormat;</span><br><span class="line">import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat;</span><br><span class="line">import org.apache.hadoop.mapreduce.lib.output.SequenceFileOutputFormat;</span><br><span class="line"></span><br><span class="line">public class SelfDesinTypeStepOne &#123;</span><br><span class="line"></span><br><span class="line">	</span><br><span class="line">	public static class SelfDesinTypeMapper extends Mapper&lt;LongWritable, Text, Text,FlowObject &gt;&#123;</span><br><span class="line">		@Override</span><br><span class="line">		protected void map(LongWritable key, Text value, Mapper&lt;LongWritable, Text, Text, FlowObject&gt;.Context context)</span><br><span class="line">				throws IOException, InterruptedException &#123;</span><br><span class="line">			// TODO Auto-generated method stub</span><br><span class="line">			String[] fields = value.toString().split(&quot;\t&quot;);</span><br><span class="line">			String phone=fields[1];</span><br><span class="line">			FlowObject flowObject = new FlowObject();</span><br><span class="line">			flowObject.set(phone, Integer.parseInt(fields[fields.length-3]),Integer.parseInt(fields[fields.length-2]));</span><br><span class="line">		</span><br><span class="line">			context.write(new Text(phone), flowObject);</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">	</span><br><span class="line">	public static class SelfDesinTypeReducer extends Reducer&lt;Text, FlowObject, Text, FlowObject&gt;&#123;</span><br><span class="line">		@Override</span><br><span class="line">		protected void reduce(Text phone, Iterable&lt;FlowObject&gt; iter,</span><br><span class="line">				Reducer&lt;Text, FlowObject, Text, FlowObject&gt;.Context context) throws IOException, InterruptedException &#123;</span><br><span class="line">			// TODO Auto-generated method stub</span><br><span class="line">			</span><br><span class="line">			int uFlow=0;</span><br><span class="line">			int dFlow=0;</span><br><span class="line">			</span><br><span class="line">			for (FlowObject flowObject : iter) &#123;</span><br><span class="line">				uFlow+=flowObject.getuFlow();</span><br><span class="line">				dFlow+=flowObject.getdFlow();</span><br><span class="line">			&#125;</span><br><span class="line">			FlowObject flowObject = new FlowObject();</span><br><span class="line">			flowObject.set(phone.toString(),uFlow, dFlow);</span><br><span class="line">			context.write(phone, flowObject);</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">	</span><br><span class="line">	public static void main(String[] args) throws Exception &#123;</span><br><span class="line">		Configuration conf = new Configuration();</span><br><span class="line">		Job job = Job.getInstance(conf);</span><br><span class="line">		</span><br><span class="line">		job.setJarByClass(SelfDesinTypeStepOne.class);</span><br><span class="line">		job.setMapperClass(SelfDesinTypeMapper.class);</span><br><span class="line">		job.setReducerClass(SelfDesinTypeReducer.class);</span><br><span class="line">		</span><br><span class="line">		job.setMapOutputKeyClass(Text.class);</span><br><span class="line">		job.setMapOutputValueClass(FlowObject.class);</span><br><span class="line">//		job.setGroupingComparatorClass(FlowObjectGroupingComparator.class);</span><br><span class="line">		</span><br><span class="line">		job.setOutputKeyClass(Text.class);</span><br><span class="line">		job.setOutputValueClass(FlowObject.class);</span><br><span class="line">		</span><br><span class="line">		job.setOutputFormatClass(SequenceFileOutputFormat.class);</span><br><span class="line">		SequenceFileOutputFormat.setOutputCompressionType(job, CompressionType.NONE);</span><br><span class="line">		</span><br><span class="line">//		FileInputFormat.setInputPaths(job, new Path(&quot;f:/Linuxsource/mrdata/flow/input&quot;));</span><br><span class="line">//		FileOutputFormat.setOutputPath(job, new Path(&quot;f:/Linuxsource/mrdata/flow/output2&quot;));</span><br><span class="line">		</span><br><span class="line">		FileInputFormat.setInputPaths(job, new Path(&quot;f:/Linuxsource/mrdata/flow/input&quot;));</span><br><span class="line">		SequenceFileOutputFormat.setOutputPath(job,new Path(&quot;f:/Linuxsource/mrdata/flow/output5&quot;) );</span><br><span class="line">		</span><br><span class="line">		job.setNumReduceTasks(1);</span><br><span class="line">		</span><br><span class="line">		boolean res= job.waitForCompletion(true);</span><br><span class="line">		</span><br><span class="line">		System.exit(res?0:-1);</span><br><span class="line">	&#125;</span><br><span class="line">	</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h6 id="MR-StepTwo"><a href="#MR-StepTwo" class="headerlink" title="MR StepTwo"></a>MR StepTwo</h6><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br></pre></td><td class="code"><pre><span class="line">package MRCodingNine_IOControl_haveprob;</span><br><span class="line"></span><br><span class="line">import java.io.IOException;</span><br><span class="line"></span><br><span class="line">import org.apache.hadoop.conf.Configuration;</span><br><span class="line">import org.apache.hadoop.fs.Path;</span><br><span class="line">import org.apache.hadoop.io.Text;</span><br><span class="line">import org.apache.hadoop.mapreduce.Job;</span><br><span class="line">import org.apache.hadoop.mapreduce.Mapper;</span><br><span class="line">import org.apache.hadoop.mapreduce.Reducer;</span><br><span class="line">import org.apache.hadoop.mapreduce.lib.input.SequenceFileInputFormat;</span><br><span class="line">import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat;</span><br><span class="line"></span><br><span class="line">public class SelfDesinTypeStepTwo &#123;</span><br><span class="line"></span><br><span class="line">	public static class SelfDesinTypeStepTwoMapper extends Mapper&lt;Text, FlowObject, Text, FlowObject&gt;&#123;</span><br><span class="line">		</span><br><span class="line">		@Override</span><br><span class="line">		protected void map(Text key, FlowObject value, Mapper&lt;Text, FlowObject, Text, FlowObject&gt;.Context context)</span><br><span class="line">				throws IOException, InterruptedException &#123;</span><br><span class="line">			// TODO Auto-generated method stub</span><br><span class="line">			context.write(key, value);</span><br><span class="line">			</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">	</span><br><span class="line">	public static class SelfDesinTypeStepTwoReducer extends Reducer&lt;Text, FlowObject, Text, FlowObject&gt;&#123;</span><br><span class="line">		@Override</span><br><span class="line">		protected void reduce(Text key, Iterable&lt;FlowObject&gt; values,</span><br><span class="line">				Reducer&lt;Text, FlowObject, Text, FlowObject&gt;.Context context) throws IOException, InterruptedException &#123;</span><br><span class="line">			// TODO Auto-generated method stub</span><br><span class="line">			</span><br><span class="line">			Configuration conf = context.getConfiguration();</span><br><span class="line">			int topn= conf.getInt(&quot;top.n.value&quot;, 3);</span><br><span class="line">			int i=0;</span><br><span class="line">			for (FlowObject value : values) &#123;</span><br><span class="line">				context.write(key,value);</span><br><span class="line">				i++;</span><br><span class="line">				if(i==topn) return;</span><br><span class="line">			&#125;</span><br><span class="line">		</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">	</span><br><span class="line">	public static void main(String[] args) throws Exception&#123;</span><br><span class="line">		</span><br><span class="line">		Configuration conf = new Configuration();</span><br><span class="line">		conf.setInt(&quot;top.n.value&quot;, 3);</span><br><span class="line">		</span><br><span class="line">		Job job = Job.getInstance(conf);		</span><br><span class="line">		</span><br><span class="line">		job.setJarByClass(SelfDesinTypeStepTwo.class);</span><br><span class="line">		job.setMapperClass(SelfDesinTypeStepTwoMapper.class);</span><br><span class="line">		job.setReducerClass(SelfDesinTypeStepTwoReducer.class);</span><br><span class="line">		</span><br><span class="line">//		job.setGroupingComparatorClass(FlowObjectGroupingComparator.class);</span><br><span class="line">		</span><br><span class="line">		job.setMapOutputKeyClass(Text.class);</span><br><span class="line">		job.setMapOutputValueClass(FlowObject.class);</span><br><span class="line">		</span><br><span class="line">		job.setOutputKeyClass(Text.class);</span><br><span class="line">		job.setOutputValueClass(FlowObject.class);</span><br><span class="line">		</span><br><span class="line">		job.setInputFormatClass(SequenceFileInputFormat.class);</span><br><span class="line"></span><br><span class="line">		SequenceFileInputFormat.setInputPaths(job, new Path(&quot;f:/Linuxsource/mrdata/flow/output5&quot;));</span><br><span class="line">		FileOutputFormat.setOutputPath(job, new Path(&quot;f:/Linuxsource/mrdata/flow/output6&quot;));</span><br><span class="line">		</span><br><span class="line"></span><br><span class="line">		job.setNumReduceTasks(1);</span><br><span class="line">		</span><br><span class="line">		boolean res= job.waitForCompletion(true);</span><br><span class="line">		</span><br><span class="line">		System.exit(res?0:-1);</span><br><span class="line">		</span><br><span class="line">	&#125;</span><br><span class="line">	</span><br><span class="line">	</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="http://blogoflyt.cn/2019/03/10/MapReduce编程案例8-自定义GroupingComparator/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -1604,190 +1751,6 @@
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://blogoflyt.cn/2019/03/03/Hadoop学习笔记-集群搭建/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Richard">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/gakki.jpg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="积累技术之路">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2019/03/03/Hadoop学习笔记-集群搭建/" itemprop="url">Hadoop学习笔记------集群搭建</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-03-03T22:01:00+08:00">
-                2019-03-03
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Hadoop/" itemprop="url" rel="index">
-                    <span itemprop="name">Hadoop</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h3 id="hadoop核心组件："><a href="#hadoop核心组件：" class="headerlink" title="hadoop核心组件："></a>hadoop核心组件：</h3><ol>
-<li>分布式文件系统：HDFS —— 实现将文件分布式存储在很多的服务器上</li>
-<li>分布式运算编程框架：MAPREDUCE —— 实现在很多机器上分布式并行运算</li>
-<li>分布式资源调度平台：YARN —— 帮用户调度大量的mapreduce程序，并合理分配运算资源</li>
-</ol>
-<hr>
-<h3 id="hdfs整体运行机制"><a href="#hdfs整体运行机制" class="headerlink" title="hdfs整体运行机制"></a>hdfs整体运行机制</h3><h6 id="hdfs：分布式文件系统"><a href="#hdfs：分布式文件系统" class="headerlink" title="hdfs：分布式文件系统"></a>hdfs：分布式文件系统</h6><p>hdfs有着文件系统共同的特征：</p>
-<ol>
-<li>有目录结构，顶层目录是：  /</li>
-<li>系统中存放的就是文件</li>
-<li>系统可以提供对文件的：创建、删除、修改、查看、移动等功能</li>
-</ol>
-<p>hdfs跟普通的单机文件系统有区别：</p>
-<ol>
-<li>单机文件系统中存放的文件，是在一台机器的操作系统中</li>
-<li>hdfs的文件系统会横跨N多的机器</li>
-<li>单机文件系统中存放的文件，是在一台机器的磁盘上</li>
-<li>hdfs文件系统中存放的文件，是落在n多机器的本地单机文件系统中（hdfs是一个基于linux本地文件系统之上的文件系统）</li>
-</ol>
-<h6 id="hdfs的工作机制："><a href="#hdfs的工作机制：" class="headerlink" title="hdfs的工作机制："></a>hdfs的工作机制：</h6><ol>
-<li>客户把一个文件存入hdfs，其实hdfs会把这个文件切块后，分散存储在N台linux机器系统中（负责存储文件块的角色：data node）&lt;准确来说：切块的行为是由客户端决定的&gt;</li>
-<li>一旦文件被切块存储，那么，hdfs中就必须有一个机制，来记录用户的每一个文件的切块信息，及每一块的具体存储机器（负责记录块信息的角色是：name node）</li>
-<li>为了保证数据的安全性，hdfs可以将每一个文件块在集群中存放多个副本（到底存几个副本，是由当时存入该文件的客户端指定的）</li>
-</ol>
-<blockquote>
-<p>综述：一个hdfs系统，由一台运行了namenode的服务器，和N台运行了datanode的服务器组成！</p>
-</blockquote>
-<hr>
-<h4 id="搭建hdfs分布式集群"><a href="#搭建hdfs分布式集群" class="headerlink" title="搭建hdfs分布式集群"></a>搭建hdfs分布式集群</h4><h6 id="hdfs集群组成结构："><a href="#hdfs集群组成结构：" class="headerlink" title="hdfs集群组成结构："></a>hdfs集群组成结构：</h6><p><a href="https://imgchr.com/i/kHADqs" target="_blank" rel="noopener"><img src="https://s2.ax1x.com/2019/02/28/kHADqs.png" alt="kHADqs.png"></a></p>
-<h6 id="安装hdfs集群的具体步骤："><a href="#安装hdfs集群的具体步骤：" class="headerlink" title="安装hdfs集群的具体步骤："></a>安装hdfs集群的具体步骤：</h6><ol>
-<li><p>首先需要准备N台linux服务器<br>学习阶段，用虚拟机即可！<br>先准备4台虚拟机：1个namenode节点  + 3 个datanode 节点</p>
-</li>
-<li><p>修改各台机器的主机名和ip地址<br>主机名：hdp-01  对应的ip地址：192.168.33.61<br>主机名：hdp-02  对应的ip地址：192.168.33.62<br>主机名：hdp-03  对应的ip地址：192.168.33.63<br>主机名：hdp-04  对应的ip地址：192.168.33.64</p>
-</li>
-<li><p>从windows中用CRT软件进行远程连接<br>在windows中将各台linux机器的主机名配置到的windows的本地域名映射文件中：<br>c:/windows/system32/drivers/etc/hosts<br>192.168.33.61    hdp-01<br>192.168.33.62    hdp-02<br>192.168.33.63    hdp-03<br>192.168.33.64    hdp-04</p>
-</li>
-<li><p>配置linux服务器的基础软件环境</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line">防火墙</span><br><span class="line">关闭防火墙：service iptables stop  </span><br><span class="line">关闭防火墙自启： chkconfig iptables off</span><br><span class="line">安装jdk：（hadoop体系中的各软件都是java开发的）</span><br><span class="line">1)利用alt+p 打开sftp窗口，然后将jdk压缩包拖入sftp窗口</span><br><span class="line">2)然后在linux中将jdk压缩包解压到/root/apps 下</span><br><span class="line">3)配置环境变量：JAVA_HOME   PATH</span><br><span class="line">vi /etc/profile   在文件的最后，加入：</span><br><span class="line">export JAVA_HOME=/root/apps/jdk1.8.0_60</span><br><span class="line">export PATH=$PATH:$JAVA_HOME/bin</span><br><span class="line">4)修改完成后，记得 source /etc/profile使配置生效</span><br><span class="line">5)检验：在任意目录下输入命令： java -version 看是否成功执行</span><br><span class="line">6)将安装好的jdk目录用scp命令拷贝到其他机器</span><br><span class="line">7)将/etc/profile配置文件也用scp命令拷贝到其他机器并分别执行source命令</span><br><span class="line">集群内主机的域名映射配置</span><br><span class="line">在hdp-01上，vi /etc/hosts</span><br><span class="line">127.0.0.1   localhost localhost.localdomain localhost4 localhost4.localdomain4</span><br><span class="line">::1         localhost localhost.localdomain localhost6 localhost6.localdomain6</span><br><span class="line">192.168.33.61   hdp-01</span><br><span class="line">192.168.33.62   hdp-02</span><br><span class="line">192.168.33.63   hdp-03</span><br><span class="line">192.168.33.64   hdp-04</span><br><span class="line">然后，将hosts文件拷贝到集群中的所有其他机器上</span><br><span class="line">scp /etc/hosts hdp-02:/etc/</span><br><span class="line">scp /etc/hosts hdp-03:/etc/</span><br><span class="line">scp /etc/hosts hdp-04:/etc/</span><br></pre></td></tr></table></figure>
-</li>
-<li><p>安装hdfs集群</p>
-</li>
-</ol>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br></pre></td><td class="code"><pre><span class="line">1、上传hadoop安装包到hdp-01</span><br><span class="line">2、修改配置文件</span><br><span class="line">要点提示	核心配置参数：</span><br><span class="line">1)指定hadoop的默认文件系统为：hdfs</span><br><span class="line">2)指定hdfs的namenode节点为哪台机器</span><br><span class="line">3)指定namenode软件存储元数据的本地目录</span><br><span class="line">4)指定datanode软件存放文件块的本地目录	5)</span><br><span class="line">hadoop的配置文件在：/root/apps/hadoop安装目录/etc/hadoop/</span><br><span class="line">1) 修改hadoop-env.sh</span><br><span class="line">export JAVA_HOME=/root/apps/jdk1.8.0_60</span><br><span class="line">2) 修改core-site.xml</span><br><span class="line">&lt;configuration&gt;</span><br><span class="line">&lt;property&gt;</span><br><span class="line">&lt;name&gt;fs.defaultFS&lt;/name&gt;</span><br><span class="line">&lt;value&gt;hdfs://hdp-01:9000&lt;/value&gt;</span><br><span class="line">&lt;/property&gt;</span><br><span class="line">&lt;/configuration&gt;</span><br><span class="line">3) 修改hdfs-site.xml</span><br><span class="line">&lt;configuration&gt;</span><br><span class="line">&lt;property&gt;</span><br><span class="line">&lt;name&gt;dfs.namenode.name.dir&lt;/name&gt;</span><br><span class="line">&lt;value&gt;/root/dfs/name&lt;/value&gt;</span><br><span class="line">&lt;/property&gt;</span><br><span class="line">&lt;property&gt;</span><br><span class="line">&lt;name&gt;dfs.datanode.data.dir&lt;/name&gt;</span><br><span class="line">&lt;value&gt;/root/dfs/data&lt;/value&gt;</span><br><span class="line">&lt;/property&gt;</span><br><span class="line">&lt;/configuration&gt;</span><br><span class="line">4) 拷贝整个hadoop安装目录到其他机器</span><br><span class="line">scp -r /root/apps/hadoop-2.8.0  hdp-02:/root/apps/</span><br><span class="line">scp -r /root/apps/hadoop-2.8.0  hdp-03:/root/apps/</span><br><span class="line">scp -r /root/apps/hadoop-2.8.0  hdp-04:/root/apps/</span><br><span class="line">5) 启动HDFS</span><br><span class="line">所谓的启动HDFS，就是在对的机器上启动对的软件</span><br><span class="line">提示：要运行hadoop的命令，需要在linux环境中配置HADOOP_HOME和PATH环境变量</span><br><span class="line">vi /etc/profile</span><br><span class="line">export JAVA_HOME=/root/apps/jdk1.8.0_60</span><br><span class="line">export HADOOP_HOME=/root/apps/hadoop-2.8.0</span><br><span class="line">export PATH=$PATH:$JAVA_HOME/bin:$HADOOP_HOME/bin:$HADOOP_HOME/sbin</span><br><span class="line">首先，初始化namenode的元数据目录</span><br><span class="line">要在hdp-01上执行hadoop的一个命令来初始化namenode的元数据存储目录</span><br><span class="line">hadoop namenode -format</span><br><span class="line">创建一个全新的元数据存储目录</span><br><span class="line">生成记录元数据的文件fsimage</span><br><span class="line">生成集群的相关标识：如：集群id——clusterID</span><br><span class="line">然后，启动namenode进程（在hdp-01上）</span><br><span class="line">hadoop-daemon.sh start namenode</span><br><span class="line">启动完后，首先用jps查看一下namenode的进程是否存在</span><br><span class="line">然后，在windows中用浏览器访问namenode提供的web端口：50070</span><br><span class="line">http://hdp-01:50070</span><br><span class="line">然后，启动众datanode们（在任意地方）</span><br><span class="line">hadoop-daemon.sh start datanode</span><br><span class="line">6) 用自动批量启动脚本来启动HDFS</span><br><span class="line">先配置hdp-01到集群中所有机器（包含自己）的免密登陆</span><br><span class="line">配完免密后，可以执行一次  ssh 0.0.0.0</span><br><span class="line">修改hadoop安装目录中/etc/hadoop/slaves（把需要启动datanode进程的节点列入）</span><br><span class="line">hdp-01</span><br><span class="line">hdp-02</span><br><span class="line">hdp-03</span><br><span class="line">hdp-04</span><br><span class="line">在hdp-01上用脚本：start-dfs.sh 来自动启动整个集群</span><br><span class="line">如果要停止，则用脚本：stop-dfs.sh</span><br></pre></td></tr></table></figure>
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
   </section>
 
   
@@ -1842,7 +1805,7 @@
               
                 <a href="/archives/">
               
-                  <span class="site-state-item-count">71</span>
+                  <span class="site-state-item-count">72</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
